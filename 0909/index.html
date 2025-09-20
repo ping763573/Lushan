@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>林美卿生命教育經絡學 - 互動式學習平台</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <h1 class="navbar-title">林美卿生命教育經絡學</h1>
+                <div class="navbar-menu">
+                    <button class="nav-btn active" data-section="home">首頁</button>
+                    <button class="nav-btn" data-section="theory">理論基礎</button>
+                    <button class="nav-btn" data-section="practice">實踐方法</button>
+                    <button class="nav-btn" data-section="advice">養生建議</button>
+                    <button class="nav-btn" data-section="flashcards">學習閃卡</button>
+                    <button class="nav-btn" data-section="quiz">測驗</button>
+                    <button class="nav-btn" data-section="summary">摘要總結</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容 -->
+    <main class="main-content">
+        <!-- 首頁 -->
+        <section id="home" class="section active">
+            <div class="container">
+                <div class="hero">
+                    <h2 class="hero-title">歡迎來到生命教育經絡學習平台</h2>
+                    <p class="hero-description">探索生命底氣、潛意識療癒與經絡養生的智慧</p>
+                    
+                    <!-- YouTube影片觀看功能 -->
+                    <div class="video-section">
+                        <h3 class="video-section-title">精選教學影片</h3>
+                        <div class="video-buttons">
+                            <a href="https://youtu.be/M_OfO9Rt49M" target="_blank" class="video-btn btn--primary">
+                                <div class="video-btn-icon">📺</div>
+                                <div class="video-btn-content">
+                                    <div class="video-btn-title">潛意識資料庫建置</div>
+                                    <div class="video-btn-desc">學習如何建立生命底氣與潛意識療法</div>
+                                </div>
+                            </a>
+                            <a href="https://youtu.be/j3fswwegMMc" target="_blank" class="video-btn btn--primary">
+                                <div class="video-btn-icon">🎯</div>
+                                <div class="video-btn-content">
+                                    <div class="video-btn-title">任督二脈病理刮痧</div>
+                                    <div class="video-btn-desc">掌握經絡刮痧的正確技法</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-card">
+                            <h3>理論知識</h3>
+                            <p>3大核心概念</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>實踐技巧</h3>
+                            <p>多種療癒方法</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>學習閃卡</h3>
+                            <p id="flashcard-count">55題題庫</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>測驗題</h3>
+                            <p id="quiz-count">30題測驗</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 理論基礎 -->
+        <section id="theory" class="section">
+            <div class="container">
+                <h2 class="section-title">理論基礎</h2>
+                <div class="content-grid">
+                    <div class="card theory-card">
+                        <div class="card__body">
+                            <h3>生命底氣</h3>
+                            <p class="definition">比金錢更重要的內在能量、勇氣與安定感，是面對生命挑戰時的隱形盔甲</p>
+                            <div class="theory-details">
+                                <h4>表現對比：</h4>
+                                <div class="comparison">
+                                    <div class="comparison-item positive">
+                                        <h5>有底氣</h5>
+                                        <ul>
+                                            <li>面對身體狀況思考如何改變讓身體好轉</li>
+                                            <li>內心坦然無懼</li>
+                                            <li>生活輕鬆自信</li>
+                                        </ul>
+                                    </div>
+                                    <div class="comparison-item negative">
+                                        <h5>沒底氣</h5>
+                                        <ul>
+                                            <li>身體不適就上網查症狀懷疑重病</li>
+                                            <li>生活充滿慌張恐慌</li>
+                                            <li>容易被負面資訊籠罩</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card theory-card">
+                        <div class="card__body">
+                            <h3>潛意識資料庫</h3>
+                            <p class="definition">生命之初被植入靈魂的晶片，記錄早期生命經驗與感受</p>
+                            <div class="theory-details">
+                                <h4>建置時機：</h4>
+                                <ul>
+                                    <li>出生產房的氛圍與言語</li>
+                                    <li>手術麻醉期間的半清醒狀態</li>
+                                </ul>
+                                <h4>影響：</h4>
+                                <p>深深影響反應模式、情緒狀態與行為決策一生</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card theory-card">
+                        <div class="card__body">
+                            <h3>經絡學觀點</h3>
+                            <p class="definition">氣的通道，連接十大器官延伸至四肢末梢</p>
+                            <div class="theory-details">
+                                <h4>五臟藏神：</h4>
+                                <div class="organ-grid">
+                                    <div class="organ-item">
+                                        <strong>肝藏魂</strong>
+                                        <p>肝不好的人容易發怒，因為魂找不到家</p>
+                                    </div>
+                                    <div class="organ-item">
+                                        <strong>心藏神</strong>
+                                        <p>心臟主導神智、思想與記憶</p>
+                                    </div>
+                                    <div class="organ-item">
+                                        <strong>脾主意</strong>
+                                        <p>脾胃對應意志力</p>
+                                    </div>
+                                    <div class="organ-item">
+                                        <strong>肺藏魄</strong>
+                                        <p>肺部儲藏魄力、勇氣</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 實踐方法 -->
+        <section id="practice" class="section">
+            <div class="container">
+                <h2 class="section-title">實踐方法</h2>
+                <div class="content-grid">
+                    <div class="card practice-card">
+                        <div class="card__body">
+                            <h3>潛意識療癒</h3>
+                            <div class="practice-method">
+                                <h4>睡前自我對話</h4>
+                                <div class="method-details">
+                                    <p><strong>時機：</strong>每晚即將入睡前20秒，意識最放鬆時</p>
+                                    <p><strong>方法：</strong>呼喚自己名字，給予肯定與承諾</p>
+                                    <p><strong>延伸：</strong>信任地交代事情給自己，預防失憶健忘</p>
+                                </div>
+                            </div>
+                            <div class="practice-method">
+                                <h4>靈魂療法</h4>
+                                <div class="method-details">
+                                    <p><strong>原理：</strong>透過溫暖恭敬的觸摸，讓漂泊的靈魂回家安頓</p>
+                                    <p><strong>操作：</strong></p>
+                                    <ul>
+                                        <li>用紮實手心在背部輕撫</li>
+                                        <li>肯定身體各部位</li>
+                                        <li>帶著恭敬心進行</li>
+                                    </ul>
+                                    <p><strong>界限：</strong>非夫妻關係需同性操作，避免情感依賴</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card practice-card">
+                        <div class="card__body">
+                            <h3>身體療癒</h3>
+                            <div class="practice-method">
+                                <h4>刮痧技巧</h4>
+                                <div class="method-details">
+                                    <p><strong>工具：</strong>能量刮痧棒，不同部位有不同功能</p>
+                                    <p><strong>原則：</strong></p>
+                                    <ul>
+                                        <li>力道輕柔不用猛力</li>
+                                        <li>單向往下或往外刮</li>
+                                        <li>90度角刮神經叢</li>
+                                    </ul>
+                                    <p><strong>步驟：</strong></p>
+                                    <ol>
+                                        <li>開背刮督脈</li>
+                                        <li>刮神經叢</li>
+                                        <li>刮膀胱經</li>
+                                        <li>處理氣結</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            <div class="practice-method">
+                                <h4>拍打療法</h4>
+                                <div class="method-details">
+                                    <p><strong>意義：</strong>如同管教，化解心靈積弊和罪疚感</p>
+                                    <p><strong>效果：</strong>破壞重建，讓細胞更新獲得健康</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 養生建議 -->
+        <section id="advice" class="section">
+            <div class="container">
+                <h2 class="section-title">養生建議</h2>
+                <div class="content-grid">
+                    <div class="card advice-card">
+                        <div class="card__body">
+                            <h3>日常習慣</h3>
+                            <div class="advice-item">
+                                <h4>薑茶</h4>
+                                <p>四季皆可飲用暖胃，配珍珠粉潤肺</p>
+                            </div>
+                            <div class="advice-item">
+                                <h4>作息</h4>
+                                <p>早晨暖胃很重要，脾胃最怕寒濕</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card advice-card">
+                        <div class="card__body">
+                            <h3>心態轉變</h3>
+                            <div class="mindset-change">
+                                <div class="from-to">
+                                    <div class="from">
+                                        <h4>從</h4>
+                                        <p>"我得了什麼病？"</p>
+                                    </div>
+                                    <div class="arrow">→</div>
+                                    <div class="to">
+                                        <h4>轉為</h4>
+                                        <p>"我的身體要告訴我什麼？我該做什麼改變？"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 學習閃卡 -->
+        <section id="flashcards" class="section">
+            <div class="container">
+                <h2 class="section-title">學習閃卡</h2>
+                <div class="flashcard-controls">
+                    <div class="control-group">
+                        <label for="category-filter">類別篩選：</label>
+                        <select id="category-filter" class="form-control">
+                            <option value="all">全部</option>
+                            <option value="基礎概念">基礎概念</option>
+                            <option value="實踐技巧">實踐技巧</option>
+                            <option value="應用理解">應用理解</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <button id="shuffle-btn" class="btn btn--secondary">隨機抽題</button>
+                        <button id="reset-progress" class="btn btn--outline">重置進度</button>
+                    </div>
+                </div>
+                <div class="flashcard-progress">
+                    <div class="progress-info">
+                        <span id="current-card">1</span> / <span id="total-cards">55</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                </div>
+                <div class="flashcard-container">
+                    <div id="flashcard" class="flashcard">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <div class="flashcard-category"></div>
+                                <div class="flashcard-question"></div>
+                                <div class="flashcard-hint">點擊查看答案</div>
+                            </div>
+                            <div class="flashcard-back">
+                                <div class="flashcard-category"></div>
+                                <div class="flashcard-answer"></div>
+                                <div class="flashcard-actions">
+                                    <button id="prev-card" class="btn btn--secondary">上一題</button>
+                                    <button id="next-card" class="btn btn--primary">下一題</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 測驗 -->
+        <section id="quiz" class="section">
+            <div class="container">
+                <h2 class="section-title">測驗</h2>
+                <div id="quiz-start" class="quiz-start">
+                    <div class="quiz-info">
+                        <h3>測驗說明</h3>
+                        <p>本測驗共有 <span id="quiz-total-questions">30</span> 道選擇題</p>
+                        <p>請仔細閱讀每道題目後選擇最適合的答案</p>
+                        <p>選擇答案後會立即顯示正確答案與詳細解析</p>
+                        <p>完成後可查看成績與詳細解析</p>
+                        <button id="start-quiz" class="btn btn--primary btn--lg">開始測驗</button>
+                    </div>
+                </div>
+                
+                <div id="quiz-container" class="quiz-container hidden">
+                    <div class="quiz-progress">
+                        <div class="quiz-info-bar">
+                            <span>題目 <span id="quiz-current">1</span> / <span id="quiz-total">30</span></span>
+                            <span>時間：<span id="quiz-timer">00:00</span></span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="quiz-progress-fill" class="progress-fill"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-question-container">
+                        <div id="quiz-question" class="quiz-question"></div>
+                        <div id="quiz-options" class="quiz-options"></div>
+                        <div id="quiz-explanation" class="quiz-explanation hidden">
+                            <div class="explanation-content">
+                                <h4>解析說明：</h4>
+                                <p id="explanation-text"></p>
+                            </div>
+                        </div>
+                        <div class="quiz-controls">
+                            <button id="prev-question" class="btn btn--secondary" disabled>上一題</button>
+                            <button id="next-question" class="btn btn--primary">下一題</button>
+                            <button id="submit-quiz" class="btn btn--primary hidden">提交答案</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="quiz-results" class="quiz-results hidden">
+                    <div class="results-summary">
+                        <h3>測驗結果</h3>
+                        <div class="score-display">
+                            <div class="score-circle">
+                                <span id="final-score">0</span><span class="score-percent">%</span>
+                            </div>
+                        </div>
+                        <div class="results-stats">
+                            <div class="stat">
+                                <span class="stat-label">正確</span>
+                                <span id="correct-count" class="stat-value">0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">錯誤</span>
+                                <span id="wrong-count" class="stat-value">0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">用時</span>
+                                <span id="final-time" class="stat-value">00:00</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="results-actions">
+                        <button id="review-wrong" class="btn btn--secondary">檢視錯題</button>
+                        <button id="restart-quiz" class="btn btn--primary">重新測驗</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 摘要總結 -->
+        <section id="summary" class="section">
+            <div class="container">
+                <h2 class="section-title">摘要總結</h2>
+                <div class="summary-content">
+                    <div class="card summary-card">
+                        <div class="card__body">
+                            <h3>核心概念摘要</h3>
+                            <div class="summary-points">
+                                <div class="summary-point">
+                                    <h4>生命底氣</h4>
+                                    <p>內在勇氣與能量，決定生命品質與健康狀態的核心要素</p>
+                                </div>
+                                <div class="summary-point">
+                                    <h4>潛意識療癒</h4>
+                                    <p>透過睡前對話與靈魂療法，重新編程潛意識資料庫</p>
+                                </div>
+                                <div class="summary-point">
+                                    <h4>經絡養生</h4>
+                                    <p>運用刮痧拍打等技巧，疏通氣血，調和五臟六腑</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card summary-card">
+                        <div class="card__body">
+                            <h3>實踐建議</h3>
+                            <div class="practice-summary">
+                                <ol>
+                                    <li>建立每晚睡前自我對話的習慣</li>
+                                    <li>學習正確的刮痧拍打技巧</li>
+                                    <li>培養正向的身體覺察能力</li>
+                                    <li>保持規律作息與養生習慣</li>
+                                    <li>轉換心態：從懷疑疾病到思考改變</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card summary-card">
+                        <div class="card__body">
+                            <h3>學習成果</h3>
+                            <div class="learning-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number" id="cards-completed">0</span>
+                                    <span class="stat-label">閃卡完成</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number" id="quiz-attempts">0</span>
+                                    <span class="stat-label">測驗次數</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number" id="best-score">0%</span>
+                                    <span class="stat-label">最佳成績</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
