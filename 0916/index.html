@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>經絡養生互動學習平台 - 林美卿老師</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 導航欄 -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1>經絡養生互動學習平台</h1>
+                <p class="nav-subtitle">林美卿老師 - 身心靈整合健康法</p>
+            </div>
+            <div class="nav-menu">
+                <button class="nav-link active" data-section="home">首頁</button>
+                <button class="nav-link" data-section="concepts">核心概念</button>
+                <button class="nav-link" data-section="acupoints">穴位指南</button>
+                <button class="nav-link" data-section="summary">摘要</button>
+                <button class="nav-link" data-section="suggestions">建議</button>
+                <button class="nav-link" data-section="conclusion">總結</button>
+                <button class="nav-link" data-section="flashcards">練習閃卡</button>
+                <button class="nav-link" data-section="quiz">測驗</button>
+            </div>
+            <div class="progress-indicator">
+                <span>學習進度: <span id="progress-percentage">0%</span></span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主要內容區域 -->
+        <main class="main-content">
+            <!-- 首頁 -->
+            <section id="home" class="section active">
+                <div class="hero-section">
+                    <div class="hero-content">
+                        <h1>經絡養生三大支柱</h1>
+                        <h2>排汗、補陽、深層淨化</h2>
+                        <p class="hero-description">透過正確的流汗排毒、陽光D3補陽、溫泉深層淨化，建立生命底氣，掌握自我療癒的力量</p>
+                        <div class="hero-features">
+                            <div class="feature-card">
+                                <h3>💧 流汗排毒</h3>
+                                <p>正確運動排汗，排出重金屬廢物</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>☀️ 陽光D3</h3>
+                                <p>正午曬太陽，自然合成維生素D3</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>♨️ 溫泉淨化</h3>
+                                <p>無冷氣環境下深層排出皮下廢物</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>🧠 潛意識底氣</h3>
+                                <p>建立內在穩定器，提升生命能量</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>🎯 經絡通暢</h3>
+                                <p>八大要穴按摩，保持身體溫暖通暢</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>📚 互動學習</h3>
+                                <p>60題閃卡 + 50題測驗系統</p>
+                            </div>
+                        </div>
+                        <div class="video-links">
+                            <h3>參考課程影片</h3>
+                            <div class="video-list">
+                                <a href="https://youtu.be/Y9wi8fQhPZI?si=jIZK5Ua3WdpASZgH" target="_blank" class="video-link">
+                                    📹 皮膚病流汗概念解析
+                                </a>
+                                <a href="https://youtu.be/bia-RlgzGTE?si=6GxAibT-SoSwll8U" target="_blank" class="video-link">
+                                    📹 逆轉長年頭痛方法
+                                </a>
+                                <a href="https://youtu.be/M_OfO9Rt49M?si=6G4UBkiuoDbks__m" target="_blank" class="video-link">
+                                    📹 潛意識資料庫建置
+                                </a>
+                                <a href="https://youtu.be/j3fswwegMMc?si=i6aDI42n-43Dcphc" target="_blank" class="video-link">
+                                    📹 經絡養生示範
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 核心概念 -->
+            <section id="concepts" class="section">
+                <div class="section-header">
+                    <h2>經絡養生核心概念</h2>
+                    <p>深入了解身心靈整合的健康智慧</p>
+                </div>
+                <div class="concepts-grid">
+                    <div class="concept-card">
+                        <h3>💧 流汗排毒原理</h3>
+                        <p>「汗為心之液」- 汗水是心臟搏動推動的珍貴液體</p>
+                        <div class="concept-details">
+                            <h4>核心要點：</h4>
+                            <ul>
+                                <li>重金屬主要透過汗液排出，非尿液</li>
+                                <li>運動後需耐心等待20-30分鐘讓汗水流透</li>
+                                <li>立即吹冷氣會困汗皮下形成濕毒</li>
+                                <li>夏天不流汗是陽氣嚴重不足的警訊</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="concept-card">
+                        <h3>☀️ 陽光D3補陽</h3>
+                        <p>正午曬太陽是最天然的維生素D3合成方式</p>
+                        <div class="concept-details">
+                            <h4>正確做法：</h4>
+                            <ul>
+                                <li>夏天正午10-20分鐘，冬天30分鐘</li>
+                                <li>曝露身體和頭頂百會穴</li>
+                                <li>不可塗防曬乳，阻礙D3合成</li>
+                                <li>D3催化膽固醇轉化為骨本</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>♨️ 溫泉深層淨化</h3>
+                        <p>無冷氣環境下四次循環，徹底排出皮下廢物</p>
+                        <div class="concept-details">
+                            <h4>四循環步驟：</h4>
+                            <ul>
+                                <li>第一回合站立防止心臟衝擊</li>
+                                <li>浸泡5-10分鐘 + 休息10分鐘</li>
+                                <li>重複至少四次完整循環</li>
+                                <li>汗水由鹹變無味表示排毒完成</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🧠 潛意識底氣建立</h3>
+                        <p>生命底氣是面對挑戰時的內在穩定器</p>
+                        <div class="concept-details">
+                            <h4>建立方法：</h4>
+                            <ul>
+                                <li>新生兒三個月內最關鍵期</li>
+                                <li>每日兩分鐘靜心清空內在</li>
+                                <li>自我肯定認知價值</li>
+                                <li>療癒性觸摸連結心靈</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <h3>🎯 經絡通暢養生</h3>
+                        <p>八大要穴按摩，維持身體通暢與溫暖</p>
+                        <div class="concept-details">
+                            <h4>養生原則：</h4>
+                            <ul>
+                                <li>保持經絡通暢預防百病</li>
+                                <li>溫暖身體提升陽氣</li>
+                                <li>針對性按摩調理特定問題</li>
+                                <li>結合呼吸與意念提升效果</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 穴位指南 -->
+            <section id="acupoints" class="section">
+                <div class="section-header">
+                    <h2>八大要穴指南</h2>
+                    <p>經絡養生必學的關鍵穴位</p>
+                </div>
+                <div class="acupoints-grid">
+                    <div class="acupoint-card">
+                        <h3>合谷穴</h3>
+                        <div class="acupoint-motto">「面口合谷收」</div>
+                        <div class="acupoint-info">
+                            <p><strong>位置：</strong>手虎口處，第一掌骨與第二掌骨間</p>
+                            <p><strong>功能：</strong>頭面部、口腔問題調理</p>
+                            <p><strong>手法：</strong>扣進去按壓，帶旋轉揉動</p>
+                            <div class="caution">⚠️ 孕婦未滿38週禁用，可能引起宮縮</div>
+                        </div>
+                    </div>
+
+                    <div class="acupoint-card">
+                        <h3>足三里</h3>
+                        <div class="acupoint-motto">「肚腹三里留」</div>
+                        <div class="acupoint-info">
+                            <p><strong>位置：</strong>小腿外側，膝蓋下方四指寬</p>
+                            <p><strong>功能：</strong>消化系統調理，養生長壽</p>
+                            <p><strong>手法：</strong>飯前敲打100下</p>
+                            <div class="benefit">✨ 促進生長、養生、養老三大功效</div>
+                        </div>
+                    </div>
+
+                    <div class="acupoint-card">
+                        <h3>委中穴</h3>
+                        <div class="acupoint-motto">「腰背問題委中求」</div>
+                        <div class="acupoint-info">
+                            <p><strong>位置：</strong>膝蓋後方正中央</p>
+                            <p><strong>功能：</strong>腰背部緊繃酸痛調理</p>
+                            <p><strong>手法：</strong>拍打刺激</p>
+                            <div class="benefit">✨ 放鬆整條背部筋膜</div>
+                        </div>
+                    </div>
+
+                    <div class="acupoint-card">
+                        <h3>陽陵泉</h3>
+                        <div class="acupoint-motto">「筋會陽陵泉」</div>
+                        <div class="acupoint-info">
+                            <p><strong>位置：</strong>小腿外側，腓骨小頭前下方</p>
+                            <p><strong>功能：</strong>筋絡問題專穴</p>
+                            <p><strong>手法：</strong>與足三里一同拍打</p>
+                            <div class="benefit">✨ 讓全身筋骨柔軟</div>
+                        </div>
+                    </div>
+
+                    <div class="acupoint-card emergency">
+                        <h3>廉泉穴</h3>
+                        <div class="acupoint-motto">「急救廉泉穴」</div>
+                        <div class="acupoint-info">
+                            <p><strong>位置：</strong>喉結上方凹陷處</p>
+                            <p><strong>功能：</strong>緊急自救要穴</p>
+                            <p><strong>手法：</strong>抓捏30下</p>
+                            <div class="emergency-note">🚨 暈車、噁心、不適時立即使用</div>
+                        </div>
+                    </div>
+
+                    <div class="acupoint-card special">
+                        <h3>百會穴</h3>
+                        <div class="acupoint-motto">「補陽要穴」</div>
+                        <div class="acupoint-info">
+                            <p><strong>位置：</strong>頭頂正中央</p>
+                            <p><strong>功能：</strong>陽氣匯聚點</p>
+                            <p><strong>手法：</strong>輕柔按摩或曝露曬太陽</p>
+                            <div class="special-note">💫 曬百會穴補陽最直接</div>
+                        </div>
+                    </div>
+
+                    <div class="acupoint-card">
+                        <h3>腎俞穴</h3>
+                        <div class="acupoint-motto">「溫養腎氣」</div>
+                        <div class="acupoint-info">
+                            <p><strong>位置：</strong>腰部第二腰椎兩側</p>
+                            <p><strong>功能：</strong>溫補腎氣，強壯腰膝</p>
+                            <p><strong>手法：</strong>雙手搓熱後按摩</p>
+                            <div class="benefit">✨ 提升生命活力</div>
+                        </div>
+                    </div>
+
+                    <div class="acupoint-card">
+                        <h3>三陰交</h3>
+                        <div class="acupoint-motto">「婦科要穴」</div>
+                        <div class="acupoint-info">
+                            <p><strong>位置：</strong>內踝上方四指寬</p>
+                            <p><strong>功能：</strong>婦科調理，美容養顏</p>
+                            <p><strong>手法：</strong>溫和按摩</p>
+                            <div class="benefit">✨ 調節內分泌，延緩衰老</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 摘要 -->
+            <section id="summary" class="section">
+                <div class="section-header">
+                    <h2>經絡養生摘要</h2>
+                    <p>重點內容精華整理</p>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-card">
+                        <h3>🌟 三大支柱核心</h3>
+                        <ul>
+                            <li>排汗排毒：正確流汗排出重金屬廢物</li>
+                            <li>陽光補D3：正午曬太陽合成維生素D3</li>
+                            <li>溫泉淨化：四次循環深層排出毒素</li>
+                            <li>潛意識底氣：建立內在能量穩定器</li>
+                            <li>經絡通暢：八大要穴維持身體平衡</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <h3>🎯 八大要穴功效</h3>
+                        <ul>
+                            <li>合谷穴：頭面口腔問題萬用穴</li>
+                            <li>足三里：消化養生長壽大穴</li>
+                            <li>委中穴：腰背問題專用穴</li>
+                            <li>陽陵泉：筋絡柔軟專穴</li>
+                            <li>廉泉穴：緊急自救要穴</li>
+                            <li>百會穴：補陽氣匯聚穴</li>
+                            <li>腎俞穴：溫養腎氣活力穴</li>
+                            <li>三陰交：婦科美容養顏穴</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <h3>⚠️ 重要注意事項</h3>
+                        <ul>
+                            <li>運動後不可立即吹冷氣</li>
+                            <li>孕婦慎用合谷穴避免宮縮</li>
+                            <li>經期禁酒防止血塊形成</li>
+                            <li>四物湯需經後乾淨2-3天再服</li>
+                            <li>曬太陽時不可塗防曬乳</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 建議 -->
+            <section id="suggestions" class="section">
+                <div class="section-header">
+                    <h2>實用建議</h2>
+                    <p>日常生活中的健康指導</p>
+                </div>
+                <div class="suggestions-content">
+                    <div class="suggestion-category">
+                        <h3>💧 運動排汗SOP</h3>
+                        <div class="suggestion-list">
+                            <div class="suggestion-item">
+                                <h4>運動前準備</h4>
+                                <p>選擇通風但無冷氣直吹的環境，準備毛巾和溫開水補充</p>
+                            </div>
+                            <div class="suggestion-item">
+                                <h4>運動中注意</h4>
+                                <p>讓身體自然流汗，不要刻意擦拭，保持汗水流透</p>
+                            </div>
+                            <div class="suggestion-item">
+                                <h4>運動後處理</h4>
+                                <p>耐心等待20-30分鐘至心跳恢復正常，汗水完全流透後再清潔</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="suggestion-category">
+                        <h3>☀️ 正午曬太陽法</h3>
+                        <div class="suggestion-list">
+                            <div class="suggestion-item">
+                                <h4>最佳時間</h4>
+                                <p>夏天正午10-20分鐘，冬天正午30分鐘，陽氣最盛時段</p>
+                            </div>
+                            <div class="suggestion-item">
+                                <h4>正確姿勢</h4>
+                                <p>曝露身體皮膚和頭頂百會穴，讓陽光直射促進D3合成</p>
+                            </div>
+                            <div class="suggestion-item">
+                                <h4>禁忌事項</h4>
+                                <p>絕對不可塗抹防曬乳，會阻礙維生素D3的自然合成</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="suggestion-category">
+                        <h3>♨️ 溫泉四循環步驟</h3>
+                        <div class="suggestion-list">
+                            <div class="suggestion-item">
+                                <h4>環境要求</h4>
+                                <p>選擇無冷氣環境，保持自然溫度讓身體充分排汗</p>
+                            </div>
+                            <div class="suggestion-item">
+                                <h4>循環節奏</h4>
+                                <p>浸泡5-10分鐘後休息10分鐘，重複至少四次完整循環</p>
+                            </div>
+                            <div class="suggestion-item">
+                                <h4>完成指標</h4>
+                                <p>汗水由鹹味轉為無味，身體感到前所未有的輕鬆</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="suggestion-category">
+                        <h3>🧠 靜心自我療癒</h3>
+                        <div class="suggestion-list">
+                            <div class="suggestion-item">
+                                <h4>每日靜心</h4>
+                                <p>每天兩分鐘靜心觀息，清空累積的負面訊息與情緒垃圾</p>
+                            </div>
+                            <div class="suggestion-item">
+                                <h4>自我肯定</h4>
+                                <p>認知「我就是禮物」，從內心認同自己的存在價值</p>
+                            </div>
+                            <div class="suggestion-item">
+                                <h4>療癒觸摸</h4>
+                                <p>帶著愛與肯定的意念溫柔撫摸身體，心靈觸動與經絡疏通同步</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 總結 -->
+            <section id="conclusion" class="section">
+                <div class="section-header">
+                    <h2>經絡養生總結</h2>
+                    <p>完整的學習回顧與實踐指南</p>
+                </div>
+                <div class="conclusion-content">
+                    <div class="conclusion-section">
+                        <h3>🎓 三大支柱掌握</h3>
+                        <p>通過本課程學習，您已經全面掌握：</p>
+                        <ul>
+                            <li><strong>排汗排毒：</strong>正確的運動流汗方法，避免錯誤處理造成皮膚病</li>
+                            <li><strong>陽光補D3：</strong>天然維生素D3合成法，平衡內分泌促進骨質健康</li>
+                            <li><strong>溫泉淨化：</strong>四次循環深層排毒法，徹底清除皮下廢物毒素</li>
+                            <li><strong>潛意識底氣：</strong>建立內在穩定器，提升面對挑戰的能量基礎</li>
+                            <li><strong>經絡通暢：</strong>八大要穴的精準按摩，維持身體平衡與健康</li>
+                        </ul>
+                    </div>
+
+                    <div class="conclusion-section">
+                        <h3>🔄 日常實踐要點</h3>
+                        <p>將所學知識融入生活，建立健康習慣：</p>
+                        <ul>
+                            <li>每日足三里按摩100下，啟動消化能量</li>
+                            <li>正午適度曝曬百會穴，自然補充陽氣</li>
+                            <li>運動後耐心等待汗透，避免立即降溫</li>
+                            <li>定期溫泉或泡澡，進行深層排毒淨化</li>
+                            <li>每天兩分鐘靜心，清空負面能量積累</li>
+                        </ul>
+                    </div>
+
+                    <div class="conclusion-section">
+                        <h3>🌟 健康長壽之道</h3>
+                        <p>經絡養生的最終目標：</p>
+                        <ul>
+                            <li><strong>預防勝於治療：</strong>透過正確養生方法預防疾病發生</li>
+                            <li><strong>自我療癒能力：</strong>掌握身體自然康復的內在智慧</li>
+                            <li><strong>身心靈整合：</strong>達到身體健康、心靈平靜、靈性提升</li>
+                            <li><strong>生命品質提升：</strong>擁有充沛精力與穩定情緒面對人生</li>
+                            <li><strong>智慧傳承：</strong>將健康知識分享給家人朋友，造福更多人</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 練習閃卡 -->
+            <section id="flashcards" class="section">
+                <div class="section-header">
+                    <h2>練習閃卡 (60題)</h2>
+                    <p>透過3D翻轉閃卡加深記憶</p>
+                </div>
+                <div class="flashcard-controls">
+                    <div class="flashcard-stats">
+                        <span>進度: <span id="flashcard-progress">0/60</span></span>
+                        <span>正確率: <span id="flashcard-accuracy">0%</span></span>
+                    </div>
+                    <div class="flashcard-actions">
+                        <button class="btn btn--secondary" id="shuffle-flashcards">隨機排序</button>
+                        <button class="btn btn--outline" id="reset-flashcards">重新開始</button>
+                    </div>
+                </div>
+                <div class="flashcard-container" id="flashcard-container">
+                    <div class="flashcard" id="flashcard">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <div class="card-number"></div>
+                                <div class="card-question"></div>
+                                <div class="flip-hint">點擊翻轉查看答案</div>
+                            </div>
+                            <div class="flashcard-back">
+                                <div class="card-number"></div>
+                                <div class="card-answer"></div>
+                                <div class="card-actions">
+                                    <button class="btn btn--outline btn--sm" id="mark-incorrect">❌ 不熟悉</button>
+                                    <button class="btn btn--primary btn--sm" id="mark-correct">✅ 已掌握</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flashcard-navigation">
+                    <button class="btn btn--outline" id="prev-flashcard">上一題</button>
+                    <button class="btn btn--outline" id="next-flashcard">下一題</button>
+                </div>
+            </section>
+
+            <!-- 測驗 -->
+            <section id="quiz" class="section">
+                <div class="section-header">
+                    <h2>綜合測驗 (50題)</h2>
+                    <p>檢驗您的學習成果</p>
+                </div>
+                <div class="quiz-container" id="quiz-container">
+                    <div class="quiz-start" id="quiz-start">
+                        <div class="quiz-info">
+                            <h3>🎯 測驗說明</h3>
+                            <ul>
+                                <li>共50道題目，包含30題選擇題 + 20題是非題</li>
+                                <li>涵蓋經絡養生三大支柱與八大要穴</li>
+                                <li>每題都有即時正誤反饋與詳細解析</li>
+                                <li>完成後可查看圓環分數與詳細統計</li>
+                                <li>答題後可回顧檢視所有題目與答案</li>
+                            </ul>
+                            <button class="btn btn--primary btn--lg" id="start-quiz">開始測驗</button>
+                        </div>
+                    </div>
+                    <div class="quiz-question hidden" id="quiz-question">
+                        <div class="quiz-header">
+                            <div class="question-number">題目 <span id="current-question">1</span> / <span id="total-questions">50</span></div>
+                            <div class="quiz-timer">
+                                <span id="quiz-time">00:00</span>
+                            </div>
+                        </div>
+                        <div class="question-content">
+                            <h3 id="question-text"></h3>
+                            <div class="answer-options" id="answer-options"></div>
+                            <div class="question-feedback hidden" id="question-feedback">
+                                <div class="feedback-result"></div>
+                                <div class="feedback-explanation"></div>
+                            </div>
+                        </div>
+                        <div class="quiz-actions">
+                            <button class="btn btn--outline" id="prev-question">上一題</button>
+                            <button class="btn btn--primary" id="next-question">下一題</button>
+                        </div>
+                    </div>
+                    <div class="quiz-result hidden" id="quiz-result">
+                        <div class="result-summary">
+                            <h3>🎉 測驗完成！</h3>
+                            <div class="score-display">
+                                <div class="score-circle">
+                                    <span id="final-score">0</span>%
+                                </div>
+                            </div>
+                            <div class="result-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">答對題數</span>
+                                    <span class="stat-value" id="correct-answers">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">答錯題數</span>
+                                    <span class="stat-value" id="incorrect-answers">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">用時</span>
+                                    <span class="stat-value" id="total-time">00:00</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">正確率</span>
+                                    <span class="stat-value" id="accuracy-rate">0%</span>
+                                </div>
+                            </div>
+                            <div class="result-actions">
+                                <button class="btn btn--outline" id="review-answers">檢視答案</button>
+                                <button class="btn btn--primary" id="retake-quiz">重新測驗</button>
+                            </div>
+                        </div>
+                        <div class="answer-review hidden" id="answer-review">
+                            <h3>答案回顧</h3>
+                            <div class="review-list" id="review-list"></div>
+                            <button class="btn btn--outline" id="back-to-result">返回結果</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
