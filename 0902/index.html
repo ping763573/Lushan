@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>林美卿老師 - 生命教育經絡學</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 導航欄 -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1>林美卿老師 生命教育經絡學</h1>
+            </div>
+            <div class="nav-menu">
+                <button class="nav-link active" data-section="home">首頁</button>
+                <button class="nav-link" data-section="concepts">核心概念</button>
+                <button class="nav-link" data-section="acupoints">穴位指南</button>
+                <button class="nav-link" data-section="summary">摘要</button>
+                <button class="nav-link" data-section="suggestions">建議</button>
+                <button class="nav-link" data-section="conclusion">總結</button>
+                <button class="nav-link" data-section="flashcards">練習閃卡</button>
+                <button class="nav-link" data-section="quiz">測驗</button>
+            </div>
+            <div class="progress-indicator">
+                <span>學習進度: <span id="progress-percentage">0%</span></span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主要內容區域 -->
+        <main class="main-content">
+            <!-- 首頁 -->
+            <section id="home" class="section active">
+                <div class="hero-section">
+                    <div class="hero-content">
+                        <h1>林美卿老師</h1>
+                        <h2>生命教育經絡學</h2>
+                        <p class="hero-description">透過中醫經絡學智慧，建立生命底氣，掌握自我療癒的力量</p>
+                        <div class="hero-features">
+                            <div class="feature-card">
+                                <h3>🌱 生命底氣</h3>
+                                <p>建立內在能量穩定器</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>✋ 穴位按摩</h3>
+                                <p>實用的自我調理技巧</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>🎯 互動學習</h3>
+                                <p>閃卡與測驗系統</p>
+                            </div>
+                        </div>
+                        <div class="video-links">
+                            <h3>課程影片參考</h3>
+                            <div class="video-list">
+                                <a href="https://youtu.be/_mC5UT-_5cU" target="_blank" class="video-link">
+                                    📹 114.2開學第一週精彩分享
+                                </a>
+                                <a href="https://youtu.be/JBTJJ4t_x_4" target="_blank" class="video-link">
+                                    📹 腰背問題委中求
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 核心概念 -->
+            <section id="concepts" class="section">
+                <div class="section-header">
+                    <h2>核心概念</h2>
+                    <p>深入了解生命教育經絡學的基礎理論</p>
+                </div>
+                <div class="concepts-grid">
+                    <div class="concept-card">
+                        <h3>生命底氣</h3>
+                        <p>內在能量狀態的總和，面對未知與壓力的穩定器</p>
+                        <div class="concept-details">
+                            <h4>重點特徵：</h4>
+                            <ul>
+                                <li>決定面對挑戰時是從容還是驚慌失措</li>
+                                <li>影響一個人的抗壓能力與恢復力</li>
+                                <li>可以透過學習與實踐來提升</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="concept-card">
+                        <h3>潛意識資料庫</h3>
+                        <p>生命早期接收的能量訊息影響一生反應模式</p>
+                        <div class="concept-details">
+                            <h4>建立時機：</h4>
+                            <ul>
+                                <li>三個月內最重要</li>
+                                <li>十二歲前都有機會建立</li>
+                                <li>透過正面能量輸入影響性格發展</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="concept-card">
+                        <h3>自我療癒三法</h3>
+                        <p>靜心、自我肯定、療癒觸摸的整合應用</p>
+                        <div class="concept-details">
+                            <h4>實踐方法：</h4>
+                            <ul>
+                                <li>靜心：透過冥想與專注調節內在</li>
+                                <li>自我肯定：建立正面的內在對話</li>
+                                <li>療癒觸摸：結合穴位按摩與能量傳遞</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 穴位指南 -->
+            <section id="acupoints" class="section">
+                <div class="section-header">
+                    <h2>重要穴位指南</h2>
+                    <p>掌握日常保健與急救的關鍵穴位</p>
+                </div>
+                <div class="acupoints-grid">
+                    <div class="acupoint-card">
+                        <h3>合谷穴</h3>
+                        <div class="acupoint-motto">「面口合谷收」</div>
+                        <div class="acupoint-info">
+                            <p><strong>位置：</strong>手虎口處</p>
+                            <p><strong>功能：</strong>面口問題調理</p>
+                            <p><strong>手法：</strong>扣進去按壓，帶旋轉揉動</p>
+                            <div class="caution">⚠️ 孕婦未滿38週禁用</div>
+                        </div>
+                    </div>
+                    <div class="acupoint-card">
+                        <h3>足三里</h3>
+                        <div class="acupoint-motto">「肚腹三里留」</div>
+                        <div class="acupoint-info">
+                            <p><strong>位置：</strong>小腿外側</p>
+                            <p><strong>功能：</strong>消化系統調理</p>
+                            <p><strong>手法：</strong>飯前敲打100下</p>
+                            <div class="benefit">✨ 促進生長、養生、養老</div>
+                        </div>
+                    </div>
+                    <div class="acupoint-card">
+                        <h3>委中穴</h3>
+                        <div class="acupoint-motto">「腰背委中求」</div>
+                        <div class="acupoint-info">
+                            <p><strong>位置：</strong>膝蓋後方正中</p>
+                            <p><strong>功能：</strong>腰背問題調理</p>
+                            <p><strong>手法：</strong>拍打刺激</p>
+                            <div class="benefit">✨ 整條背部筋膜放鬆</div>
+                        </div>
+                    </div>
+                    <div class="acupoint-card">
+                        <h3>陽陵泉</h3>
+                        <div class="acupoint-motto">「筋會陽陵泉」</div>
+                        <div class="acupoint-info">
+                            <p><strong>位置：</strong>小腿外側，足三里附近</p>
+                            <p><strong>功能：</strong>筋絡問題調理</p>
+                            <p><strong>手法：</strong>與足三里一同拍打</p>
+                            <div class="benefit">✨ 全身筋骨柔軟</div>
+                        </div>
+                    </div>
+                    <div class="acupoint-card emergency">
+                        <h3>廉泉穴</h3>
+                        <div class="acupoint-motto">「急救廉泉穴」</div>
+                        <div class="acupoint-info">
+                            <p><strong>位置：</strong>喉結上方凹陷處</p>
+                            <p><strong>功能：</strong>緊急自救</p>
+                            <p><strong>手法：</strong>抓捏30下</p>
+                            <div class="emergency-note">🚨 暈車、噁心、不適時使用</div>
+                        </div>
+                    </div>
+                    <div class="acupoint-card special">
+                        <h3>陽池+至陰組合</h3>
+                        <div class="acupoint-motto">「胎位轉正術」</div>
+                        <div class="acupoint-info">
+                            <p><strong>位置：</strong>手腕、腳趾</p>
+                            <p><strong>功能：</strong>胎位轉正</p>
+                            <p><strong>時機：</strong>孕期31週胎位不正時</p>
+                            <div class="special-note">💫 按壓組合應用</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 摘要 -->
+            <section id="summary" class="section">
+                <div class="section-header">
+                    <h2>學習摘要</h2>
+                    <p>重點內容精華整理</p>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-card">
+                        <h3>🌟 核心理念</h3>
+                        <ul>
+                            <li>生命底氣是面對挑戰的內在穩定器</li>
+                            <li>早期經驗影響終身的反應模式</li>
+                            <li>身心靈整合是健康的根本</li>
+                        </ul>
+                    </div>
+                    <div class="summary-card">
+                        <h3>🎯 實用穴位</h3>
+                        <ul>
+                            <li>合谷穴：頭面部問題的萬用穴</li>
+                            <li>足三里：消化系統的養生大穴</li>
+                            <li>委中穴：腰背問題的救急穴</li>
+                            <li>廉泉穴：緊急狀況的自救穴</li>
+                        </ul>
+                    </div>
+                    <div class="summary-card">
+                        <h3>🔧 應用技巧</h3>
+                        <ul>
+                            <li>按壓手法要深入準確</li>
+                            <li>配合呼吸調節更有效</li>
+                            <li>持續練習才能熟練運用</li>
+                            <li>孕期使用需特別注意禁忌</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 建議 -->
+            <section id="suggestions" class="section">
+                <div class="section-header">
+                    <h2>實用建議</h2>
+                    <p>日常生活中的健康指導</p>
+                </div>
+                <div class="suggestions-content">
+                    <div class="suggestion-category">
+                        <h3>📅 日常保健建議</h3>
+                        <div class="suggestion-list">
+                            <div class="suggestion-item">
+                                <h4>晨起養生</h4>
+                                <p>起床後先按摩足三里100下，啟動一天的消化能量</p>
+                            </div>
+                            <div class="suggestion-item">
+                                <h4>工作間歇</h4>
+                                <p>長時間工作後拍打委中穴，緩解腰背緊張</p>
+                            </div>
+                            <div class="suggestion-item">
+                                <h4>睡前放鬆</h4>
+                                <p>溫和按摩合谷穴，幫助面部肌肉放鬆入睡</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="suggestion-category">
+                        <h3>🚨 應急處理建議</h3>
+                        <div class="suggestion-list">
+                            <div class="suggestion-item">
+                                <h4>暈車不適</h4>
+                                <p>立即抓捏廉泉穴30下，快速緩解噁心感</p>
+                            </div>
+                            <div class="suggestion-item">
+                                <h4>頭痛困擾</h4>
+                                <p>深按合谷穴配合太陽穴按摩，紓解頭部壓力</p>
+                            </div>
+                            <div class="suggestion-item">
+                                <h4>腰痛急救</h4>
+                                <p>拍打委中穴同時配合腰部輕微扭動</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="suggestion-category">
+                        <h3>🤰 孕產期特別建議</h3>
+                        <div class="suggestion-list">
+                            <div class="suggestion-item">
+                                <h4>孕期保健</h4>
+                                <p>避免合谷穴，可溫和按摩足三里促進消化</p>
+                            </div>
+                            <div class="suggestion-item">
+                                <h4>胎位調整</h4>
+                                <p>31週後胎位不正，可嘗試陽池至陰組合穴</p>
+                            </div>
+                            <div class="suggestion-item">
+                                <h4>產後恢復</h4>
+                                <p>避免過度勞累，注意防風保暖</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 總結 -->
+            <section id="conclusion" class="section">
+                <div class="section-header">
+                    <h2>學習總結</h2>
+                    <p>完整的學習回顧與未來方向</p>
+                </div>
+                <div class="conclusion-content">
+                    <div class="conclusion-section">
+                        <h3>🎓 學習成果</h3>
+                        <p>通過本課程的學習，您已經掌握了：</p>
+                        <ul>
+                            <li>生命底氣的重要性及其培養方法</li>
+                            <li>六大重要穴位的位置、功能與按摩技巧</li>
+                            <li>日常保健與緊急自救的實用技能</li>
+                            <li>孕產期的特殊照護知識</li>
+                            <li>身心靈整合的健康理念</li>
+                        </ul>
+                    </div>
+                    <div class="conclusion-section">
+                        <h3>🔄 持續實踐</h3>
+                        <p>學習經絡學是一個持續的過程，建議您：</p>
+                        <ul>
+                            <li>每日實踐基本穴位按摩</li>
+                            <li>在生活中運用所學的急救技巧</li>
+                            <li>觀察身體的反應與變化</li>
+                            <li>與家人朋友分享健康知識</li>
+                            <li>持續深入學習中醫智慧</li>
+                        </ul>
+                    </div>
+                    <div class="conclusion-section">
+                        <h3>🌟 未來方向</h3>
+                        <p>建議進一步學習：</p>
+                        <ul>
+                            <li>更多經絡穴位的深入研究</li>
+                            <li>中醫食療與生活調養</li>
+                            <li>太極、氣功等身心修煉方法</li>
+                            <li>季節養生的智慧應用</li>
+                            <li>家庭健康管理系統</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 練習閃卡 -->
+            <section id="flashcards" class="section">
+                <div class="section-header">
+                    <h2>練習閃卡</h2>
+                    <p>透過互動式閃卡加深記憶</p>
+                </div>
+                <div class="flashcard-controls">
+                    <div class="flashcard-stats">
+                        <span>進度: <span id="flashcard-progress">0/0</span></span>
+                        <span>正確率: <span id="flashcard-accuracy">0%</span></span>
+                    </div>
+                    <div class="flashcard-actions">
+                        <button class="btn btn--secondary" id="shuffle-flashcards">隨機排序</button>
+                        <button class="btn btn--outline" id="reset-flashcards">重新開始</button>
+                    </div>
+                </div>
+                <div class="flashcard-container" id="flashcard-container">
+                    <div class="flashcard" id="flashcard">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <div class="card-number"></div>
+                                <div class="card-question"></div>
+                                <div class="flip-hint">點擊翻轉查看答案</div>
+                            </div>
+                            <div class="flashcard-back">
+                                <div class="card-number"></div>
+                                <div class="card-answer"></div>
+                                <div class="card-actions">
+                                    <button class="btn btn--outline btn--sm" id="mark-incorrect">❌ 不熟悉</button>
+                                    <button class="btn btn--primary btn--sm" id="mark-correct">✅ 已掌握</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flashcard-navigation">
+                    <button class="btn btn--outline" id="prev-flashcard">上一題</button>
+                    <button class="btn btn--outline" id="next-flashcard">下一題</button>
+                </div>
+            </section>
+
+            <!-- 測驗 -->
+            <section id="quiz" class="section">
+                <div class="section-header">
+                    <h2>綜合測驗</h2>
+                    <p>檢驗您的學習成果</p>
+                </div>
+                <div class="quiz-container" id="quiz-container">
+                    <div class="quiz-start" id="quiz-start">
+                        <div class="quiz-info">
+                            <h3>🎯 測驗說明</h3>
+                            <ul>
+                                <li>共10道題目，涵蓋所有學習內容</li>
+                                <li>包含選擇題、是非題等多種題型</li>
+                                <li>選擇答案後立即顯示正確與否</li>
+                                <li>每題都有詳細的答案解析</li>
+                                <li>完成後可查看整體表現分析</li>
+                            </ul>
+                            <button class="btn btn--primary btn--lg" id="start-quiz">開始測驗</button>
+                        </div>
+                    </div>
+                    <div class="quiz-question hidden" id="quiz-question">
+                        <div class="quiz-header">
+                            <div class="question-number">題目 <span id="current-question">1</span> / <span id="total-questions">10</span></div>
+                            <div class="quiz-timer">
+                                <span id="quiz-time">00:00</span>
+                            </div>
+                        </div>
+                        <div class="question-content">
+                            <h3 id="question-text"></h3>
+                            <div class="answer-options" id="answer-options"></div>
+                            
+                            <!-- 即時反饋區域 -->
+                            <div class="quiz-feedback hidden" id="quiz-feedback">
+                                <div class="feedback-result" id="feedback-result">
+                                    <div class="result-icon" id="result-icon">✓</div>
+                                    <div class="result-text" id="result-text">答對了！</div>
+                                </div>
+                                <div class="correct-answer" id="correct-answer">
+                                    <strong>正確答案：</strong><span id="correct-answer-text"></span>
+                                </div>
+                                <div class="answer-explanation" id="answer-explanation">
+                                    <strong>說明：</strong><span id="explanation-text"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="quiz-actions">
+                            <button class="btn btn--outline" id="prev-question">上一題</button>
+                            <button class="btn btn--primary" id="next-question">下一題</button>
+                        </div>
+                    </div>
+                    <div class="quiz-result hidden" id="quiz-result">
+                        <div class="result-summary">
+                            <h3>🎉 測驗完成！</h3>
+                            <div class="score-display">
+                                <div class="score-circle">
+                                    <span id="final-score">0</span>%
+                                </div>
+                            </div>
+                            <div class="result-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">答對題數</span>
+                                    <span class="stat-value" id="correct-answers">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">答錯題數</span>
+                                    <span class="stat-value" id="incorrect-answers">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">用時</span>
+                                    <span class="stat-value" id="total-time">00:00</span>
+                                </div>
+                            </div>
+                            <div class="result-actions">
+                                <button class="btn btn--outline" id="review-answers">檢視答案</button>
+                                <button class="btn btn--primary" id="retake-quiz">重新測驗</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 搜索功能 -->
+        <div class="search-overlay hidden" id="search-overlay">
+            <div class="search-container">
+                <div class="search-header">
+                    <input type="text" class="search-input" id="search-input" placeholder="搜尋穴位、概念或內容...">
+                    <button class="search-close" id="search-close">✕</button>
+                </div>
+                <div class="search-results" id="search-results"></div>
+            </div>
+        </div>
+
+        <!-- 浮動操作按鈕 -->
+        <div class="floating-actions">
+            <button class="fab" id="search-fab" title="搜尋">🔍</button>
+            <button class="fab" id="bookmark-fab" title="收藏">⭐</button>
+            <button class="fab" id="progress-fab" title="進度">📊</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
