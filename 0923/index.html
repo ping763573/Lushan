@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>經絡養生學習平台 - 林美卿老師教學</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation Header -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <h1 class="nav-title">🌿 經絡養生學習平台</h1>
+                <ul class="nav-menu">
+                    <li><button class="nav-btn active" data-page="home">首頁</button></li>
+                    <li><button class="nav-btn" data-page="theory">理論知識</button></li>
+                    <li><button class="nav-btn" data-page="practice">實踐技巧</button></li>
+                    <li><button class="nav-btn" data-page="flashcards">學習閃卡</button></li>
+                    <li><button class="nav-btn" data-page="quiz">測驗題</button></li>
+                    <li><button class="nav-btn" data-page="summary">摘要總結</button></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Home Page -->
+            <section id="page-home" class="page-content active">
+                <div class="container">
+                    <div class="hero-section">
+                        <h1>探索經絡養生的奧秘</h1>
+                        <p class="hero-subtitle">跟隨林美卿老師深入了解膀胱經、溫泉療法與陽光養生的實踐智慧</p>
+                    </div>
+
+                    <div class="videos-grid">
+                        <div class="video-card" data-url="https://youtu.be/mPIC3vEZgH4">
+                            <div class="video-icon">🫀</div>
+                            <h3>膀胱經與感覺系統的奧秘</h3>
+                            <p>探索膀胱經如何隱藏著感覺系統的現象，了解人體最大排毒通道的運作機制</p>
+                            <div class="video-duration">41分11秒</div>
+                            <button class="btn btn--primary">觀看影片</button>
+                        </div>
+
+                        <div class="video-card" data-url="https://youtu.be/ePXGtMa9h0Y">
+                            <div class="video-icon">♨️</div>
+                            <h3>泡溫泉流汗的養生學問</h3>
+                            <p>深入了解泡溫泉的正確方法與流汗背後的健康原理</p>
+                            <div class="video-duration">22分10秒</div>
+                            <button class="btn btn--primary">觀看影片</button>
+                        </div>
+
+                        <div class="video-card" data-url="https://youtu.be/7LhN914VjzY">
+                            <div class="video-icon">☀️</div>
+                            <h3>陽光與膽固醇的密切關係</h3>
+                            <p>揭示陽光、陽氣與膽固醇的驚人連結，學習如何透過曬太陽補充人體陽氣與合成維生素D</p>
+                            <div class="video-duration">實用指南</div>
+                            <button class="btn btn--primary">觀看影片</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Theory Page -->
+            <section id="page-theory" class="page-content">
+                <div class="container">
+                    <h1>理論基礎</h1>
+                    
+                    <div class="theory-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));">
+                        <div class="theory-card">
+                            <h2>🫀 膀胱經與自律神經</h2>
+                            <div class="theory-content">
+                                <h3>定義</h3>
+                                <p>足太陽膀胱經是人體陽氣的總管，不僅是排毒和抵禦外邪的通道，更透過背俞穴直接調節我們的自律神經系統，是身心平衡的樞紐。</p>
+                                <h3>特色與功能</h3>
+                                <ul>
+                                    <li><strong>位置：</strong>從眼內角沿頭、背、腿後側至足小趾。</li>
+                                    <li><strong>功能：</strong>主管排毒、抵禦風寒、調節臟腑。</li>
+                                    <li><strong>當令時間：</strong>申時（下午15-17點）。</li>
+                                    <li><strong>關鍵：</strong>與脊椎兩側的自律神經幹緊密相連。</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="theory-card">
+                            <h2>♨️ 溫泉與出汗的科學</h2>
+                            <div class="theory-content">
+                                <h3>定義</h3>
+                                <p>利用溫泉的物理與化學效應，溫和促進循環的自然療法。其養生核心在於「微微出汗」，避免因「大汗淋漓」而耗氣傷津。</p>
+                                <h3>療效機制</h3>
+                                <ul>
+                                    <li><strong>四大效應：</strong>熱效應、化學效應、機械效應、心理效應。</li>
+                                    <li><strong>出汗類型：</strong>泡湯屬於「被動式出汗」，由外熱引起，若過度易單純消耗能量。</li>
+                                    <li><strong>理想狀態：</strong>溫和排汗，促進代謝而不傷身。</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="theory-card">
+                            <h2>☀️ 陽光、陽氣與膽固醇</h2>
+                            <div class="theory-content">
+                                <h3>定義</h3>
+                                <p>陽光是自然界陽氣的最大來源，能將人體皮膚下的膽固醇轉化為維生素D。膽固醇是身體必需的原料，而非純粹的壞物質。</p>
+                                <h3>轉化機制</h3>
+                                <ul>
+                                    <li><strong>關鍵光線：</strong>陽光中的UVB是啟動轉化的鑰匙。</li>
+                                    <li><strong>重要原料：</strong>膽固醇是合成荷爾蒙及維生素D的基礎。</li>
+                                    <li><strong>中醫觀點：</strong>曬太陽，尤其是曬後背（督脈、膀胱經），是為身體補充陽氣最直接、最天然的方式。</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Practice Page -->
+            <section id="page-practice" class="page-content">
+                <div class="container">
+                    <h1>實踐技巧</h1>
+                    
+                    <div class="practice-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));">
+                        <div class="practice-card">
+                            <h2>🫀 膀胱經日常保養</h2>
+                            <div class="practice-content">
+                                <h3>日常保健方法</h3>
+                                <ul>
+                                    <li><strong>保暖：</strong>保持後頸與背部溫暖，避免風寒入侵。</li>
+                                    <li><strong>伸展：</strong>常做身體前彎動作，拉伸整個身體後側鏈。</li>
+                                    <li><strong>按摩：</strong>按摩或溫敷背俞穴，調節臟腑與自律神經。</li>
+                                    <li><strong>通暢：</strong>避免憋尿，申時多喝溫水，促進排毒。</li>
+                                </ul>
+                                <div class="practice-tip">
+                                    <strong>舒壓關鍵：</strong>壓力大或失眠時，按摩背部膀胱經，有助於身心從緊繃切換到放鬆模式。
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="practice-card">
+                            <h2>♨️ 正確泡湯養生法</h2>
+                            <div class="practice-content">
+                                <h3>泡湯安全步驟</h3>
+                                <div class="step-list">
+                                    <div class="step"><div class="step-number">1</div><div class="step-content"><h4>準備階段</h4><p>從四肢末梢開始沖洗，讓身體適應溫度，緩慢入池。</p></div></div>
+                                    <div class="step"><div class="step-number">2</div><div class="step-content"><h4>泡湯過程</h4><p>38-42度，每次5-10分鐘即起身，總時間不超過30分鐘，微汗即可。</p></div></div>
+                                    <div class="step"><div class="step-number">3</div><div class="step-content"><h4>泡湯後</h4><p>靜坐休息，大量補充溫開水，不急於用清水沖澡。</p></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="practice-card">
+                            <h2>☀️ 智慧曬太陽法 (日光浴)</h2>
+                            <div class="practice-content">
+                                <h3>補充陽氣步驟</h3>
+                                <div class="step-list">
+                                    <div class="step"><div class="step-number">1</div><div class="step-content"><h4>選擇時間</h4><p>上午9-10點或下午3-4點，此時陽光溫和且富含UVB。</p></div></div>
+                                    <div class="step"><div class="step-number">2</div><div class="step-content"><h4>暴露部位</h4><p>主要曬後背，讓陽光直射督脈與膀胱經，效率最高。</p></div></div>
+                                    <div class="step"><div class="step-number">3</div><div class="step-content"><h4>掌握時長</h4><p>從15-20分鐘開始，皮膚微溫即可，切勿曬傷。</p></div></div>
+                                    <div class="step"><div class="step-number">4</div><div class="step-content"><h4>曬後調理</h4><p>到陰涼處自然散熱，補充溫開水或淡鹽水。</p></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Flashcards Page -->
+            <section id="page-flashcards" class="page-content">
+                <div class="container">
+                    <h1>學習閃卡</h1>
+                    <div class="flashcard-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalCards">40</span>
+                            <span class="stat-label">總卡片數</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="studiedCards">0</span>
+                            <span class="stat-label">已學習</span>
+                        </div>
+                    </div>
+
+                    <div class="flashcard-viewer">
+                        <div class="flashcard-display-container">
+                            <div class="flashcard" id="flashcardDisplayCard">
+                                <div class="flashcard-front">
+                                    <div id="flashcardCategory" class="flashcard-category"></div>
+                                    <p id="flashcardQuestion"></p>
+                                </div>
+                                <div class="flashcard-back">
+                                    <div class="answer-section">
+                                        <h4>答案</h4>
+                                        <p id="flashcardAnswer"></p>
+                                    </div>
+                                    <div class="explanation-section">
+                                        <h4>詳細解說</h4>
+                                        <p id="flashcardExplanation"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <div class="flashcard-controls">
+                            <button id="flashcardPrevBtn" class="btn btn--secondary">上一張</button>
+                            <div class="flashcard-counter">
+                                <span id="currentCard">1</span> / <span id="totalFlashcards">40</span>
+                            </div>
+                            <button id="flashcardNextBtn" class="btn btn--primary">下一張</button>
+                        </div>
+                        <div class="flashcard-instruction">點擊卡片即可翻面</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Page -->
+            <section id="page-quiz" class="page-content">
+                <div class="container">
+                    <h1>測驗題</h1>
+                    <div class="quiz-container" id="quizContainer">
+                        <div class="quiz-progress">
+                            <span id="currentQuestion">1</span> / <span id="totalQuestions">10</span>
+                        </div>
+                        <div class="quiz-question" id="quizQuestion">
+                            <!-- Quiz content will be generated by JavaScript -->
+                        </div>
+                        <div class="quiz-options" id="quizOptions">
+                            <!-- Options will be generated by JavaScript -->
+                        </div>
+                        <div class="quiz-explanation hidden" id="quizExplanation">
+                            <!-- Explanation will be shown after answer -->
+                        </div>
+                        <div class="quiz-controls">
+                            <button class="btn btn--secondary" id="prevBtn" disabled>上一題</button>
+                            <button class="btn" id="restartQuizBtn">重新測驗</button>
+                            <button class="btn btn--primary" id="nextBtn">下一題</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Summary Page -->
+            <section id="page-summary" class="page-content">
+                <div class="container">
+                    <h1>摘要總結</h1>
+                    
+                    <div class="summary-stats">
+                        <div class="summary-card">
+                            <h3>學習進度</h3>
+                            <div class="progress-circle">
+                                <span class="progress-text" id="overallProgress">0%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-card">
+                            <h3>測驗成績</h3>
+                            <div class="score-display">
+                                <span class="score-text" id="quizScore">未開始</span>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-card">
+                            <h3>閃卡學習</h3>
+                            <div class="flashcard-progress">
+                                <span class="flashcard-text" id="flashcardProgress">0/40</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="key-points">
+                        <h2>重點摘要</h2>
+                        <div class="points-grid">
+                            <div class="point-card">
+                                <h3>🫀 膀胱經要點</h3>
+                                <ul>
+                                    <li><strong>身心平衡樞紐：</strong>沿脊椎分布，透過背俞穴直接調節自律神經，是舒緩壓力的關鍵。</li>
+                                    <li><strong>人體第一道防線：</strong>主一身之表，抵禦風寒外邪，務必注意後頸及背部保暖。</li>
+                                    <li><strong>最大排毒通道：</strong>申時（15-17點）多喝溫水，有助於水液代謝，排出廢物。</li>
+                                    <li><strong>從頭到腳的影響：</strong>後頸僵硬、腰痠、腿後緊繃皆為其警訊。</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="point-card">
+                                <h3>♨️ 溫泉養生要點</h3>
+                                <ul>
+                                    <li><strong>核心在「微汗」：</strong>目標是微微出汗，而非大汗淋漓。過汗反會耗氣傷津。</li>
+                                    <li><strong>安全三部曲：</strong>漸進式入浴、分段式浸泡、泡後靜養。</li>
+                                    <li><strong>被動出汗：</strong>泡湯流汗屬被動式，易耗氣，需量力而為，時間不宜過長。</li>
+                                    <li><strong>禁忌要牢記：</strong>心血管病、發燒、飯後酒後、孕婦等情況需避免。</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="point-card">
+                                <h3>☀️ 陽光養生要點</h3>
+                                <ul>
+                                    <li><strong>膽固醇是寶：</strong>它是陽光轉化為維生素D的珍貴原料，更是荷爾蒙的基礎。</li>
+                                    <li><strong>曬太陽曬後背：</strong>後背是督脈與膀胱經所在，是補充陽氣最高效的部位。</li>
+                                    <li><strong>智慧選時段：</strong>上午9-10點或下午3-4點，溫和不傷膚。</li>
+                                    <li><strong>天然抗憂鬱：</strong>陽光促進血清素分泌，能有效提振心情，改善睡眠。</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
