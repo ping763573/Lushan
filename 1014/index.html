@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>過敏與中焦調理知識互動指南</title>
+    <style>
+        :root {
+            /* Primitive Color Tokens */
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-teal-800: rgba(41, 150, 161, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+            
+            /* RGB versions for opacity control */
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-slate-500-rgb: 98, 108, 113;
+            --color-red-500-rgb: 192, 21, 47;
+            --color-red-400-rgb: 255, 84, 89;
+            --color-orange-500-rgb: 168, 75, 47;
+            --color-orange-400-rgb: 230, 129, 97;
+            
+            /* Background color tokens (Light Mode) */
+            --color-bg-1: rgba(59, 130, 246, 0.08);
+            --color-bg-2: rgba(245, 158, 11, 0.08);
+            --color-bg-3: rgba(34, 197, 94, 0.08);
+            --color-bg-4: rgba(239, 68, 68, 0.08);
+            --color-bg-5: rgba(147, 51, 234, 0.08);
+            --color-bg-6: rgba(249, 115, 22, 0.08);
+            --color-bg-7: rgba(236, 72, 153, 0.08);
+            --color-bg-8: rgba(6, 182, 212, 0.08);
+            
+            /* Semantic Color Tokens (Light Mode) */
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-btn-primary-text: var(--color-cream-50);
+            --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-error: var(--color-red-500);
+            --color-success: var(--color-teal-500);
+            --color-warning: var(--color-orange-500);
+            --color-info: var(--color-slate-500);
+            --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+            --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
+            
+            /* Common style patterns */
+            --focus-ring: 0 0 0 3px var(--color-focus-ring);
+            --focus-outline: 2px solid var(--color-primary);
+            --status-bg-opacity: 0.15;
+            --status-border-opacity: 0.25;
+            
+            /* RGB versions for opacity control */
+            --color-success-rgb: 33, 128, 141;
+            --color-error-rgb: 192, 21, 47;
+            --color-warning-rgb: 168, 75, 47;
+            --color-info-rgb: 98, 108, 113;
+            
+            /* Typography */
+            --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            --font-size-xs: 11px;
+            --font-size-sm: 12px;
+            --font-size-base: 14px;
+            --font-size-md: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-size-4xl: 30px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 550;
+            --font-weight-bold: 600;
+            --line-height-tight: 1.2;
+            --line-height-normal: 1.5;
+            --letter-spacing-tight: -0.01em;
+            
+            /* Spacing */
+            --space-0: 0;
+            --space-1: 1px;
+            --space-2: 2px;
+            --space-4: 4px;
+            --space-6: 6px;
+            --space-8: 8px;
+            --space-10: 10px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+            
+            /* Border Radius */
+            --radius-sm: 6px;
+            --radius-base: 8px;
+            --radius-md: 10px;
+            --radius-lg: 12px;
+            --radius-full: 9999px;
+            
+            /* Shadows */
+            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+            
+            /* Animation */
+            --duration-fast: 150ms;
+            --duration-normal: 250ms;
+            --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+            
+            /* Layout */
+            --container-sm: 640px;
+            --container-md: 768px;
+            --container-lg: 1024px;
+            --container-xl: 1280px;
+            
+            /* Custom TCM colors */
+            --tcm-green: #6B8E23;
+            --tcm-earth: #8B7355;
+            --tcm-blue: #4682B4;
+        }
+        
+        /* Dark mode colors */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-gray-400-rgb: 119, 124, 124;
+                --color-teal-300-rgb: 50, 184, 198;
+                --color-gray-300-rgb: 167, 169, 169;
+                --color-gray-200-rgb: 245, 245, 245;
+                
+                --color-bg-1: rgba(29, 78, 216, 0.15);
+                --color-bg-2: rgba(180, 83, 9, 0.15);
+                --color-bg-3: rgba(21, 128, 61, 0.15);
+                --color-bg-4: rgba(185, 28, 28, 0.15);
+                --color-bg-5: rgba(107, 33, 168, 0.15);
+                --color-bg-6: rgba(194, 65, 12, 0.15);
+                --color-bg-7: rgba(190, 24, 93, 0.15);
+                --color-bg-8: rgba(8, 145, 178, 0.15);
+                
+                --color-background: var(--color-charcoal-700);
+                --color-surface: var(--color-charcoal-800);
+                --color-text: var(--color-gray-200);
+                --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+                --color-primary: var(--color-teal-300);
+                --color-primary-hover: var(--color-teal-400);
+                --color-primary-active: var(--color-teal-800);
+                --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+                --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+                --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+                --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+                --color-error: var(--color-red-400);
+                --color-success: var(--color-teal-300);
+                --color-warning: var(--color-orange-400);
+                --color-info: var(--color-gray-300);
+                --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+                --color-btn-primary-text: var(--color-slate-900);
+                --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+                --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+                --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+                --color-select-caret: rgba(var(--color-gray-200-rgb), 0.8);
+                
+                --color-success-rgb: var(--color-teal-300-rgb);
+                --color-error-rgb: var(--color-red-400-rgb);
+                --color-warning-rgb: var(--color-orange-400-rgb);
+                --color-info-rgb: var(--color-gray-300-rgb);
+            }
+        }
+        
+        /* Base styles */
+        html {
+            font-size: var(--font-size-base);
+            font-family: var(--font-family-base);
+            line-height: var(--line-height-normal);
+            color: var(--color-text);
+            background-color: var(--color-background);
+            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            font-weight: var(--font-weight-semibold);
+            line-height: var(--line-height-tight);
+            color: var(--color-text);
+            letter-spacing: var(--letter-spacing-tight);
+        }
+        
+        h1 { font-size: var(--font-size-4xl); }
+        h2 { font-size: var(--font-size-3xl); }
+        h3 { font-size: var(--font-size-2xl); }
+        h4 { font-size: var(--font-size-xl); }
+        h5 { font-size: var(--font-size-lg); }
+        h6 { font-size: var(--font-size-md); }
+        
+        p {
+            margin: 0 0 var(--space-16) 0;
+            line-height: 1.6;
+        }
+        
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(var(--color-teal-500-rgb), 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: var(--space-12) 0;
+            border-bottom: 1px solid rgba(var(--color-brown-600-rgb), 0.2);
+        }
+        
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: var(--container-xl);
+            margin: 0 auto;
+            padding: 0 var(--space-16);
+        }
+        
+        .navbar .logo {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-white);
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: var(--space-24);
+        }
+        
+        .nav-menu a {
+            color: var(--color-white);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            padding: var(--space-8) var(--space-12);
+            border-radius: var(--radius-base);
+            transition: background-color var(--duration-fast) var(--ease-standard);
+        }
+        
+        .nav-menu a:hover, .nav-menu a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Mobile menu toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--color-white);
+            font-size: var(--font-size-xl);
+            cursor: pointer;
+        }
+        
+        /* Fullscreen toggle button */
+        .fullscreen-toggle {
+            position: fixed;
+            top: var(--space-16);
+            right: var(--space-16);
+            background: rgba(var(--color-teal-500-rgb), 0.9);
+            border: none;
+            border-radius: var(--radius-base);
+            padding: var(--space-8);
+            color: var(--color-white);
+            cursor: pointer;
+            z-index: 1001;
+            font-size: var(--font-size-lg);
+            transition: all var(--duration-fast) var(--ease-standard);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .fullscreen-toggle:hover {
+            background: rgba(var(--color-teal-600-rgb), 0.9);
+            transform: scale(1.05);
+        }
+        
+        /* Main content */
+        .main-content {
+            margin-top: 70px;
+        }
+        
+        .section {
+            padding: var(--space-32) 0;
+            min-height: 50vh;
+        }
+        
+        .container {
+            max-width: var(--container-xl);
+            margin: 0 auto;
+            padding: 0 var(--space-16);
+        }
+        
+        /* Hero section */
+        .hero {
+            background: linear-gradient(135deg, var(--color-bg-3), var(--color-bg-1));
+            text-align: center;
+            padding: var(--space-32) 0 var(--space-32);
+        }
+        
+        .hero h1 {
+            margin-bottom: var(--space-24);
+            font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl));
+        }
+        
+        .hero p {
+            font-size: var(--font-size-lg);
+            color: var(--color-text-secondary);
+            max-width: 800px;
+            margin: 0 auto var(--space-32) auto;
+        }
+        
+        .hero-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-24);
+            margin-top: var(--space-32);
+        }
+        
+        .hero-card {
+            background: var(--color-surface);
+            padding: var(--space-20);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-card-border);
+            text-align: center;
+        }
+        
+        .hero-card h3 {
+            color: var(--color-primary);
+            margin-bottom: var(--space-12);
+        }
+        
+        /* Three Jiao diagram */
+        .jiao-diagram {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-16);
+            margin: var(--space-32) 0;
+        }
+        
+        .jiao-item {
+            background: var(--color-surface);
+            padding: var(--space-20);
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--color-card-border);
+            text-align: center;
+            transition: transform var(--duration-fast) var(--ease-standard);
+        }
+        
+        .jiao-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .jiao-item.upper { border-color: var(--color-teal-500); }
+        .jiao-item.middle { border-color: var(--color-orange-500); }
+        .jiao-item.lower { border-color: var(--tcm-earth); }
+        
+        .jiao-item h3 {
+            margin-bottom: var(--space-12);
+        }
+        
+        .jiao-item.upper h3 { color: var(--color-teal-500); }
+        .jiao-item.middle h3 { color: var(--color-orange-500); }
+        .jiao-item.lower h3 { color: var(--tcm-earth); }
+        
+        /* Diagnosis section */
+        .diagnosis-tool {
+            background: var(--color-bg-2);
+            padding: var(--space-32);
+            border-radius: var(--radius-lg);
+            margin: var(--space-32) 0;
+        }
+        
+        .diagnosis-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-20);
+            margin: var(--space-24) 0;
+        }
+        
+        .step {
+            background: var(--color-surface);
+            padding: var(--space-20);
+            border-radius: var(--radius-base);
+            border-left: 4px solid var(--color-primary);
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-12);
+        }
+        
+        .diagnosis-result {
+            display: none;
+            padding: var(--space-20);
+            border-radius: var(--radius-base);
+            margin-top: var(--space-20);
+        }
+        
+        .result-clear {
+            background: rgba(var(--color-success-rgb), 0.1);
+            border: 2px solid var(--color-success);
+            color: var(--color-success);
+        }
+        
+        .result-blocked {
+            background: rgba(var(--color-warning-rgb), 0.1);
+            border: 2px solid var(--color-warning);
+            color: var(--color-warning);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-12) var(--space-24);
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+            border: none;
+            text-decoration: none;
+            margin: var(--space-8);
+        }
+        
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+        }
+        
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+        
+        .btn-secondary {
+            background: var(--color-secondary);
+            color: var(--color-text);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--color-secondary-hover);
+        }
+        
+        /* Treatment levels */
+        .treatment-levels {
+            display: grid;
+            gap: var(--space-24);
+            margin: var(--space-32) 0;
+        }
+        
+        .treatment-level {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-card-border);
+        }
+        
+        .level-header {
+            padding: var(--space-20);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color var(--duration-fast) var(--ease-standard);
+        }
+        
+        .level-header:hover {
+            background: var(--color-bg-1);
+        }
+        
+        .level-mild .level-header { background: var(--color-bg-3); }
+        .level-persistent .level-header { background: var(--color-bg-2); }
+        .level-chronic .level-header { background: var(--color-bg-4); }
+        
+        .level-content {
+            padding: 0 var(--space-20) var(--space-20);
+            display: none;
+        }
+        
+        .level-content.active {
+            display: block;
+        }
+        
+        .acupoint-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-16);
+            margin: var(--space-20) 0;
+        }
+        
+        .acupoint-card {
+            background: var(--color-bg-1);
+            padding: var(--space-16);
+            border-radius: var(--radius-base);
+            border: 1px solid var(--color-card-border);
+        }
+        
+        /* Acupoint table */
+        .acupoint-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--space-24) 0;
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .acupoint-table th,
+        .acupoint-table td {
+            padding: var(--space-12) var(--space-16);
+            text-align: left;
+            border-bottom: 1px solid var(--color-card-border);
+        }
+        
+        .acupoint-table th {
+            background: var(--color-bg-1);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text);
+        }
+        
+        .acupoint-table tr:hover {
+            background: var(--color-bg-2);
+        }
+        
+        .stage-mild { color: var(--color-success); }
+        .stage-persistent { color: var(--color-warning); }
+        .stage-chronic { color: var(--color-error); }
+        
+        /* Five Shu diagram */
+        .five-shu-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-16);
+            margin: var(--space-32) 0;
+            flex-wrap: wrap;
+        }
+        
+        .shu-point {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            padding: var(--space-12) var(--space-20);
+            border-radius: var(--radius-full);
+            font-weight: var(--font-weight-medium);
+            position: relative;
+        }
+        
+        .shu-point:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-text);
+            font-size: var(--font-size-lg);
+        }
+        
+        /* Quiz section */
+        .quiz-container {
+            background: var(--color-bg-3);
+            padding: var(--space-32);
+            border-radius: var(--radius-lg);
+            margin: var(--space-32) 0;
+        }
+        
+        .quiz-question {
+            margin-bottom: var(--space-24);
+        }
+        
+        .quiz-options {
+            display: grid;
+            gap: var(--space-12);
+        }
+        
+        .quiz-option {
+            padding: var(--space-12) var(--space-16);
+            background: var(--color-surface);
+            border: 2px solid transparent;
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-standard);
+        }
+        
+        .quiz-option:hover {
+            border-color: var(--color-primary);
+        }
+        
+        .quiz-option.selected {
+            border-color: var(--color-primary);
+            background: var(--color-bg-1);
+        }
+        
+        .quiz-option.correct {
+            background: rgba(var(--color-success-rgb), 0.2);
+            border-color: var(--color-success);
+        }
+        
+        .quiz-option.incorrect {
+            background: rgba(var(--color-error-rgb), 0.2);
+            border-color: var(--color-error);
+        }
+        
+        /* Quick reference */
+        .quick-reference {
+            background: var(--color-bg-5);
+            padding: var(--space-24);
+            border-radius: var(--radius-lg);
+            margin: var(--space-32) 0;
+        }
+        
+        .reference-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-24);
+        }
+        
+        .reference-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .reference-section li {
+            padding: var(--space-8) 0;
+            border-bottom: 1px solid var(--color-card-border);
+        }
+        
+        .reference-section li:last-child {
+            border-bottom: none;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--color-slate-900);
+            color: var(--color-gray-200);
+            padding: var(--space-32) 0;
+            text-align: center;
+        }
+        
+        .footer p {
+            margin: 0;
+            font-size: var(--font-size-sm);
+        }
+        
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: var(--space-20);
+            right: var(--space-20);
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--duration-normal) var(--ease-standard);
+            z-index: 999;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background: var(--color-primary-hover);
+            transform: scale(1.1);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(var(--color-teal-500-rgb), 0.95);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: var(--space-16);
+                gap: var(--space-8);
+            }
+            
+            .nav-menu.active {
+                display: flex;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .hero-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .diagnosis-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .acupoint-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .five-shu-flow {
+                flex-direction: column;
+            }
+            
+            .shu-point:not(:last-child)::after {
+                content: '↓';
+                right: 50%;
+                bottom: -25px;
+                top: auto;
+                transform: translateX(50%);
+            }
+            
+            .reference-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .acupoint-table {
+                font-size: var(--font-size-sm);
+            }
+            
+            .acupoint-table th,
+            .acupoint-table td {
+                padding: var(--space-8) var(--space-12);
+            }
+        }
+        
+        /* Animation utilities */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Fullscreen Toggle Button -->
+    <button class="fullscreen-toggle" id="fullscreenBtn" title="切換全螢幕">⛶</button>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">黃帝內經過敏調理指南</div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link">首頁</a></li>
+                <li><a href="#middle-jiao" class="nav-link">什麼是中焦</a></li>
+                <li><a href="#diagnosis" class="nav-link">自我檢測</a></li>
+                <li><a href="#treatment" class="nav-link">調理方法</a></li>
+                <li><a href="#acupoints" class="nav-link">穴位總覽</a></li>
+                <li><a href="#theory" class="nav-link">經絡理論</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section hero">
+            <div class="container">
+                <h1 class="fade-in">過敏與中焦調理知識互動指南</h1>
+                <p class="fade-in">了解傳統中醫經絡理論，學習自我診斷與調理過敏症狀的實用方法</p>
+                
+                <div class="hero-cards fade-in">
+                    <div class="hero-card">
+                        <h3>🫁 呼吸系統</h3>
+                        <p>改善過敏性鼻炎、鼻竇炎等上呼吸道問題</p>
+                    </div>
+                    <div class="hero-card">
+                        <h3>🔄 氣血循環</h3>
+                        <p>疏通中焦阻塞，恢復全身氣血流暢</p>
+                    </div>
+                    <div class="hero-card">
+                        <h3>🎯 精準調理</h3>
+                        <p>根據症狀程度採用分級治療策略</p>
+                    </div>
+                    <div class="hero-card">
+                        <h3>📚 理論實踐</h3>
+                        <p>結合經絡理論與實用按摩技巧</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Middle Jiao Section -->
+        <section id="middle-jiao" class="section">
+            <div class="container">
+                <h2 class="fade-in">什麼是中焦？</h2>
+                <p class="fade-in">中焦位於橫膈膜與肚臍之間，包含肝、膽、脾、胃四大器官，是連接上焦（心肺）與下焦（大小腸、腎、膀胱）的氣血樞紐。</p>
+                
+                <div class="jiao-diagram fade-in">
+                    <div class="jiao-item upper">
+                        <h3>上焦</h3>
+                        <p><strong>位置：</strong>橫膈膜以上</p>
+                        <p><strong>器官：</strong>心臟、肺部</p>
+                        <p><strong>功能：</strong>主呼吸、血液循環</p>
+                    </div>
+                    <div class="jiao-item middle">
+                        <h3>中焦</h3>
+                        <p><strong>位置：</strong>橫膈膜與肚臍之間</p>
+                        <p><strong>器官：</strong>肝、膽、脾、胃</p>
+                        <p><strong>功能：</strong>主消化、氣血運化</p>
+                    </div>
+                    <div class="jiao-item lower">
+                        <h3>下焦</h3>
+                        <p><strong>位置：</strong>肚臍到恥骨之間</p>
+                        <p><strong>器官：</strong>大小腸、腎、膀胱</p>
+                        <p><strong>功能：</strong>主排泄、生殖</p>
+                    </div>
+                </div>
+                
+                <div class="fade-in">
+                    <h3>中焦堵塞的影響</h3>
+                    <p>當脾胃運化功能失調時，水分停滯形成濕氣，向上逆流從鼻腔排出，導致長期流鼻水、過敏性鼻炎、鼻竇炎等症狀。中焦堵塞會影響全身氣血流動，引發連鎖反應。</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Diagnosis Section -->
+        <section id="diagnosis" class="section">
+            <div class="container">
+                <h2 class="fade-in">自我檢測：闌門穴診斷法</h2>
+                
+                <div class="diagnosis-tool fade-in">
+                    <h3>闌門穴位置：肚臍上方兩指處（任脈上）</h3>
+                    
+                    <div class="diagnosis-steps">
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <h4>準備</h4>
+                            <p>身體放鬆，舌頭頂住上顎</p>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <h4>吸氣</h4>
+                            <p>用鼻子緩慢深吸氣，感受氣息深入腹部</p>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <h4>按壓</h4>
+                            <p>在準備吐氣的瞬間，用指尖垂直向下按壓闌門穴</p>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">4</span>
+                            <h4>吐氣</h4>
+                            <p>嘴巴微開，讓氣息緩慢均勻排出，保持按壓</p>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">5</span>
+                            <h4>感受</h4>
+                            <p>重複數次以確認脈動感覺</p>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: var(--space-24);">
+                        <button class="btn btn-primary" onclick="showClearResult()">感受到規律脈動</button>
+                        <button class="btn btn-secondary" onclick="showBlockedResult()">沒有脈動感覺</button>
+                    </div>
+                    
+                    <div id="clearResult" class="diagnosis-result result-clear">
+                        <h4>✅ 中焦通暢</h4>
+                        <p>按壓時指下能清晰感受到規律的脈搏跳動，表示中焦氣血流暢，過敏症狀較輕微或暫時性。</p>
+                        <p><strong>建議：</strong>可進行輕度調理，定期按壓闌門穴保持通暢。</p>
+                    </div>
+                    
+                    <div id="blockedResult" class="diagnosis-result result-blocked">
+                        <h4>⚠️ 中焦阻塞</h4>
+                        <p>按壓時感覺沉悶、遲滯，沒有跳動的脈動聲，表示已處於過敏狀態，需要積極調理。</p>
+                        <p><strong>建議：</strong>根據過敏持續時間選擇適合的調理方法，詳見下方調理方法章節。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Treatment Section -->
+        <section id="treatment" class="section">
+            <div class="container">
+                <h2 class="fade-in">分級調理策略</h2>
+                <p class="fade-in">根據過敏症狀的嚴重程度和持續時間，採用不同層級的調理方法：</p>
+                
+                <div class="treatment-levels fade-in">
+                    <!-- Level 1: Mild -->
+                    <div class="treatment-level level-mild">
+                        <div class="level-header" onclick="toggleLevel('mild')">
+                            <div>
+                                <h3>第一級：輕度過敏</h3>
+                                <p>近期（一週內）發生的過敏症狀</p>
+                            </div>
+                            <span class="toggle-icon">+</span>
+                        </div>
+                        <div class="level-content" id="mildContent">
+                            <h4>調理方法：反覆按壓闌門穴3-5次</h4>
+                            <p>適用於剛開始出現的過敏症狀，通過疏通中焦阻塞即可緩解。</p>
+                            
+                            <div class="acupoint-cards">
+                                <div class="acupoint-card">
+                                    <h5>闌門穴</h5>
+                                    <p><strong>經絡：</strong>任脈</p>
+                                    <p><strong>位置：</strong>肚臍上方兩指處</p>
+                                    <p><strong>功能：</strong>檢測中焦通暢；疏通初期阻塞</p>
+                                    <p><strong>按法：</strong>垂直向下按壓，配合吐納法</p>
+                                </div>
+                            </div>
+                            
+                            <p><strong>預期效果：</strong>1-3天內症狀明顯改善</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Level 2: Persistent -->
+                    <div class="treatment-level level-persistent">
+                        <div class="level-header" onclick="toggleLevel('persistent')">
+                            <div>
+                                <h3>第二級：持續性過敏</h3>
+                                <p>過敏已持續數週至數月</p>
+                            </div>
+                            <span class="toggle-icon">+</span>
+                        </div>
+                        <div class="level-content" id="persistentContent">
+                            <h4>調理方法：啟用腳部行穴疏通經絡</h4>
+                            <p><strong>行穴概念：</strong>位於五輸穴第二位，如同狹窄水道，刺激後能有效疏通氣血不通、處理發炎與阻塞</p>
+                            <p><strong>程序：</strong>先刺激腳部行穴，再返回按壓闌門穴</p>
+                            
+                            <div class="acupoint-cards">
+                                <div class="acupoint-card">
+                                    <h5>內庭穴</h5>
+                                    <p><strong>經絡：</strong>胃經</p>
+                                    <p><strong>位置：</strong>腳部第二、三趾間</p>
+                                    <p><strong>功能：</strong>疏通胃經氣血，清泄消化道積熱</p>
+                                </div>
+                                <div class="acupoint-card">
+                                    <h5>俠溪穴</h5>
+                                    <p><strong>經絡：</strong>膽經</p>
+                                    <p><strong>位置：</strong>腳部第四、五趾間</p>
+                                    <p><strong>功能：</strong>疏通膽經氣血，清理肝膽濕熱</p>
+                                </div>
+                            </div>
+                            
+                            <p><strong>預期效果：</strong>2-4週內症狀逐漸改善</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Level 3: Chronic -->
+                    <div class="treatment-level level-chronic">
+                        <div class="level-header" onclick="toggleLevel('chronic')">
+                            <div>
+                                <h3>第三級：慢性頑固過敏</h3>
+                                <p>過敏持續數月至數年</p>
+                            </div>
+                            <span class="toggle-icon">+</span>
+                        </div>
+                        <div class="level-content" id="chronicContent">
+                            <h4>調理方法：加強手部原穴調節免疫系統</h4>
+                            <p><strong>原穴概念：</strong>臟腑原氣匯聚之處，能從根本上調節臟腑功能</p>
+                            <p><strong>理論基礎：</strong>大腸是人體免疫系統的第一道最重要防線</p>
+                            
+                            <div class="acupoint-cards">
+                                <div class="acupoint-card">
+                                    <h5>合谷穴</h5>
+                                    <p><strong>經絡：</strong>大腸經</p>
+                                    <p><strong>位置：</strong>手部虎口，第一、二掌骨間</p>
+                                    <p><strong>功能：</strong>調節大腸功能，鞏固免疫系統</p>
+                                    <p style="color: var(--color-error); font-weight: bold;">⚠️ 重要：必須將力道壓在食指與拇指骨頭交會的骨縫深處，不能在肌肉表面平壓！</p>
+                                </div>
+                                <div class="acupoint-card">
+                                    <h5>腕骨穴</h5>
+                                    <p><strong>經絡：</strong>小腸經</p>
+                                    <p><strong>位置：</strong>手腕外側，豌豆骨前緣</p>
+                                    <p><strong>功能：</strong>調節小腸功能，主司受盛化物</p>
+                                </div>
+                            </div>
+                            
+                            <p><strong>完整程序：</strong>手部原穴 → 腳部行穴 → 闌門穴</p>
+                            <p><strong>預期效果：</strong>需要持續調理3-6個月</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Acupoints Overview Section -->
+        <section id="acupoints" class="section">
+            <div class="container">
+                <h2 class="fade-in">穴位總覽</h2>
+                
+                <div class="fade-in">
+                    <table class="acupoint-table">
+                        <thead>
+                            <tr>
+                                <th>調理階段</th>
+                                <th>穴位名稱</th>
+                                <th>經絡</th>
+                                <th>位置</th>
+                                <th>核心作用</th>
+                                <th>適用情境</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr onclick="showAcupointDetail('lanmen')" style="cursor: pointer;">
+                                <td class="stage-mild">診斷與輕度調理</td>
+                                <td><strong>闌門穴</strong></td>
+                                <td>任脈</td>
+                                <td>肚臍上方兩指處</td>
+                                <td>檢測中焦通暢；疏通初期阻塞</td>
+                                <td>所有過敏的初步診斷；近期輕度過敏</td>
+                            </tr>
+                            <tr onclick="showAcupointDetail('neiting')" style="cursor: pointer;">
+                                <td class="stage-persistent">持續性過敏調理</td>
+                                <td><strong>內庭穴</strong></td>
+                                <td>胃經</td>
+                                <td>腳部第二、三趾間</td>
+                                <td>疏通胃經氣血，清泄消化道積熱</td>
+                                <td>過敏持續數週至數月</td>
+                            </tr>
+                            <tr onclick="showAcupointDetail('xiaxi')" style="cursor: pointer;">
+                                <td class="stage-persistent">持續性過敏調理</td>
+                                <td><strong>俠溪穴</strong></td>
+                                <td>膽經</td>
+                                <td>腳部第四、五趾間</td>
+                                <td>疏通膽經氣血，清理肝膽濕熱</td>
+                                <td>過敏持續數週至數月</td>
+                            </tr>
+                            <tr onclick="showAcupointDetail('hegu')" style="cursor: pointer;">
+                                <td class="stage-chronic">慢性頑固過敏調理</td>
+                                <td><strong>合谷穴</strong></td>
+                                <td>大腸經</td>
+                                <td>手部虎口，第一、二掌骨間</td>
+                                <td>調節大腸功能，鞏固免疫系統</td>
+                                <td>過敏持續兩年以上或頑固難癒</td>
+                            </tr>
+                            <tr onclick="showAcupointDetail('wangu')" style="cursor: pointer;">
+                                <td class="stage-chronic">慢性頑固過敏調理</td>
+                                <td><strong>腕骨穴</strong></td>
+                                <td>小腸經</td>
+                                <td>手腕外側，豌豆骨前緣</td>
+                                <td>調節小腸功能，主司受盛化物</td>
+                                <td>過敏持續兩年以上或頑固難癒</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Meridian Theory Section -->
+        <section id="theory" class="section">
+            <div class="container">
+                <h2 class="fade-in">經絡理論：五輸穴系統</h2>
+                
+                <div class="fade-in">
+                    <h3>五輸穴順序</h3>
+                    <div class="five-shu-flow">
+                        <div class="shu-point">景（井）穴</div>
+                        <div class="shu-point">行穴</div>
+                        <div class="shu-point">輸穴</div>
+                        <div class="shu-point">經穴</div>
+                        <div class="shu-point">合穴</div>
+                    </div>
+                </div>
+                
+                <div class="fade-in">
+                    <h3>行穴特性</h3>
+                    <div style="background: var(--color-bg-2); padding: var(--space-20); border-radius: var(--radius-lg);">
+                        <p><strong>定義：</strong>五輸穴系統的第二順位，位於經絡氣血從指甲邊緣回流的第二個穴位</p>
+                        <p><strong>物理特性：</strong>如同狹窄的水道或小水管，通道比較細窄</p>
+                        <p><strong>水流比喻：</strong>景穴如源頭井口，輸穴如大池塘，行穴是連接兩者的狹窄水管</p>
+                        <p><strong>功能：</strong></p>
+                        <ul>
+                            <li>疏通氣血：處理經絡淤塞狀況</li>
+                            <li>加速流動：增加氣血流速，沖開下游淤塞</li>
+                        </ul>
+                        <p><strong>應用時機：</strong>身體出現發炎、阻塞、氣血不通時優先選用</p>
+                    </div>
+                </div>
+                
+                <div class="fade-in">
+                    <h3>原穴特性</h3>
+                    <div style="background: var(--color-bg-4); padding: var(--space-20); border-radius: var(--radius-lg);">
+                        <p><strong>定義：</strong>臟腑原氣匯聚和留止的部位</p>
+                        <p><strong>功能：</strong>調節臟腑本源，從根本上恢復器官正常生理功能</p>
+                        <p><strong>應用時機：</strong>問題根深蒂固，涉及臟腑功能本身時使用</p>
+                    </div>
+                </div>
+                
+                <!-- Quiz Section -->
+                <div class="quiz-container fade-in">
+                    <h3>🧠 知識測驗</h3>
+                    <div class="quiz-question">
+                        <h4>什麼時候應該使用行穴？</h4>
+                        <div class="quiz-options" id="quizOptions">
+                            <div class="quiz-option" onclick="selectOption(this, false)">A. 預防保健時</div>
+                            <div class="quiz-option" onclick="selectOption(this, false)">B. 身體完全健康時</div>
+                            <div class="quiz-option" onclick="selectOption(this, true)">C. 出現發炎、阻塞、氣血不通時</div>
+                            <div class="quiz-option" onclick="selectOption(this, false)">D. 只在晚上使用</div>
+                        </div>
+                    </div>
+                    <div id="quizResult" style="display: none; margin-top: var(--space-16); padding: var(--space-16); border-radius: var(--radius-base);"></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Quick Reference Section -->
+        <section class="section">
+            <div class="container">
+                <div class="quick-reference fade-in">
+                    <h2>📋 快速參考指南</h2>
+                    <div class="reference-grid">
+                        <div class="reference-section">
+                            <h3>6個核心概念</h3>
+                            <ul>
+                                <li>中焦是人體氣血運行的樞紐，位於橫膈膜與肚臍之間</li>
+                                <li>中焦堵塞會導致全身性連鎖反應，過敏是常見信號</li>
+                                <li>闌門穴是診斷中焦通暢的關鍵檢測點</li>
+                                <li>根據過敏程度採用分級調理：闌門穴→腳部行穴→手部原穴</li>
+                                <li>行穴專門處理發炎與阻塞，原穴從根本調節臟腑功能</li>
+                                <li>合谷穴必須壓在骨縫深處才有效</li>
+                            </ul>
+                        </div>
+                        <div class="reference-section">
+                            <h3>5個實用技巧</h3>
+                            <ul>
+                                <li>輕度過敏：專注按壓闌門穴</li>
+                                <li>持續過敏：刺激腳部內庭穴、俠溪穴後再按闌門穴</li>
+                                <li>頑固過敏：加上手部合谷穴、腕骨穴全面調理</li>
+                                <li>檢測闌門穴時配合吐納法效果更好</li>
+                                <li>合谷穴按壓技巧是效果關鍵</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p><strong>免責聲明：</strong>本網頁內容僅供參考學習，不作為醫療建議。如有健康問題請諮詢專業醫療人員。</p>
+            <p style="margin-top: var(--space-8);">© 2025 傳統中醫過敏調理知識互動指南 - 教育用途</p>
+        </div>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+    
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const navMenu = document.getElementById('navMenu');
+            
+            menuToggle.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+            });
+            
+            // Smooth scrolling for navigation links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                    
+                    window.scrollTo({
+                        top: targetSection.offsetTop - navbarHeight,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active nav link
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Close mobile menu
+                    navMenu.classList.remove('active');
+                });
+            });
+            
+            // Highlight current section in navigation
+            window.addEventListener('scroll', function() {
+                const sections = document.querySelectorAll('.section');
+                const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                const scrollPosition = window.scrollY + navbarHeight + 100;
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id');
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === '#' + sectionId) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+                
+                // Show/hide back to top button
+                const backToTopBtn = document.getElementById('backToTop');
+                if (window.scrollY > 300) {
+                    backToTopBtn.classList.add('visible');
+                } else {
+                    backToTopBtn.classList.remove('visible');
+                }
+            });
+            
+            // Fade in animation on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+            
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach(element => {
+                observer.observe(element);
+            });
+        });
+        
+        // Fullscreen functionality
+        let isFullscreen = false;
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        
+        fullscreenBtn.addEventListener('click', function() {
+            toggleFullscreen();
+        });
+        
+        function toggleFullscreen() {
+            if (!isFullscreen) {
+                // Enter fullscreen
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    document.documentElement.msRequestFullscreen();
+                }
+            } else {
+                // Exit fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+        
+        // Listen for fullscreen changes
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('msfullscreenchange', handleFullscreenChange);
+        
+        function handleFullscreenChange() {
+            isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+            fullscreenBtn.innerHTML = isFullscreen ? '⛶' : '⛶';
+            fullscreenBtn.title = isFullscreen ? '退出全螢幕' : '進入全螢幕';
+        }
+        
+        // Diagnosis functionality
+        function showClearResult() {
+            document.getElementById('clearResult').style.display = 'block';
+            document.getElementById('blockedResult').style.display = 'none';
+        }
+        
+        function showBlockedResult() {
+            document.getElementById('clearResult').style.display = 'none';
+            document.getElementById('blockedResult').style.display = 'block';
+        }
+        
+        // Treatment level toggle
+        function toggleLevel(level) {
+            const content = document.getElementById(level + 'Content');
+            const header = content.previousElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                icon.textContent = '+';
+            } else {
+                // Close all other levels
+                document.querySelectorAll('.level-content').forEach(c => {
+                    c.classList.remove('active');
+                });
+                document.querySelectorAll('.toggle-icon').forEach(i => {
+                    i.textContent = '+';
+                });
+                
+                // Open selected level
+                content.classList.add('active');
+                icon.textContent = '−';
+            }
+        }
+        
+        // Acupoint detail display (placeholder functionality)
+        function showAcupointDetail(acupoint) {
+            const acupointData = {
+                'lanmen': {
+                    name: '闌門穴',
+                    meridian: '任脈',
+                    location: '肚臍上方兩指處',
+                    technique: '垂直向下按壓，配合吐納法',
+                    function: '檢測中焦通暢；疏通初期阻塞',
+                    notes: '所有過敏調理的起始檢測點'
+                },
+                'neiting': {
+                    name: '內庭穴',
+                    meridian: '胃經行穴',
+                    location: '腳部第二、三趾間',
+                    technique: '用拇指按壓，力度適中',
+                    function: '疏通胃經氣血，清泄消化道積熱',
+                    notes: '處理持續性過敏的重要穴位'
+                },
+                'xiaxi': {
+                    name: '俠溪穴',
+                    meridian: '膽經行穴',
+                    location: '腳部第四、五趾間',
+                    technique: '用拇指按壓，配合內庭穴使用',
+                    function: '疏通膽經氣血，清理肝膽濕熱',
+                    notes: '與內庭穴配合使用效果更佳'
+                },
+                'hegu': {
+                    name: '合谷穴',
+                    meridian: '大腸經原穴',
+                    location: '手部虎口，第一、二掌骨間',
+                    technique: '必須壓在骨縫深處，不能在肌肉表面平壓',
+                    function: '調節大腸功能，鞏固免疫系統',
+                    notes: '慢性過敏調理的關鍵穴位，按壓技巧是效果關鍵'
+                },
+                'wangu': {
+                    name: '腕骨穴',
+                    meridian: '小腸經原穴',
+                    location: '手腕外側，豌豆骨前緣',
+                    technique: '用拇指按壓豌豆骨前緣',
+                    function: '調節小腸功能，主司受盛化物',
+                    notes: '配合合谷穴調理慢性過敏'
+                }
+            };
+            
+            const data = acupointData[acupoint];
+            if (data) {
+                alert(
+                    `${data.name} 詳細資訊：\n\n` +
+                    `經絡：${data.meridian}\n` +
+                    `位置：${data.location}\n` +
+                    `按壓技巧：${data.technique}\n` +
+                    `功能：${data.function}\n` +
+                    `備註：${data.notes}`
+                );
+            }
+        }
+        
+        // Quiz functionality
+        let quizAnswered = false;
+        
+        function selectOption(element, isCorrect) {
+            if (quizAnswered) return;
+            
+            quizAnswered = true;
+            const options = document.querySelectorAll('.quiz-option');
+            const resultDiv = document.getElementById('quizResult');
+            
+            options.forEach(option => {
+                if (option === element) {
+                    option.classList.add('selected');
+                    if (isCorrect) {
+                        option.classList.add('correct');
+                    } else {
+                        option.classList.add('incorrect');
+                    }
+                } else {
+                    // Show correct answer
+                    if (option.textContent.includes('C. 出現發炎、阻塞、氣血不通時')) {
+                        option.classList.add('correct');
+                    }
+                }
+            });
+            
+            if (isCorrect) {
+                resultDiv.innerHTML = '✅ <strong>正確！</strong> 行穴的特性就是處理發炎、阻塞與氣血不通的問題。';
+                resultDiv.style.background = 'rgba(var(--color-success-rgb), 0.2)';
+                resultDiv.style.color = 'var(--color-success)';
+            } else {
+                resultDiv.innerHTML = '❌ <strong>不正確。</strong> 正確答案是C。行穴專門用於處理發炎、阻塞、氣血不通的狀況。';
+                resultDiv.style.background = 'rgba(var(--color-error-rgb), 0.2)';
+                resultDiv.style.color = 'var(--color-error)';
+            }
+            
+            resultDiv.style.display = 'block';
+        }
+        
+        // Scroll to top functionality
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Keyboard accessibility for fullscreen toggle
+        fullscreenBtn.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>
