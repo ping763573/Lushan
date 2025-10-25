@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生命教育經絡與養生實踐</title>
+    <style>
+        :root {
+            --color-primary: #2E7D32;
+            --color-primary-light: #66BB6A;
+            --color-bg-main: #E8F5E9;
+            --color-bg-secondary: #E3F2FD;
+            --color-bg-tertiary: #FFF8E1;
+            --color-card: #FFFFFF;
+            --color-text: #1B5E20;
+            --color-text-secondary: #424242;
+            --color-shadow: rgba(0, 0, 0, 0.1);
+            --color-shadow-hover: rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+            background: linear-gradient(135deg, var(--color-bg-main) 0%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding-top: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            color: white;
+            padding: 32px 16px;
+            text-align: center;
+            box-shadow: 0 4px 6px var(--color-shadow);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        /* Fullscreen Button */
+        .fullscreen-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            z-index: 1000;
+            box-shadow: 0 4px 6px var(--color-shadow);
+            transition: all 0.3s ease;
+            font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+        }
+
+        .fullscreen-btn:hover {
+            background: var(--color-primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px var(--color-shadow-hover);
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            padding: 16px;
+            margin: 0;
+            box-shadow: 0 2px 4px var(--color-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--color-primary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: var(--color-bg-main);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Section */
+        section {
+            margin: 32px 0;
+            scroll-margin-top: 80px;
+        }
+
+        .section-title {
+            font-size: 2em;
+            color: var(--color-primary);
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--color-primary-light);
+            font-weight: 600;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--color-card);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 6px var(--color-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 12px var(--color-shadow-hover);
+            transform: translateY(-4px);
+        }
+
+        /* Finger Grid */
+        .finger-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .finger-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px var(--color-shadow);
+        }
+
+        .finger-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 16px var(--color-shadow-hover);
+        }
+
+        .finger-emoji {
+            font-size: 4em;
+            margin-bottom: 12px;
+        }
+
+        .finger-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+        }
+
+        .finger-meridian {
+            font-size: 1.1em;
+            color: var(--color-text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .finger-organs {
+            font-size: 0.95em;
+            color: var(--color-primary-light);
+            font-weight: 500;
+        }
+
+        .finger-detail {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 2px solid var(--color-bg-main);
+            text-align: left;
+        }
+
+        .finger-card.active .finger-detail {
+            max-height: 200px;
+        }
+
+        /* Steps */
+        .steps-container {
+            display: grid;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 5px solid var(--color-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            border-left-width: 8px;
+            padding-left: 23px;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .step-number {
+            background: var(--color-primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .step-detail {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            margin-top: 12px;
+            padding-left: 56px;
+            color: var(--color-text-secondary);
+        }
+
+        .step-card.active .step-detail {
+            max-height: 150px;
+        }
+
+        /* Quotes */
+        .quotes-container {
+            display: grid;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .quote-card {
+            background: linear-gradient(135deg, #FFF8E1 0%, #E8F5E9 100%);
+            border-radius: 12px;
+            padding: 24px;
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--color-primary);
+            box-shadow: 0 4px 6px var(--color-shadow);
+            position: relative;
+            padding-left: 48px;
+        }
+
+        .quote-card::before {
+            content: '\201C';
+            font-size: 4em;
+            position: absolute;
+            left: 12px;
+            top: 8px;
+            opacity: 0.3;
+        }
+
+        /* Methods Grid */
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .method-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px var(--color-shadow);
+        }
+
+        .method-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px var(--color-shadow-hover);
+        }
+
+        .method-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .method-icon {
+            font-size: 2.5em;
+        }
+
+        .method-info h3 {
+            font-size: 1.2em;
+            color: var(--color-primary);
+            margin-bottom: 4px;
+        }
+
+        .method-dosage {
+            color: var(--color-text-secondary);
+            font-size: 0.9em;
+        }
+
+        .method-detail {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 2px solid var(--color-bg-main);
+            color: var(--color-text-secondary);
+        }
+
+        .method-card.active .method-detail {
+            max-height: 150px;
+        }
+
+        /* Principles */
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .principle-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px var(--color-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px var(--color-shadow-hover);
+        }
+
+        .principle-icon {
+            font-size: 3em;
+            margin-bottom: 12px;
+        }
+
+        .principle-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+        }
+
+        .principle-detail {
+            color: var(--color-text-secondary);
+            font-size: 0.95em;
+        }
+
+        /* Tips */
+        .tips-grid {
+            display: grid;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .tip-card {
+            background: linear-gradient(135deg, #FFF59D 0%, #FFF8E1 100%);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 5px solid #F9A825;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            box-shadow: 0 4px 6px var(--color-shadow);
+        }
+
+        .tip-icon {
+            font-size: 2em;
+            flex-shrink: 0;
+        }
+
+        .tip-content h3 {
+            color: var(--color-primary);
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .tip-solution {
+            color: var(--color-text-secondary);
+        }
+
+        /* Time Concept */
+        .time-concept {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+            box-shadow: 0 4px 6px var(--color-shadow);
+        }
+
+        .concept-list {
+            list-style: none;
+            display: grid;
+            gap: 16px;
+        }
+
+        .concept-list li {
+            padding: 16px;
+            background: var(--color-bg-main);
+            border-radius: 8px;
+            font-size: 1.1em;
+            padding-left: 48px;
+            position: relative;
+        }
+
+        .concept-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 16px;
+            color: var(--color-primary);
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--color-primary);
+            color: white;
+            padding: 32px 16px;
+            text-align: center;
+            margin-top: 48px;
+        }
+
+        .version {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            background: var(--color-primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            box-shadow: 0 4px 6px var(--color-shadow);
+            z-index: 1000;
+        }
+
+        .disclaimer {
+            margin-top: 16px;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .subtitle {
+                font-size: 1em;
+            }
+
+            .section-title {
+                font-size: 1.5em;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-menu a {
+                text-align: center;
+            }
+
+            .finger-grid,
+            .methods-grid,
+            .principles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .fullscreen-btn {
+                padding: 10px 12px;
+                font-size: 1em;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Fullscreen Button -->
+    <button class="fullscreen-btn" onclick="toggleFullscreen()" aria-label="切換全螢幕">🖥️ 全螢幕</button>
+
+    <!-- Version Display -->
+    <div class="version">版本 1.0.0</div>
+
+    <!-- Header -->
+    <header>
+        <h1>生命教育經絡與養生實踐</h1>
+        <p class="subtitle">從經絡養生到健康生活的完整指南</p>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <ul class="nav-menu">
+            <li><a href="#finger-meridians">手指經絡與器官</a></li>
+            <li><a href="#fugui-treatment">富貴包調理</a></li>
+            <li><a href="#life-philosophy">生命教育哲學</a></li>
+            <li><a href="#health-methods">養生保健方法</a></li>
+            <li><a href="#diet-principles">飲食養生原則</a></li>
+            <li><a href="#quick-tips">實用技巧</a></li>
+            <li><a href="#meridian-time">經絡時間表</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Section 1: Finger Meridians -->
+        <section id="finger-meridians">
+            <h2 class="section-title">🖐️ 手指經絡與十大器官關係</h2>
+            <div class="finger-grid">
+                <div class="finger-card" onclick="toggleDetail(this)">
+                    <div class="finger-emoji">👍</div>
+                    <div class="finger-name">大拇指</div>
+                    <div class="finger-meridian">太陰經</div>
+                    <div class="finger-organs">肺經、脾經</div>
+                    <div class="finger-detail">
+                        大拇指對應手太陰肺經與足太陰脾經，主管呼吸系統與消化系統
+                    </div>
+                </div>
+
+                <div class="finger-card" onclick="toggleDetail(this)">
+                    <div class="finger-emoji">☝️</div>
+                    <div class="finger-name">食指</div>
+                    <div class="finger-meridian">陽明經</div>
+                    <div class="finger-organs">大腸經、胃經</div>
+                    <div class="finger-detail">
+                        食指對應手陽明大腸經與足陽明胃經，主管排泄與消化功能
+                    </div>
+                </div>
+
+                <div class="finger-card" onclick="toggleDetail(this)">
+                    <div class="finger-emoji">🖕</div>
+                    <div class="finger-name">中指</div>
+                    <div class="finger-meridian">厥陰經</div>
+                    <div class="finger-organs">心包經、肝經</div>
+                    <div class="finger-detail">
+                        中指對應手厥陰心包經與足厥陰肝經，主管心血管與肝膽系統
+                    </div>
+                </div>
+
+                <div class="finger-card" onclick="toggleDetail(this)">
+                    <div class="finger-emoji">💍</div>
+                    <div class="finger-name">無名指</div>
+                    <div class="finger-meridian">少陽經</div>
+                    <div class="finger-organs">三焦經、膽經</div>
+                    <div class="finger-detail">
+                        無名指對應手少陽三焦經與足少陽膽經,調節內分泌與膽汁分泌
+                    </div>
+                </div>
+
+                <div class="finger-card" onclick="toggleDetail(this)">
+                    <div class="finger-emoji">🤙</div>
+                    <div class="finger-name">小指內側</div>
+                    <div class="finger-meridian">少陰經</div>
+                    <div class="finger-organs">心經、腎經</div>
+                    <div class="finger-detail">
+                        小指內側對應手少陰心經與足少陰腎經，主管心臟與泌尿系統
+                    </div>
+                </div>
+
+                <div class="finger-card" onclick="toggleDetail(this)">
+                    <div class="finger-emoji">🤏</div>
+                    <div class="finger-name">小指外側</div>
+                    <div class="finger-meridian">太陽經</div>
+                    <div class="finger-organs">小腸經、膀胱經</div>
+                    <div class="finger-detail">
+                        小指外側對應手太陽小腸經與足太陽膀胱經，主管消化吸收與排尿功能
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Fugui Treatment -->
+        <section id="fugui-treatment">
+            <h2 class="section-title">💆 富貴包調理方法</h2>
+            <div class="steps-container">
+                <div class="step-card" onclick="toggleDetail(this)">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div class="step-title">手指刮痧</div>
+                    </div>
+                    <div class="step-detail">
+                        每天刮手指30秒，刮至發癢為止，促進末梢循環
+                    </div>
+                </div>
+
+                <div class="step-card" onclick="toggleDetail(this)">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <div class="step-title">使用健力霜</div>
+                    </div>
+                    <div class="step-detail">
+                        含10% EGF諾貝爾獎生長因子，修復肌膚、減少細紋
+                    </div>
+                </div>
+
+                <div class="step-card" onclick="toggleDetail(this)">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <div class="step-title">拍打手臂</div>
+                    </div>
+                    <div class="step-detail">
+                        拍打手臂至出痧，促進血液循環與淋巴回流
+                    </div>
+                </div>
+
+                <div class="step-card" onclick="toggleDetail(this)">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <div class="step-title">敲打肩頸</div>
+                    </div>
+                    <div class="step-detail">
+                        配合動氣療法，每敲30下旋轉，緩解疼痛
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 24px; background: linear-gradient(135deg, #E3F2FD 0%, #E8F5E9 100%);">
+                <h3 style="color: var(--color-primary); margin-bottom: 12px; font-size: 1.3em;">✨ EGF健力霜說明</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 8px 0; padding-left: 24px; position: relative;">
+                        <span style="position: absolute; left: 0; color: var(--color-primary);">✓</span>
+                        含10%諾貝爾獎生長因子
+                    </li>
+                    <li style="padding: 8px 0; padding-left: 24px; position: relative;">
+                        <span style="position: absolute; left: 0; color: var(--color-primary);">✓</span>
+                        修復肌膚傷口發炎
+                    </li>
+                    <li style="padding: 8px 0; padding-left: 24px; position: relative;">
+                        <span style="position: absolute; left: 0; color: var(--color-primary);">✓</span>
+                        減少細紋老化
+                    </li>
+                    <li style="padding: 8px 0; padding-left: 24px; position: relative;">
+                        <span style="position: absolute; left: 0; color: var(--color-primary);">✓</span>
+                        長期使用安全
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 3: Life Philosophy -->
+        <section id="life-philosophy">
+            <h2 class="section-title">🌱 生命教育的誠實觀</h2>
+            <div class="quotes-container">
+                <div class="quote-card">
+                    人生最珍貴的資產是誠實
+                </div>
+                <div class="quote-card">
+                    善意的謊言也是謊言
+                </div>
+                <div class="quote-card">
+                    誠實帶來快樂無負擔的人生
+                </div>
+                <div class="quote-card">
+                    不誠實會積累心靈鐵衣
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Health Methods -->
+        <section id="health-methods">
+            <h2 class="section-title">🏥 養生保健方法</h2>
+            <div class="methods-grid">
+                <div class="method-card" onclick="toggleDetail(this)">
+                    <div class="method-header">
+                        <div class="method-icon">🍋</div>
+                        <div class="method-info">
+                            <h3>檸檬汁療法</h3>
+                            <p class="method-dosage">50-150cc空腹喝</p>
+                        </div>
+                    </div>
+                    <div class="method-detail">
+                        用吸管喝，睡前空腹，連續三天可緩解手緊、胃酸逆流
+                    </div>
+                </div>
+
+                <div class="method-card" onclick="toggleDetail(this)">
+                    <div class="method-header">
+                        <div class="method-icon">🐟</div>
+                        <div class="method-info">
+                            <h3>魚湯補膠質</h3>
+                            <p class="method-dosage">每天一碗</p>
+                        </div>
+                    </div>
+                    <div class="method-detail">
+                        選擇鱸魚、石斑魚、虱目魚等有魚皮的魚類，三天見效改善膝蓋問題
+                    </div>
+                </div>
+
+                <div class="method-card" onclick="toggleDetail(this)">
+                    <div class="method-header">
+                        <div class="method-icon">💊</div>
+                        <div class="method-info">
+                            <h3>跳躍28</h3>
+                            <p class="method-dosage">早晚2-6顆</p>
+                        </div>
+                    </div>
+                    <div class="method-detail">
+                        中藥濃縮，改善內分泌、手腳冰冷、睡眠品質
+                    </div>
+                </div>
+
+                <div class="method-card" onclick="toggleDetail(this)">
+                    <div class="method-header">
+                        <div class="method-icon">🦪</div>
+                        <div class="method-info">
+                            <h3>珍珠粉</h3>
+                            <p class="method-dosage">每日適量</p>
+                        </div>
+                    </div>
+                    <div class="method-detail">
+                        維持荷爾蒙平衡，預防骨質疏鬆
+                    </div>
+                </div>
+
+                <div class="method-card" onclick="toggleDetail(this)">
+                    <div class="method-header">
+                        <div class="method-icon">🫘</div>
+                        <div class="method-info">
+                            <h3>醋碇</h3>
+                            <p class="method-dosage">每日3顆</p>
+                        </div>
+                    </div>
+                    <div class="method-detail">
+                        黑豆提煉，養生保健，改善氣血循環
+                    </div>
+                </div>
+
+                <div class="method-card" onclick="toggleDetail(this)">
+                    <div class="method-header">
+                        <div class="method-icon">💊</div>
+                        <div class="method-info">
+                            <h3>油甘維生素C</h3>
+                            <p class="method-dosage">4-8顆</p>
+                        </div>
+                    </div>
+                    <div class="method-detail">
+                        有效維生素C，緩解發炎、預防泌尿道感染
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Diet Principles -->
+        <section id="diet-principles">
+            <h2 class="section-title">🍽️ 飲食養生原則</h2>
+            <div class="principles-grid">
+                <div class="principle-card">
+                    <div class="principle-icon">🫒</div>
+                    <div class="principle-title">使用玻璃瓶裝油</div>
+                    <div class="principle-detail">橄欖油、豬油、苦茶油，避免塑膠瓶油品</div>
+                </div>
+
+                <div class="principle-card">
+                    <div class="principle-icon">🎨</div>
+                    <div class="principle-title">餐盤三種顏色</div>
+                    <div class="principle-detail">紅、白、綠等，確保礦物質均衡攝取</div>
+                </div>
+
+                <div class="principle-card">
+                    <div class="principle-icon">🍳</div>
+                    <div class="principle-title">蛋白質2-3種</div>
+                    <div class="principle-detail">雞蛋、豆腐、魚、肉等原形食物</div>
+                </div>
+
+                <div class="principle-card">
+                    <div class="principle-icon">🥗</div>
+                    <div class="principle-title">吃原形食物</div>
+                    <div class="principle-detail">減少加工食品，選擇天然新鮮食材</div>
+                </div>
+
+                <div class="principle-card">
+                    <div class="principle-icon">🌰</div>
+                    <div class="principle-title">堅果3-5顆</div>
+                    <div class="principle-detail">補充好油，不要過量</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Quick Tips -->
+        <section id="quick-tips">
+            <h2 class="section-title">⚡ 實用技巧速查</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-icon">⚡</div>
+                    <div class="tip-content">
+                        <h3>尿不出來</h3>
+                        <p class="tip-solution">按摩少陰經（小指內側），刮開後喝水，搭配油甘4-8顆</p>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-icon">⚡</div>
+                    <div class="tip-content">
+                        <h3>促進末梢循環</h3>
+                        <p class="tip-solution">每天刮手指，促進十大器官回流</p>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-icon">⚡</div>
+                    <div class="tip-content">
+                        <h3>膝蓋痛技巧</h3>
+                        <p class="tip-solution">坐下時頭先彎，起來時屁股先起</p>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-icon">⚡</div>
+                    <div class="tip-content">
+                        <h3>健康食品選擇</h3>
+                        <p class="tip-solution">重點補充荷爾蒙、膠質、好油，避免過多種類</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Meridian Time -->
+        <section id="meridian-time">
+            <h2 class="section-title">⏰ 經絡時間對應</h2>
+            <div class="time-concept">
+                <ul class="concept-list">
+                    <li>12經絡對應12個月</li>
+                    <li>每個時辰（2小時）走一條經絡</li>
+                    <li>365穴位對應365天</li>
+                    <li>穴位記錄情緒與身體歷史</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p style="font-size: 1.1em; font-weight: 600;">生命教育經絡與養生實踐</p>
+        <p style="margin-top: 8px;">版本：v1.0.0 | 更新日期：2025年10月25日</p>
+        <p class="disclaimer">⚠️ 本網頁內容僅供參考，具體健康問題請諮詢專業醫師</p>
+    </footer>
+
+    <script>
+        // Toggle fullscreen
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch((err) => {
+                    alert(`無法進入全螢幕模式: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Update fullscreen button text
+        document.addEventListener('fullscreenchange', () => {
+            const btn = document.querySelector('.fullscreen-btn');
+            if (document.fullscreenElement) {
+                btn.innerHTML = '🔲 退出全螢幕';
+            } else {
+                btn.innerHTML = '🖥️ 全螢幕';
+            }
+        });
+
+        // Toggle detail sections
+        function toggleDetail(element) {
+            element.classList.toggle('active');
+        }
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('.nav-menu a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add keyboard support for interactive cards
+        document.querySelectorAll('.finger-card, .step-card, .method-card').forEach(card => {
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('role', 'button');
+            card.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleDetail(this);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
