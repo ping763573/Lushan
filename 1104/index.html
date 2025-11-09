@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>經絡系統互動教學 (合併版)</title>
+    <!-- 引入 Noto Sans TC 字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 通用樣式 --- */
+        body {
+            font-family: 'Noto Sans TC', 'FKGroteskNeue', 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fcfcfc;
+            color: #333;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* --- 導覽列樣式 --- */
+        .tab-navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            border-bottom: 2px solid #eee;
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 2000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            border: none;
+            background-color: transparent;
+            color: #555;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .tab-btn:hover {
+            background-color: #f7f7f7;
+            color: #000;
+        }
+
+        .tab-btn.active {
+            color: #2a6a6f; /* 匹配 index.html 的主色調 */
+            border-bottom-color: #2a6a6f;
+            font-weight: 700;
+        }
+
+        /* --- 內容區域 --- */
+        .content-section {
+            display: none; /* 預設隱藏 */
+            padding-top: 20px;
+        }
+
+        .content-section.active {
+            display: block; /* 顯示當前分頁 */
+        }
+        
+        /* --- 全螢幕按鈕樣式 --- */
+        .fullscreen-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background-color: #3a5c1a; /* 統一樣式 */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 1001; /* 確保在導覽列之上 */
+            transition: background-color 0.3s;
+        }
+
+        .fullscreen-btn:hover {
+            background-color: #55711a;
+        }
+
+
+        /* ############################################# */
+        /* ### 樣式：來自 index.html (互動經絡圖) ### */
+        /* ############################################# */
+        
+        /* 為了避免衝突，所有 index.html 的樣式都限縮在 #app-index 內 */
+        #app-index {
+            /* 設計系統變數 */
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-slate-500-rgb: 98, 108, 113;
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+            --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-size-sm: 12px;
+            --font-size-base: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-size-4xl: 30px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 550;
+            --font-weight-bold: 600;
+            --space-4: 4px;
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+            --radius-base: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --duration-normal: 250ms;
+            --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* #app-index 的 body 背景和文字顏色套用至 #app-index 容器 */
+        #app-index {
+            background-color: var(--color-background);
+            color: var(--color-text);
+        }
+
+        /* 移除 index.html 的 header，因為我們用通用的 tab-navigation 取代 */
+        #app-index .header {
+            display: none; 
+        }
+
+        /* 調整 main-content 的邊距，因為 header 移除了 */
+        #app-index .main-content {
+            margin-top: 0; 
+            padding: var(--space-24);
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 其他 index.html 樣式 */
+        #app-index .guide-section {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-24);
+            margin-bottom: var(--space-32);
+            box-shadow: var(--shadow-sm);
+        }
+
+        #app-index .guide-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text);
+            margin-bottom: var(--space-16);
+        }
+
+        #app-index .guide-text {
+            font-size: var(--font-size-base);
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+        }
+
+        #app-index .meridian-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--space-20);
+            margin-bottom: var(--space-32);
+        }
+
+        #app-index .meridian-card {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-20);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+            box-shadow: var(--shadow-sm);
+        }
+
+        #app-index .meridian-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        #app-index .meridian-card-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+        }
+
+        #app-index .meridian-card-organs {
+            font-size: var(--font-size-sm);
+            color: var(--color-primary);
+            margin-bottom: var(--space-8);
+        }
+
+        #app-index .meridian-card-desc {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        #app-index .detail-view {
+            display: none;
+        }
+
+        #app-index .detail-view.active {
+            display: block;
+        }
+
+        #app-index .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-24);
+        }
+
+        #app-index .detail-title {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text);
+        }
+
+        #app-index .detail-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-24);
+        }
+
+        #app-index .detail-image-section {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-20);
+            box-shadow: var(--shadow-sm);
+        }
+
+        #app-index .meridian-image-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: var(--radius-base);
+            background-color: var(--color-background);
+        }
+
+        #app-index .meridian-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            cursor: move;
+            transition: transform 0.1s ease-out;
+        }
+
+        #app-index .zoom-controls {
+            display: flex;
+            gap: var(--space-8);
+            margin-top: var(--space-16);
+            justify-content: center;
+        }
+        
+        /* index.html 的按鈕樣式 */
+        #app-index .btn {
+            padding: var(--space-8) var(--space-16);
+            border-radius: var(--radius-base);
+            border: none;
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-8);
+        }
+
+        #app-index .btn-primary {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        #app-index .btn-primary:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        #app-index .btn-secondary {
+            background-color: var(--color-secondary);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+
+        #app-index .btn-secondary:hover {
+            background-color: var(--color-secondary-hover);
+        }
+
+
+        #app-index .detail-info-section {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-24);
+            box-shadow: var(--shadow-sm);
+            max-height: 600px; /* 設定最大高度 */
+            overflow-y: auto;  /* 超出範圍時顯示滾動條 */
+        }
+
+        #app-index .info-group {
+            margin-bottom: var(--space-24);
+        }
+
+        #app-index .info-label {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            margin-bottom: var(--space-8);
+            letter-spacing: 0.5px;
+        }
+
+        #app-index .info-value {
+            font-size: var(--font-size-base);
+            color: var(--color-text);
+            line-height: 1.8;
+        }
+
+        /* --- V2.0 新增: 穴位列表與詳細資訊樣式 --- */
+        #app-index .points-list {
+            display: flex;
+            flex-direction: column; /* 垂直排列 */
+            gap: var(--space-16);   /* 每個穴位之間的間距 */
+        }
+        
+        #app-index .point-info {
+            padding-bottom: var(--space-12);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        #app-index .point-info:last-child {
+            border-bottom: none; /* 最後一個穴位不需要底線 */
+        }
+
+        #app-index .point-name {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-primary);
+            margin: 0 0 var(--space-8) 0;
+        }
+        
+        #app-index .point-location,
+        #app-index .point-function {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            line-height: 1.7;
+            margin: 0;
+            padding-left: var(--space-8);
+        }
+        
+        #app-index .point-location strong,
+        #app-index .point-function strong {
+            color: var(--color-text);
+            font-weight: var(--font-weight-medium);
+        }
+        /* --- V2.0 樣式結束 --- */
+
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            #app-index .main-content {
+                /* margin-top: 120px; (移除) */
+                padding: var(--space-16);
+            }
+
+            #app-index .meridian-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #app-index .detail-content {
+                grid-template-columns: 1fr;
+            }
+
+            #app-index .detail-title {
+                font-size: var(--font-size-2xl);
+            }
+            #app-index .detail-info-section {
+                max-height: none; /* 在手機上取消高度限制 */
+            }
+        }
+
+        /* 隱藏類別 */
+        #app-index .hidden {
+            display: none;
+        }
+        
+        /* 暗色模式 (保留 index.html 的) */
+        @media (prefers-color-scheme: dark) {
+            #app-index {
+                --color-gray-400-rgb: 119, 124, 124;
+                --color-teal-300-rgb: 50, 184, 198;
+                --color-gray-300-rgb: 167, 169, 169;
+                --color-gray-200-rgb: 245, 245, 245;
+                --color-background: var(--color-charcoal-700);
+                --color-surface: var(--color-charcoal-800);
+                --color-text: var(--color-gray-200);
+                --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+                --color-primary: var(--color-teal-300);
+                --color-primary-hover: var(--color-teal-400);
+                --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+                --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+                --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+                --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+            }
+        }
+
+
+        /* ############################################# */
+        /* ### 樣式：來自 測01.html (脾胃養生) ### */
+        /* ############################################# */
+        
+        /* 為了避免衝突，所有 測01.html 的樣式都限縮在 #app-wellness 內 */
+        #app-wellness {
+            --primary-bg: #fdfdfd;
+            --text-color: #333;
+            --accent-color: #6B8E23;
+            --accent-light: #f0f5e7;
+            --border-color: #ddd;
+            --header-bg: #ffffff;
+
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        #app-wellness .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 隱藏 測01.html 的 header */
+        #app-wellness header {
+            display: none;
+        }
+
+        #app-wellness .accordion-item {
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        #app-wellness .accordion-header {
+            background-color: var(--accent-light);
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.3em;
+            font-weight: 500;
+            color: var(--accent-color);
+        }
+
+        #app-wellness .accordion-header::after {
+            content: '＋';
+            font-size: 1.5em;
+            transition: transform 0.3s;
+        }
+
+        #app-wellness .accordion-item.active .accordion-header::after {
+            transform: rotate(45deg);
+        }
+
+        #app-wellness .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            padding: 0 20px;
+        }
+        
+        #app-wellness .accordion-content p {
+            margin: 15px 0;
+        }
+
+        #app-wellness .acupoint-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        #app-wellness .acupoint-card {
+            border: 1px solid var(--accent-light);
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            transition: box-shadow 0.3s;
+        }
+        
+        #app-wellness .acupoint-card:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        #app-wellness .acupoint-card h4 {
+            margin-top: 0;
+            color: var(--accent-color);
+            font-size: 1.2em;
+            border-bottom: 2px solid var(--accent-light);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        
+        #app-wellness .acupoint-card ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        #app-wellness footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        /* 響應式 */
+        @media (max-width: 768px) {
+            #app-wellness .accordion-header {
+                font-size: 1.1em;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 通用全螢幕按鈕 -->
+    <button id="fullscreenBtn" class="fullscreen-btn">切換全螢幕</button>
+
+    <!-- 分頁導覽列 -->
+    <nav class="tab-navigation">
+        <button class="tab-btn active" data-tab="app-index">互動經絡圖 (v2.0.0)</button>
+        <button class="tab-btn" data-tab="app-wellness">脾胃養生心法 (v1.0.0)</button>
+    </nav>
+
+    <!-- 內容區域 -->
+    <main>
+        <!-- 內容1: 來自 index.html -->
+        <div id="app-index" class="content-section active">
+            <!-- 頂部固定列 (已移除) -->
+
+            <!-- 主內容區 -->
+            <main class="main-content" id="indexMainContent">
+                <!-- 首頁視圖 -->
+                <div id="indexHomeView">
+                    <!-- 使用指引 -->
+                    <section class="guide-section">
+                        <h1 class="guide-title">歡迎使用經絡系統互動教學網站</h1>
+                        <p class="guide-text">
+                            本網站提供完整的人體十二經絡互動式學習體驗。您可以點擊下方任一經絡卡片，查看詳細的經絡路徑、穴位分布、對應臟腑及主治功能。
+                            在詳細頁面中，您可以使用縮放功能放大經絡圖像，並透過滑鼠拖曳移動圖像位置，以便更仔細地觀察經絡細節。
+                            點擊右上角的「全螢幕」按鈕可切換全螢幕模式，獲得更沉浸的學習體驗。
+                        </p>
+                    </section>
+                    <!-- 經絡分類卡片 -->
+                    <div class="meridian-grid" id="indexMeridianGrid"></div>
+                </div>
+
+                <!-- 詳細視圖 -->
+                <div id="indexDetailView" class="detail-view">
+                    <div class="detail-header">
+                        <h2 class="detail-title" id="indexDetailTitle"></h2>
+                        <!-- '返回列表' 按鈕移至此處 -->
+                        <button class="btn btn-secondary" id="indexHomeBtn" style="display: none;">返回列表</button>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-image-section">
+                            <div class="meridian-image-container" id="indexImageContainer">
+                                <img src="" alt="經絡圖" class="meridian-image" id="indexMeridianImage">
+                            </div>
+                            <div class="zoom-controls">
+                                <button class="btn btn-secondary" id="indexZoomOutBtn">縮小 -</button>
+                                <button class="btn btn-secondary" id="indexResetZoomBtn">重置</button>
+                                <button class="btn btn-secondary" id="indexZoomInBtn">放大 +</button>
+                            </div>
+                        </div>
+                        <div class="detail-info-section">
+                            <div class="info-group">
+                                <div class="info-label">對應臟腑</div>
+                                <div class="info-value" id="indexDetailOrgans"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label">主要穴位</div>
+                                <div class="points-list" id="indexDetailPoints"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label">經脈路徑</div>
+                                <div class="info-value" id="indexDetailPath"></div>
+                            </div>
+                            <div class="info-group">
+                                <div class="info-label">主治功能</div>
+                                <div class="info-value" id="indexDetailDescription"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- 內容2: 來自 測01.html -->
+        <div id="app-wellness" class="content-section">
+            <div class="container">
+                <header>
+                    <h1>經絡與脾胃養生心法</h1>
+                    <p>從心念能量到穴位實作的整合指南</p>
+                </header>
+
+                <main>
+                    <div class="accordion-item">
+                        <div class="accordion-header">第一章：心念與無形能量</div>
+                        <div class="accordion-content">
+                            <p>我們來上經絡課，不只是學習技巧和穴道位置。更重要的是運用無形的「能量」。當你真心為他人祝福時，這股能量能夠傳遞出去，幫助在痛苦中的人得到釋放。</p>
+                            <p>我們的身體就像一個共同體，由60兆個細胞組成。當某個部位疼痛時，全身都能感知。同樣地，當我們集體集中意念，哪怕只是30秒，將祝福送給需要的人，他一定會得到療癒。這種練習我從年輕時就開始，它教我從不懷疑，而是去體驗和修復。</p>
+                            <p>人生有時無聊，所以我們去創造很多「有聊」的事件來體驗。每一件事的發生，都可能是最好的修復機會，不要害怕生病，而是要去覺知它要告訴我們什麼。</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header">第二章：健康的本源 (源頭)</div>
+                        <div class="accordion-content">
+                            <p>當身體生病時，要覺知為何會生病。往往是「靈魂沒有照顧好身體」，因為心沒有靜下來。當我們了解問題的「來龍去脈」，就能從源頭解鎖，而不是依賴藥物控制。</p>
+                            <p><strong>飲食源頭：</strong>脾胃是「後天之氣」的根本。身體所有問題，多半源於脾胃沒養好。脾怕濕，胃怕寒。早上喝薑茶養胃，選擇原型食物，避免長時間空腹（若要長時間斷食，中間可補充檸檬原汁或堅果配醋錠來刺激膽汁分泌，避免膽結石）。</p>
+                            <p><strong>體質覺察：</strong>指甲上的月牙是胃氣的展現。女性至少要有六指有月牙，男性八指為佳，過多則代表體質偏「燥」。了解自己的體質，才能從源頭調整。</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header">第三章：脾胃經絡詳解</div>
+                        <div class="accordion-content">
+                            <p><strong>胃經 (足陽明胃經)：</strong>主要循行在身體的「前面」。從眼下「承泣」穴開始，經過臉頰、頸部、胸部（經過乳頭）、腹部，再到大腿前側，最後止於第二腳趾的「厲兌」穴。臉頰沒肉，通常代表脾胃不好。</p>
+                            <p><strong>脾經 (足太陰脾經)：</strong>與胃經互為表裡。脾胃的問題經常需要相互搭配穴位來調理。例如，胃的問題要找脾經的絡穴「公孫」；脾濕的問題要找胃經的絡穴「豐隆」。</p>
+                            <p><strong>脾胃與飲食：</strong>脾胃需要「碳水化合物」的滋養，特別是「米飯」。我們身處海島型氣候，適合吃屬性較「涼」的米飯來養胃。長期完全不吃碳水（如長期生酮）會導致心臟虧損，因為脾無法順利運化，影響心血生成。</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item active">
+                        <div class="accordion-header">第四章：重要穴位實作</div>
+                        <div class="accordion-content">
+                            <div class="acupoint-grid">
+                                <div class="acupoint-card">
+                                    <h4>氣沖</h4>
+                                    <ul>
+                                        <li><strong>位置：</strong>腹股溝（鼠蹊部），動脈搏動處。</li>
+                                        <li><strong>功能：</strong>打通上下氣血，改善手腳冰冷、體力不濟、女性冷感、男性陽虛不舉等問題。是連接上下半身的重要樞紐。</li>
+                                    </ul>
+                                </div>
+                                <div class="acupoint-card">
+                                    <h4>水道、歸來</h4>
+                                    <ul>
+                                        <li><strong>位置：</strong>氣沖穴上方。</li>
+                                        <li><strong>功能：</strong>與氣沖搭配，主要針對男女生殖系統問題，提升性能力與體力。</li>
+                                    </ul>
+                                </div>
+                                <div class="acupoint-card">
+                                    <h4>解谿</h4>
+                                    <ul>
+                                        <li><strong>位置：</strong>腳踝前方，腳背與小腿交接處的橫紋凹陷中。</li>
+                                        <li><strong>功能：</strong>胃經的「經穴」。專門處理因胃氣不順而導致的「嗆到」，一壓即有效果。</li>
+                                    </ul>
+                                </div>
+                                <div class="acupoint-card">
+                                    <h4>豐隆</h4>
+                                    <ul>
+                                        <li><strong>位置：</strong>外膝眼與外腳踝連線的中點。</li>
+                                        <li><strong>功能：</strong>胃經的「絡穴」，是身體的「除濕」大穴。專門調理因「脾濕」引起的痰多、身體沉重、水腫等問題。</li>
+                                    </ul>
+                                </div>
+                                <div class="acupoint-card">
+                                    <h4>巫醫 & 公孫</h4>
+                                    <ul>
+                                        <li><strong>位置：</strong>巫醫在乳頭正上方；公孫在足內側，第一跖骨基底前下方的凹陷處。</li>
+                                        <li><strong>功能：</strong>豐隆需搭配「巫醫」來加強除濕效果。公孫是脾經的「絡穴」，能調理胃部不適，與「豐隆」互為表裡，是調理脾胃的關鍵組合。</li>
+                                    </ul>
+                                </div>
+                                <div class="acupoint-card">
+                                    <h4>三陰交</h4>
+                                    <ul>
+                                        <li><strong>位置：</strong>內腳踝尖直上四個手指寬，脛骨後緣處。</li>
+                                        <li><strong>功能：</strong>與「公孫」搭配，是調理女性月經不調、痛經的特效穴組，效果迅速。</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <footer>
+                    <p>版本: 1.0.0</p>
+                </footer>
+            </div>
+        </div>
+    </main>
+
+
+    <script>
+        // #############################################
+        // ### 通用腳本 (分頁切換 & 全螢幕) ###
+        // #############################################
+        
+        // --- 全局全螢幕功能 ---
+        const globalFullscreenBtn = document.getElementById('fullscreenBtn');
+        const docElem = document.documentElement;
+        let isGlobalFullscreen = false; // 追蹤全螢幕狀態
+
+        globalFullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                if (docElem.requestFullscreen) {
+                    docElem.requestFullscreen();
+                } else if (docElem.mozRequestFullScreen) { /* Firefox */
+                    docElem.mozRequestFullScreen();
+                } else if (docElem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                    docElem.webkitRequestFullscreen();
+                } else if (docElem.msRequestFullscreen) { /* IE/Edge */
+                    docElem.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                globalFullscreenBtn.textContent = '退出全螢幕';
+                isGlobalFullscreen = true;
+            } else {
+                globalFullscreenBtn.textContent = '切換全螢幕';
+                isGlobalFullscreen = false;
+            }
+            // 同步 index.html 腳本中的全螢幕狀態
+            if (typeof indexScript === 'object') {
+                indexScript.syncFullscreenState(isGlobalFullscreen);
+            }
+        });
+
+        // --- 分頁切換功能 ---
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.getAttribute('data-tab');
+
+                // 更新按鈕狀態
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                button.classList.add('active');
+
+                // 更新內容顯示
+                contentSections.forEach(section => {
+                    if (section.id === targetTab) {
+                        section.classList.add('active');
+                        // 如果切換到 app-wellness，觸發一次手風琴的初始化
+                        if (targetTab === 'app-wellness' && typeof wellnessScript === 'object') {
+                            wellnessScript.initActiveAccordion();
+                        }
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+
+        // #############################################
+        // ### 腳本：來自 index.html (互動經絡圖) ###
+        // #############################################
+        
+        // 將 index.html 的腳本封裝在一個物件或 IIFE 中，避免全域變數汙染
+        const indexScript = (function() {
+            // V2.0 - 更新經絡資料結構
+            const meridiansData = [
+                {
+                    name: '手太陰肺經',
+                    organs: ['肺'],
+                    points: [
+                        { name: '中府', location: '胸前壁外上方，鎖骨下窩凹陷處，距前正中線6寸。', function: '治療咳嗽、氣喘、胸痛、肩背痛等呼吸系統疾病。' },
+                        { name: '尺澤', location: '肘橫紋中，肱二頭肌腱橈側凹陷處。', function: '治療肘臂攣痛、咳嗽、咳血、急性咽喉腫痛。' },
+                        { name: '孔最', location: '前臂掌面橈側，尺澤與太淵連線上，腕橫紋上7寸。', function: '治療咳血、鼻出血、咽喉腫痛、失音，是止血要穴。' },
+                        { name: '列缺', location: '橈骨莖突上方，腕橫紋上1.5寸。', function: '治療頭痛、項強、咳嗽、氣喘、口眼歪斜。' },
+                        { name: '經渠', location: '橈骨莖突內側，橈動脈搏動處，腕橫紋上1寸。', function: '治療咳嗽、氣喘、胸痛、手腕痛。' },
+                        { name: '太淵', location: '腕掌側橫紋橈側，橈動脈搏動處。', function: '治療咳嗽、氣喘、無脈症、腕臂痛，是脈之會穴。' },
+                        { name: '少商', location: '拇指末節橈側，距指甲角0.1寸。', function: '治療咽喉腫痛、高熱、昏迷、鼻出血，多用於急救。' }
+                    ],
+                    path: '起於中焦，下絡大腸，還循胃口，上膈屬肺，從肺系橫出腋下，循臑內，行少陰、心主之前，下肘中，循臂內上骨下廉，入寸口，上魚，循魚際，出大指之端。',
+                    description: '主治呼吸系統疾病（如咳嗽、氣喘、胸悶）、喉嚨不適、以及經脈循行部位的疼痛。',
+                    image: 'https://pplx-res.cloudinary.com/image/upload/v1757882796/pplx_project_search_images/aac192a26a03b243f8bc779a7254d7cc0d26ccb2.png'
+                },
+                {
+                    name: '手陽明大腸經',
+                    organs: ['大腸'],
+                    points: [
+                        { name: '商陽', location: '食指末節橈側，距指甲角0.1寸。', function: '治療牙痛、咽喉腫痛、熱病、昏迷。' },
+                        { name: '合谷', location: '手背，第1、2掌骨間，第二掌骨橈側的中點處。', function: '萬用穴，主治頭痛、牙痛、感冒、發燒、鼻炎及五官科疾病。' },
+                        { name: '曲池', location: '屈肘成直角，在肘橫紋外側端與肱骨外上髁連線中點。', function: '治療手臂痹痛、高血壓、皮膚病（如濕疹、蕁麻疹）、發燒。' },
+                        { name: '迎香', location: '鼻翼外緣中點旁，鼻唇溝中。', function: '治療鼻塞、流鼻水、鼻炎、嗅覺減退、面部神經麻痺。' }
+                    ],
+                    path: '起於大指次指之端，循指上廉，出合谷兩骨之間，上入兩筋之中，循臂上廉，入肘外廉，上臑外前廉，上肩，出髃骨之前廉，上出於柱骨之會上，下入缺盆，絡肺，下膈，屬大腸。',
+                    description: '主治消化系統問題（便秘、腹瀉）、頭面五官疾病（牙痛、鼻塞、喉嚨痛）、以及經脈循行部位的疼痛。',
+                    image: 'https://pplx-res.cloudinary.com/image/upload/v1762561252/pplx_project_search_images/58625d60ffd7c8d3bbad6c3caf12df8749da6e1a.png'
+                },
+                {
+                    name: '足陽明胃經',
+                    organs: ['胃'],
+                    points: [
+                        { name: '承泣', location: '瞳孔直下，眼球與眶下緣之間。', function: '治療各種眼疾，如近視、遠視、夜盲、白內障。' },
+                        { name: '天樞', location: '腹中部，臍中旁開2寸。', function: '治療便秘、腹瀉、腹脹、消化不良等腸胃問題。' },
+                        { name: '足三里', location: '外膝眼下3寸，脛骨前緣外一橫指處。', function: '強壯要穴，調理脾胃、補中益氣、通經活絡、增強免疫力。' },
+                        { name: '豐隆', location: '小腿前外側，外踝尖上8寸，距脛骨前緣二橫指。', function: '祛濕化痰第一要穴，治療痰多、咳嗽、眩暈、水腫。' },
+                        { name: '解谿', location: '足背與小腿交界處的橫紋中央凹陷中。', function: '治療足踝腫痛、胃火牙痛、頭痛、便秘。' },
+                        { name: '厲兌', location: '第二腳趾末節外側，距趾甲角0.1寸。', function: '治療牙痛、鼻出血、多夢、熱病。' }
+                    ],
+                    path: '起於鼻旁，交鼻根中，旁約太陽經，下循鼻外，入上齒中，還出挾口，環唇，下交承漿，卻循頤後下廉，出大迎，循頰車，上耳前，過客主人，循髮際，至額顱。其支者...下經乳內廉，下挾臍，入氣街中。',
+                    description: '主治腸胃疾病（胃痛、嘔吐、消化不良）、頭面五官疾病、以及經脈循行部位的疼痛。',
+                    image: 'https://pplx-res.cloudinary.com/image/upload/v1762561250/pplx_project_search_images/1e81f2ed0e4a51a6f4e503416fa1ea7669ee9497.png'
+                },
+                {
+                    name: '足太陰脾經',
+                    organs: ['脾'],
+                    points: [
+                        { name: '公孫', location: '足內側緣，第一跖骨基底的前下方。', function: '治療胃痛、嘔吐、腹脹、腹瀉等脾胃病症。' },
+                        { name: '三陰交', location: '小腿內側，內踝尖上3寸，脛骨內側緣後方。', function: '婦科要穴，治療月經不調、痛經、帶下，兼治消化及泌尿系統疾病。' },
+                        { name: '陰陵泉', location: '小腿內側，膝下脛骨內側髁下方凹陷處。', function: '健脾利濕，治療水腫、腹瀉、膝關節炎。' },
+                        { name: '血海', location: '大腿內側，髕骨內上緣上2寸，股四頭肌內側頭的隆起處。', function: '活血化瘀、理血調經，治療月經不調、痛經、皮膚搔癢。' }
+                    ],
+                    path: '起於大趾之端，循指內側白肉際，過核骨後，上內踝前廉，上踹內，循脛骨後，交出厥陰之前，上膝股內前廉，入腹，屬脾，絡胃，上膈，挾咽，連舌本，散舌下。',
+                    description: '主治消化系統疾病（腹脹、泄瀉、食慾不振）、婦科疾病（月經不調、痛經）、以及經脈循行部位的腫痛。',
+                    image: 'https://pplx-res.cloudinary.com/image/upload/v1762561252/pplx_project_search_images/58625d60ffd7c8d3bbad6c3caf12df8749da6e1a.png'
+                },
+                {
+                    name: '手少陰心經',
+                    organs: ['心'],
+                    points: [
+                        { name: '極泉', location: '腋窩頂點，腋動脈搏動處。', function: '治療心痛、胸悶、肩臂疼痛、脅肋疼痛。' },
+                        { name: '少海', location: '屈肘，肘橫紋內側端與肱骨內上髁連線的中點。', function: '治療心痛、肘臂攣痛、頭痛、精神類疾病。' },
+                        { name: '神門', location: '腕橫紋尺側端，尺側腕屈肌腱的橈側凹陷處。', function: '安定心神，治療失眠、心悸、健忘、焦慮、腕關節痛。' },
+                        { name: '少衝', location: '小指末節橈側，距指甲角0.1寸。', function: '治療心悸、心痛、中風昏迷、熱病，用於急救。' }
+                    ],
+                    path: '起於心中，出屬心系，下膈，絡小腸。其支者：從心系，上挾咽，繫目系。其直者：復從心系，卻上肺，下出腋下，循臑內後廉，行太陰、心主之後，下肘內，循臂內後廉，抵掌後銳骨之端，入掌內後廉，循小指之內，出其端。',
+                    description: '主治心血管疾病（心悸、胸悶、心痛）、精神情志疾病（失眠、多夢、健忘）、以及經脈循行部位的疼痛。',
+                    image: 'https://pplx-res.cloudinary.com/image/upload/v1758487831/pplx_project_search_images/e0e813bfcfc0aeb2c06503e3f1be3e417bdf9e15.png'
+                },
+                {
+                    name: '手太陽小腸經',
+                    organs: ['小腸'],
+                    points: [
+                        { name: '後谿', location: '微握拳，第五掌指關節後的遠側掌橫紋頭赤白肉際。', function: '治療頭痛項強、落枕、腰背痛、耳鳴、盜汗。' },
+                        { name: '養老', location: '以掌心面向胸，當尺骨莖突之橈側骨縫凹陷中。', function: '治療目視昏花、肩背肘臂酸痛、急性腰痛。' },
+                        { name: '天宗', location: '肩胛岡中點與肩胛下角連線上，岡下窩中央凹陷處。', function: '治療肩胛疼痛、手臂不舉、乳腺炎。' },
+                        { name: '聽宮', location: '耳屏前，下頜骨髁狀突的後緣，張口時呈凹陷處。', function: '治療耳鳴、耳聾、中耳炎等耳部疾病。' }
+                    ],
+                    path: '起於小指之端，循手外側，上腕，出踝中，直上循臂骨下廉，出肘內側兩筋之間，上循臑外後廉，出肩解，繞肩胛，交肩上，入缺盆，絡心，循咽，下膈，抵胃，屬小腸。',
+                    description: '主治頭面五官疾病（耳鳴、耳聾、喉嚨痛）、肩頸背部疼痛、以及經脈循行部位的疼痛。',
+                    image: 'https://pplx-res.cloudinary.com/image/upload/v1758660680/pplx_project_search_images/e67aacd8cad059c2dcc95b7133e23b7a01f8f78a.png'
+                },
+                {
+                    name: '足太陽膀胱經',
+                    organs: ['膀胱'],
+                    points: [
+                        { name: '睛明', location: '目內眥角稍上方凹陷處。', function: '治療各種眼疾，如目赤腫痛、視力模糊、迎風流淚。' },
+                        { name: '肺俞', location: '背部，第3胸椎棘突下，旁開1.5寸。', function: '治療咳嗽、氣喘、盜汗等肺部相關疾病。' },
+                        { name: '腎俞', location: '腰部，第2腰椎棘突下，旁開1.5寸。', function: '補腎益精，治療腰痛、耳鳴、遺精、陽痿、月經不調。' },
+                        { name: '委中', location: '膕橫紋中點，股二頭肌腱與半腱肌肌腱的中間。', function: '治療腰背痛、坐骨神經痛、膝關節炎。' },
+                        { name: '承山', location: '小腿後面，腓腸肌兩肌腹之間凹陷的頂點處。', function: '治療小腿痙攣（抽筋）、腰腿痛、痔瘡。' },
+                        { name: '崑崙', location: '外踝尖與跟腱之間凹陷處。', function: '治療頭痛、項強、踝關節扭傷、坐骨神經痛。' }
+                    ],
+                    path: '起於目內眥，上額，交巔。其支者：從巔至耳上角。其直者：從巔入絡腦，還出別下項，循肩髆內，挾脊，抵腰中，入循膂，絡腎，屬膀胱。',
+                    description: '主治泌尿系統疾病、腰背部疼痛、頭面五官疾病、以及經脈循行部位的疼痛，是人體最長的經脈。',
+                    image: 'https://pplx-res.cloudinary.com/image/upload/v1762561250/pplx_project_search_images/1e81f2ed0e4a51a6f4e503416fa1ea7669ee9497.png'
+                },
+                {
+                    name: '足少陰腎經',
+                    organs: ['腎'],
+                    points: [
+                        { name: '湧泉', location: '足底，蜷足時足前部凹陷處，約當足底第2、3跖趾縫紋頭端與足跟連線的前1/3與後2/3交點上。', function: '滋陰降火、寧心安神，治療失眠、頭頂痛、高血壓、休克。' },
+                        { name: '太谿', location: '內踝後方，內踝尖與跟腱之間的凹陷處。', function: '滋陰補腎，治療腎虛牙痛、腰膝酸軟、耳鳴、月經不調。' },
+                        { name: '復溜', location: '小腿內側，太谿直上2寸，跟腱的前方。', function: '補腎益陰、溫陽利水，治療水腫、盜汗、腰痛。' }
+                    ],
+                    path: '起於小趾之下，邪走足心，出於然谷之下，循內踝之後，別入跟中，以上踹內，出膕內廉，上股內後廉，貫脊，屬腎，絡膀胱。',
+                    description: '主治泌尿生殖系統疾病（腰膝酸軟、耳鳴、遺精）、水液代謝失調、以及經脈循行部位的疼痛。',
+                    image: 'https://pplx-res.cloudinary.com/image/upload/v1758487831/pplx_project_search_images/e0e813bfcfc0aeb2c06503e3f1be3e417bdf9e15.png'
+                },
+                {
+                    name: '手厥陰心包經',
+                    organs: ['心包'],
+                    points: [
+                        { name: '曲澤', location: '肘橫紋中，肱二頭肌腱的尺側緣。', function: '治療心痛、心悸、胃痛、嘔吐、中暑。' },
+                        { name: '內關', location: '前臂掌側，腕橫紋上2寸，掌長肌腱與橈側腕屈肌腱之間。', function: '寧心安神、和胃降逆，治療心悸、胸悶、失眠、暈車、噁心嘔吐。' },
+                        { name: '大陵', location: '腕掌橫紋的中點處，掌長肌腱與橈側腕屈肌腱之間。', function: '清心安神，治療失眠、心悸、口臭、腕管綜合症。' },
+                        { name: '勞宮', location: '手掌心，握拳屈指時中指尖處。', function: '清心火、開竅醒神，治療中風昏迷、中暑、口瘡、心煩。' }
+                    ],
+                    path: '起於胸中，出屬心包絡，下膈，歷絡三焦。其支者：循胸出脅，下腋三寸，上抵腋下，循臑內，行太陰、少陰之間，入肘中，下臂，行兩筋之間，入掌中，循中指，出其端。',
+                    description: '主治心血管疾病（心悸、胸悶、心痛）、精神情志疾病（失眠、焦慮）、以及經脈循行部位的疼痛。',
+                    image: 'https://pplx-res.cloudinary.com/image/upload/v1762561252/pplx_project_search_images/58625d60ffd7c8d3bbad6c3caf12df8749da6e1a.png'
+                },
+                {
+                    name: '手少陽三焦經',
+                    organs: ['三焦'],
+                    points: [
+                        { name: '中渚', location: '手背，第四、五掌指關節後方凹陷處。', function: '治療頭痛、耳鳴、耳聾、手臂痛。' },
+                        { name: '外關', location: '前臂背側，腕背橫紋上2寸，尺骨與橈骨之間。', function: '治療感冒發燒、頭痛、耳鳴、落枕、手臂疼痛。' },
+                        { name: '翳風', location: '耳垂後方，乳突與下頜角之間的凹陷處。', function: '治療耳鳴、耳聾、面神經麻痺、牙痛。' },
+                        { name: '絲竹空', location: '眉梢外側凹陷處。', function: '治療偏頭痛、眼疾、面部痙攣。' }
+                    ],
+                    path: '起於小指次指之端，上出兩指之間，循手表腕，出臂外兩骨之間，上貫肘，循臑外，上肩，而交出足少陽之後，入缺盆，布膻中，散絡心包，下膈，遍屬三焦。',
+                    description: '主治頭面五官疾病（耳鳴、耳聾、偏頭痛）、熱病、以及經脈循行部位的疼痛。',
+                    image: 'https://pplx-res.cloudinary.com/image/upload/v1758660680/pplx_project_search_images/e67aacd8cad059c2dcc95b7133e23b7a01f8f78a.png'
+                },
+                {
+                    name: '足少陽膽經',
+                    organs: ['膽'],
+                    points: [
+                        { name: '風池', location: '頸後，胸鎖乳突肌與斜方肌上端之間的凹陷中，平風府穴。', function: '疏風解表、清頭明目，治療頭痛、眩暈、感冒、頸項強痛、眼疾。' },
+                        { name: '肩井', location: '肩上，大椎穴與肩峰連線的中點。', function: '治療肩頸疼痛、落枕、頭痛、乳腺炎。' },
+                        { name: '環跳', location: '股外側部，側臥屈股，股骨大轉子最凸點與骶管裂孔連線的外1/3與中1/3交點處。', function: '治療坐骨神經痛、腰腿痛、下肢麻痺。' },
+                        { name: '陽陵泉', location: '小腿外側，腓骨小頭前下方凹陷處。', function: '舒筋活絡，治療半身不遂、下肢痿痹、膝關節炎、膽囊炎。' },
+                        { name: '足臨泣', location: '足背外側，第四、五跖骨結合部前方凹陷處。', function: '治療偏頭痛、脅肋痛、月經不調、足跗腫痛。' }
+                    ],
+                    path: '起於目銳眥，上抵頭角，下耳後，循頸，行手少陽之前，至肩上，卻交出手少陽之後，入缺盆。其支者：從耳後入耳中，出走耳前，至目銳眥後。',
+                    description: '主治肝膽疾病（脅肋疼痛、口苦）、偏頭痛、以及經脈循行部位的疼痛。',
+                    image: 'https://pplx-res.cloudinary.com/image/upload/v1762561250/pplx_project_search_images/1e81f2ed0e4a51a6f4e503416fa1ea7669ee9497.png'
+                },
+                {
+                    name: '足厥陰肝經',
+                    organs: ['肝'],
+                    points: [
+                        { name: '太衝', location: '足背，第一、二跖骨結合部之前方凹陷處。', function: '疏肝解鬱、清熱利膽，治療高血壓、頭痛、眩暈、月經不調、易怒。' },
+                        { name: '行間', location: '足背，第一、二趾間，趾蹼緣的後方赤白肉際處。', function: '清肝瀉火，治療頭痛、目赤腫痛、口苦、月經過多。' },
+                        { name: '期門', location: '胸部，乳頭直下，第6肋間隙，前正中線旁開4寸。', function: '疏肝健脾，治療胸脅脹痛、嘔吐、呃逆、腹脹。' }
+                    ],
+                    path: '起於大趾叢毛之際，上循足跗上廉，去內踝一寸，上踝八寸，交出太陰之後，上膕內廉，循股陰，入毛中，過陰器，抵小腹，挾胃，屬肝，絡膽，上貫膈，布脅肋，循喉嚨之後，上入頏顙，連目系，上出額，與督脈會於巔。',
+                    description: '主治肝膽疾病（脅痛、黃疸）、婦科疾病、以及經脈循行部位的疼痛。',
+                    image: 'https://pplx-res.cloudinary.com/image/upload/v1758487831/pplx_project_search_images/e0e813bfcfc0aeb2c06503e3f1be3e417bdf9e15.png'
+                }
+            ];
+
+            // 狀態管理（使用變數存儲，不使用 localStorage）
+            let currentView = 'home';
+            let selectedMeridian = null;
+            let isFullscreen = false; // 這個變數現在由外部同步
+            let zoomLevel = 1;
+            let isDragging = false;
+            let startX = 0;
+            let startY = 0;
+            let translateX = 0;
+            let translateY = 0;
+
+            // DOM 元素 (重新綁定到新的 ID)
+            const homeView = document.getElementById('indexHomeView');
+            const detailView = document.getElementById('indexDetailView');
+            const meridianGrid = document.getElementById('indexMeridianGrid');
+            const homeBtn = document.getElementById('indexHomeBtn');
+            // 全螢幕按鈕改用全局的
+            const meridianImage = document.getElementById('indexMeridianImage');
+            const imageContainer = document.getElementById('indexImageContainer');
+
+            // 渲染首頁經絡卡片
+            function renderMeridianGrid() {
+                meridianGrid.innerHTML = '';
+                meridiansData.forEach((meridian, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'meridian-card';
+                    card.innerHTML = `
+                        <h3 class="meridian-card-title">${meridian.name}</h3>
+                        <div class="meridian-card-organs">對應臟腑：${meridian.organs.join('、')}</div>
+                        <p class="meridian-card-desc">${meridian.description.substring(0, 40)}...</p>
+                    `;
+                    card.addEventListener('click', () => showMeridianDetail(index));
+                    meridianGrid.appendChild(card);
+                });
+            }
+
+            // 顯示經絡詳細資訊
+            function showMeridianDetail(index) {
+                selectedMeridian = meridiansData[index];
+                currentView = 'detail';
+                
+                // 更新視圖
+                homeView.classList.add('hidden');
+                detailView.classList.remove('hidden');
+                detailView.classList.add('active');
+                homeBtn.style.display = 'inline-flex';
+                
+                // 填充詳細資訊
+                document.getElementById('indexDetailTitle').textContent = selectedMeridian.name;
+                document.getElementById('indexDetailOrgans').textContent = selectedMeridian.organs.join('、');
+                document.getElementById('indexDetailPath').textContent = selectedMeridian.path;
+                document.getElementById('indexDetailDescription').textContent = selectedMeridian.description;
+                
+                // V2.0 - 填充詳細穴位資訊
+                const pointsContainer = document.getElementById('indexDetailPoints');
+                pointsContainer.innerHTML = ''; // 清空舊內容
+                selectedMeridian.points.forEach(point => {
+                    const pointDiv = document.createElement('div');
+                    pointDiv.className = 'point-info';
+                    pointDiv.innerHTML = `
+                        <h4 class="point-name">${point.name}</h4>
+                        <p class="point-location"><strong>位置：</strong>${point.location}</p>
+                        <p class="point-function"><strong>主治：</strong>${point.function}</p>
+                    `;
+                    pointsContainer.appendChild(pointDiv);
+                });
+                
+                // 載入圖片
+                meridianImage.src = selectedMeridian.image;
+                resetZoom();
+            }
+
+            // 返回首頁
+            function showHome() {
+                currentView = 'home';
+                homeView.classList.remove('hidden');
+                detailView.classList.remove('active');
+                detailView.classList.add('hidden');
+                homeBtn.style.display = 'none';
+                selectedMeridian = null;
+            }
+
+            // 縮放功能
+            function zoomIn() {
+                zoomLevel = Math.min(zoomLevel + 0.2, 3);
+                updateImageTransform();
+            }
+
+            function zoomOut() {
+                zoomLevel = Math.max(zoomLevel - 0.2, 0.5);
+                updateImageTransform();
+            }
+
+            function resetZoom() {
+                zoomLevel = 1;
+                translateX = 0;
+                translateY = 0;
+                updateImageTransform();
+            }
+
+            function updateImageTransform() {
+                meridianImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
+            }
+
+            // 拖曳功能
+            meridianImage.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                meridianImage.style.cursor = 'grabbing';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    translateX = e.clientX - startX;
+                    translateY = e.clientY - startY;
+                    updateImageTransform();
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                meridianImage.style.cursor = 'move';
+            });
+
+            // 觸控支援
+            let touchStartX = 0;
+            let touchStartY = 0;
+
+            meridianImage.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    touchStartX = e.touches[0].clientX - translateX;
+                    touchStartY = e.touches[0].clientY - translateY;
+                }
+            });
+
+            meridianImage.addEventListener('touchmove', (e) => {
+                if (isDragging && e.touches.length === 1) {
+                    e.preventDefault();
+                    translateX = e.touches[0].clientX - touchStartX;
+                    translateY = e.touches[0].clientY - touchStartY;
+                    updateImageTransform();
+                }
+            });
+
+            meridianImage.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+
+            // 事件監聽器
+            homeBtn.addEventListener('click', showHome);
+            // 全螢幕按鈕已被全局腳本接管
+            document.getElementById('indexZoomInBtn').addEventListener('click', zoomIn);
+            document.getElementById('indexZoomOutBtn').addEventListener('click', zoomOut);
+            document.getElementById('indexResetZoomBtn').addEventListener('click', resetZoom);
+
+            // 初始化
+            renderMeridianGrid();
+            
+            // 返回一個公共接口，用於同步全螢幕狀態
+            return {
+                syncFullscreenState: function(isFs) {
+                    isFullscreen = isFs;
+                }
+            };
+        })();
+
+
+        // #############################################
+        // ### 腳本：來自 測01.html (脾胃養生) ###
+        // #############################################
+        
+        const wellnessScript = (function() {
+            // 腳本限縮在 #app-wellness 內
+            const wellnessApp = document.getElementById('app-wellness');
+            const accordionItems = wellnessApp.querySelectorAll('.accordion-item');
+
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+
+                header.addEventListener('click', () => {
+                    // 關閉其他項目
+                    accordionItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.classList.contains('active')) {
+                            otherItem.classList.remove('active');
+                            otherItem.querySelector('.accordion-content').style.maxHeight = null;
+                            otherItem.querySelector('.accordion-content').style.padding = '0 20px';
+                        }
+                    });
+
+                    // 切換當前項目
+                    item.classList.toggle('active');
+                    if (item.classList.contains('active')) {
+                        content.style.maxHeight = content.scrollHeight + 40 + "px";
+                        content.style.padding = '10px 20px 30px';
+                    } else {
+                        content.style.maxHeight = null;
+                        content.style.padding = '0 20px';
+                    }
+                });
+            });
+            
+            function initActive() {
+                // 自動打開標記為 active 的手風琴
+                const activeItem = wellnessApp.querySelector('.accordion-item.active');
+                if(activeItem) {
+                    const content = activeItem.querySelector('.accordion-content');
+                    // 確保在內容可見時才計算 scrollHeight
+                    if (content.scrollHeight > 0) {
+                         content.style.maxHeight = content.scrollHeight + 40 + "px";
+                         content.style.padding = '10px 20px 30px';
+                    }
+                }
+            }
+            
+            // 頁面加載時運行一次
+            document.addEventListener('DOMContentLoaded', initActive);
+
+            // 返回一個接口，以便在切換分頁時手動觸發
+            return {
+                initActiveAccordion: initActive
+            };
+        })();
+
+    </script>
+</body>
+</html>
