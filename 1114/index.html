@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>林美卿生命教育經絡學 - 互動式健康儀表板 (v1.0.4)</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        /* Custom Scrollbar for the list */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #10b981; /* Emerald-500 */
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #059669; /* Emerald-600 */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-down {
+            animation: slideDown 0.5s ease-out forwards;
+        }
+        
+        /* Progress bar animation */
+        .progress-fill {
+            transition: width 2s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans antialiased">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- Icons (Inline SVGs) ---
+        const IconBase = ({ children, className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                {children}
+            </svg>
+        );
+
+        const Maximize = ({ className }) => <IconBase className={className}><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></IconBase>;
+        const Minimize = ({ className }) => <IconBase className={className}><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></IconBase>;
+        const Activity = ({ className }) => <IconBase className={className}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></IconBase>;
+        const Moon = ({ className }) => <IconBase className={className}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></IconBase>;
+        const Sun = ({ className }) => <IconBase className={className}><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></IconBase>;
+        const Info = ({ className }) => <IconBase className={className}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></IconBase>;
+        const PlayCircle = ({ className }) => <IconBase className={className}><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></IconBase>;
+        const PlaySolid = ({ className }) => <IconBase className={className}><polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/></IconBase>;
+        const Calculator = ({ className }) => <IconBase className={className}><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></IconBase>;
+        const MapPin = ({ className }) => <IconBase className={className}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></IconBase>;
+        const BookOpen = ({ className }) => <IconBase className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></IconBase>;
+        const ExternalLink = ({ className }) => <IconBase className={className}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></IconBase>;
+        const Leaf = ({ className }) => <IconBase className={className}><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 6.5-2 11l-5 7"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></IconBase>;
+        const AlertCircle = ({ className }) => <IconBase className={className}><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y2="16"/></IconBase>;
+
+        // --- Data & Constants ---
+        const VERSION = "1.0.4";
+        const VIDEO_ID = "oPnyn912Ij4";
+        const VIDEO_URL = `https://www.youtube.com/watch?v=${VIDEO_ID}`;
+        const VIDEO_THUMBNAIL = `https://img.youtube.com/vi/${VIDEO_ID}/maxresdefault.jpg`;
+
+        // Merged Acupoints (Original + New from 測01.html)
+        const ACUPOINTS = [
+            { id: 'fenglong', name: '豐隆穴', meridian: '胃經', description: '位在小腿前外側，外踝尖上8寸，條口穴外1寸。', function: '祛濕化痰之要穴。', videoContext: '針對「脾濕」體質，若小腿脛骨旁青筋浮起明顯，可能代表胃部狀況不佳。' },
+            { id: 'neiting', name: '內庭穴', meridian: '胃經', description: '足背第2、3趾間，趾蹼緣後方赤白肉際處。', function: '清胃熱，止痛。', videoContext: '容易脹氣者可多按壓此穴，能快速緩解胃部脹氣不適。' },
+            { id: 'dadun', name: '大敦穴', meridian: '肝經 (井穴)', description: '足大趾外側，距指甲角0.1寸。', function: '主治頭痛、眩暈、月經不調、癲癇。', videoContext: '肝經井穴，對於急救或疏通肝氣有幫助。' },
+            { id: 'xingjian', name: '行間穴', meridian: '肝經 (滎穴)', description: '足背第一、二趾間縫紋端。', function: '主治頭痛、眩暈、目赤腫痛、月經過多。', videoContext: '清泄肝火的要穴。' },
+            { id: 'taichong', name: '太衝穴', meridian: '肝經 (原穴)', description: '足背第一、二跖骨結合部前方凹陷。', function: '平肝熄風，主治高血壓、情緒急躁。', videoContext: '肝經原穴，是疏肝理氣最重要的穴位之一。' },
+            { id: 'zhongfeng', name: '中封穴', meridian: '肝經 (經穴)', description: '足內踝前1寸，脛骨前肌腱內側。', function: '主治腹痛、疝氣、小便不利。', videoContext: '保養泌尿系統與下腹部的穴位。' },
+            { id: 'ligou', name: '蠡溝穴', meridian: '肝經 (絡穴)', description: '足內踝尖上5寸，脛骨內側面中央。', function: '主治月經不調、小便不利、疝氣。', videoContext: '肝經絡穴，溝通肝膽兩經。' },
+            { id: 'qichong', name: '氣沖穴', meridian: '胃經', description: '腹股溝稍上方，當臍中下5寸，距前正中線2寸。', function: '調理氣血，舒緩腿部。', videoContext: '體力不佳者可按壓，按壓時會有熱感傳導至膝蓋。' },
+            { id: 'chongmen', name: '沖門穴', meridian: '脾經', description: '腹股溝外側，距恥骨聯合上緣中點3.5寸。', function: '健脾化濕，理氣。', videoContext: '與氣沖穴配合，改善體力不佳及皮膚癢的問題。' },
+            { id: 'gongsun', name: '公孫穴', meridian: '脾經', description: '足內側緣，第一蹠骨基底部的前下方。', function: '健脾胃，調理衝脈。', videoContext: '脾經絡穴，對於消化系統及核心肌群力量有幫助。' },
+            { id: 'sanyinjiao', name: '三陰交', meridian: '脾、肝、腎經交會', description: '小腿內側，足內踝尖上3寸，脛骨內側緣後方。', function: '調補肝腎，健脾利濕，婦科要穴。', videoContext: '重要的保健大穴，建議每日按壓或拍打以維持氣血通暢。' },
+            { id: 'yinlingquan', name: '陰陵泉', meridian: '脾經', description: '小腿內側，脛骨內側髁後下方凹陷處。', function: '運中焦，化濕滯。', videoContext: '與水分代謝有關，轉彎凹陷處，按壓有助於消除水腫。' },
+            { id: 'dabao', name: '大包穴', meridian: '脾經 (脾之大絡)', description: '側胸部，腋中線上，第六肋間隙處。', function: '統領一身之氣血。', videoContext: '若呼吸短促、氣不到丹田，或全身缺氧，需多按壓或拍打此處。' }
+        ];
+
+        const DAILY_ROUTINE = [
+            {
+                time: 'Morning / Day',
+                icon: <Sun className="w-6 h-6 text-amber-500" />,
+                title: '日間保養',
+                content: '早餐視個人作息。消化不佳者，中晚餐隨餐服用醋錠。'
+            },
+            {
+                time: 'After Meal',
+                icon: <Activity className="w-6 h-6 text-emerald-500" />,
+                title: '餐後輔助',
+                content: '大餐後增加醋錠劑量。胃潰瘍者餐前先喝溫薑茶或熱湯暖胃。'
+            },
+            {
+                time: 'Night (Pre-Sleep)',
+                icon: <Moon className="w-6 h-6 text-indigo-500" />,
+                title: '睡前養肝 (關鍵)',
+                content: '睡前空腹（餐後2小時以上）飲用檸檬原汁。這是「酸入肝」的最佳時刻，通知肝臟休息。'
+            }
+        ];
+
+        const ACID_FOODS = [
+            { name: '檸檬', desc: '富含維C，促進解毒與膽汁分泌' },
+            { name: '醋', desc: '促進新陳代謝，幫助消化，調節酸鹼' },
+            { name: '山楂', desc: '消食化積，活血化瘀，降血脂' },
+            { name: '橘子', desc: '含類黃酮，增強解毒能力' },
+            { name: '葡萄柚', desc: '促進代謝排毒 (需注意藥物交互作用)' },
+            { name: '酸梅', desc: '生津止渴，收斂肝氣，改善頭痛眩暈' }
+        ];
+
+        const SYMPTOMS = [
+            { name: '頭暈頭痛', detail: '腦部供氧不足或肝氣上亢。改善：按摩太衝穴、深呼吸。' },
+            { name: '疲勞乏力', detail: '細胞缺氧導致能量不足。改善：規律作息、補充B群。' },
+            { name: '記憶衰退', detail: '長期缺氧影響神經。改善：Omega-3、充足睡眠。' },
+            { name: '呼吸困難', detail: '肺部氧交換效率低。改善：呼吸訓練、有氧運動。' },
+            { name: '手腳冰冷', detail: '末梢循環不良。改善：按摩、溫水泡腳。' },
+            { name: '胸悶心悸', detail: '供氧不足或氣鬱。改善：拍打心經、深呼吸。' }
+        ];
+
+        const TREATMENTS = [
+            { title: '飲食調整', desc: '深海魚類(Omega-3)、十字花科蔬菜(解毒)、維生素E(抗發炎)。' },
+            { title: '運動療法', desc: '每週3-5次有氧運動，促進循環，提高含氧量。' },
+            { title: '穴位按摩', desc: '重點按壓肝俞、膽俞、腎俞，每穴6秒，重複5次。' },
+            { title: '營養補充', desc: '奶薊草(500mg)、維生素D3、硒(200mcg)、TUDCA。' },
+            { title: '呼吸調節', desc: '深呼吸練習：吸4秒、屏4秒、呼6秒，每天10-15分鐘。' },
+            { title: '姿勢矯正', desc: '保持脊背伸展，避免脊椎走位導致器官缺氧。' }
+        ];
+
+        // --- Components ---
+
+        const SectionTitle = ({ icon, title }) => (
+            <div className="flex items-center gap-2 mb-4 border-b-2 border-emerald-100 pb-2">
+                {icon}
+                <h2 className="text-xl font-bold text-emerald-800">{title}</h2>
+            </div>
+        );
+
+        const Card = ({ children, className = "", onClick }) => (
+            <div onClick={onClick} className={`bg-white rounded-xl shadow-sm border border-stone-200 p-6 hover:shadow-md transition-all duration-300 ${className} ${onClick ? 'cursor-pointer' : ''}`}>
+                {children}
+            </div>
+        );
+
+        const DosageCalculator = () => {
+            const [weight, setWeight] = useState('');
+            const [mealType, setMealType] = useState('normal');
+            const [digestion, setDigestion] = useState('normal');
+            const [result, setResult] = useState(null);
+
+            useEffect(() => {
+                if (!weight) {
+                    setResult(null);
+                    return;
+                }
+                let baseDose = 0;
+                const w = parseFloat(weight);
+                if (w < 50) baseDose = 3;
+                else if (w >= 50 && w < 60) baseDose = 4;
+                else if (w >= 60) baseDose = 5;
+
+                let finalDose = baseDose;
+                let message = "";
+
+                if (mealType === 'heavy') {
+                    finalDose = 8;
+                    message = "吃大餐時建議增加劑量以助消化。";
+                }
+                if (digestion === 'bad') {
+                    message += " 消化較差或體型較壯碩者，建議每天規律食用。";
+                } else {
+                    message += " 消化正常者可偶爾食用或隨大餐食用。";
+                }
+                setResult({ dose: finalDose, note: message });
+            }, [weight, mealType, digestion]);
+
+            return (
+                <Card className="bg-emerald-50/50">
+                    <SectionTitle icon={<Calculator className="w-5 h-5 text-emerald-600" />} title="醋錠劑量計算器" />
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-stone-600 mb-1">體重 (公斤)</label>
+                            <input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="例如: 55" className="w-full p-2 border border-stone-300 rounded-md focus:ring-2 focus:ring-emerald-400 outline-none transition" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-stone-600 mb-1">用餐類型</label>
+                                <select value={mealType} onChange={(e) => setMealType(e.target.value)} className="w-full p-2 border border-stone-300 rounded-md outline-none">
+                                    <option value="normal">一般用餐</option>
+                                    <option value="heavy">大餐/吃到飽</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-stone-600 mb-1">消化狀況</label>
+                                <select value={digestion} onChange={(e) => setDigestion(e.target.value)} className="w-full p-2 border border-stone-300 rounded-md outline-none">
+                                    <option value="normal">正常</option>
+                                    <option value="bad">容易脹氣/消化差</option>
+                                </select>
+                            </div>
+                        </div>
+                        {result && (
+                            <div className="mt-4 p-4 bg-emerald-100 rounded-lg border border-emerald-200 animate-fade-in">
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-sm text-emerald-800">建議:</span>
+                                    <span className="text-3xl font-bold text-emerald-600">{result.dose}</span>
+                                    <span className="text-sm text-emerald-800">顆</span>
+                                </div>
+                                {result.note && <p className="text-xs text-emerald-700 mt-2">{result.note}</p>}
+                            </div>
+                        )}
+                    </div>
+                </Card>
+            );
+        };
+
+        const AcupointMap = () => {
+            const [selectedPoint, setSelectedPoint] = useState(ACUPOINTS[0]); // Default select first
+
+            return (
+                <Card className="col-span-1 lg:col-span-2">
+                    <SectionTitle icon={<MapPin className="w-5 h-5 text-emerald-600" />} title="經絡穴位互動導覽" />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="md:col-span-1 space-y-2 h-80 overflow-y-auto pr-2 custom-scrollbar">
+                            {ACUPOINTS.map((point) => (
+                                <button
+                                    key={point.id}
+                                    onClick={() => setSelectedPoint(point)}
+                                    className={`w-full text-left p-3 rounded-lg text-sm transition-all duration-200 flex justify-between items-center ${
+                                        selectedPoint?.id === point.id
+                                            ? 'bg-emerald-600 text-white shadow-md transform scale-105'
+                                            : 'bg-stone-100 text-stone-600 hover:bg-emerald-100'
+                                    }`}
+                                >
+                                    <span>{point.name}</span>
+                                    {selectedPoint?.id === point.id && <Activity className="w-4 h-4" />}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="md:col-span-2 bg-stone-50 rounded-lg p-6 border border-stone-200 min-h-[300px] flex flex-col justify-center relative overflow-hidden">
+                            {selectedPoint ? (
+                                <div className="animate-fade-in z-10">
+                                    <h3 className="text-2xl font-bold text-emerald-800 mb-1">{selectedPoint.name}</h3>
+                                    <span className="inline-block px-2 py-1 bg-sky-100 text-sky-700 text-xs rounded-full mb-4 font-medium">
+                                        {selectedPoint.meridian}
+                                    </span>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <h4 className="text-sm font-bold text-stone-500 uppercase tracking-wide">位置</h4>
+                                            <p className="text-stone-800">{selectedPoint.description}</p>
+                                        </div>
+                                        <div>
+                                            <h4 className="text-sm font-bold text-stone-500 uppercase tracking-wide">功效</h4>
+                                            <p className="text-stone-800">{selectedPoint.function}</p>
+                                        </div>
+                                        <div className="bg-amber-50 p-3 rounded-md border-l-4 border-amber-400">
+                                            <h4 className="text-xs font-bold text-amber-600 mb-1">課程重點</h4>
+                                            <p className="text-sm text-amber-900 italic">"{selectedPoint.videoContext}"</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-center text-stone-400">請點選左側列表查看穴位詳情</div>
+                            )}
+                        </div>
+                    </div>
+                </Card>
+            );
+        };
+
+        const RoutineTimeline = () => (
+            <Card>
+                <SectionTitle icon={<Activity className="w-5 h-5 text-emerald-600" />} title="每日養生時刻表" />
+                <div className="relative border-l-2 border-emerald-100 ml-3 space-y-8 pl-6 py-2">
+                    {DAILY_ROUTINE.map((item, index) => (
+                        <div key={index} className="relative group">
+                            <div className="absolute -left-[35px] bg-white border-2 border-emerald-200 rounded-full p-1 group-hover:scale-110 transition-transform duration-300">
+                                {item.icon}
+                            </div>
+                            <div>
+                                <span className="text-xs font-semibold text-emerald-500 uppercase tracking-wider">{item.time}</span>
+                                <h3 className="text-lg font-bold text-stone-800 mt-1 mb-2">{item.title}</h3>
+                                <p className="text-stone-600 text-sm leading-relaxed">{item.content}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </Card>
+        );
+
+        const FoodGrid = () => {
+            const [activeFood, setActiveFood] = useState(null);
+            return (
+                <Card className="col-span-1 lg:col-span-2 border-l-4 border-l-lime-500">
+                    <SectionTitle icon={<Leaf className="w-5 h-5 text-lime-600" />} title="酸味食物圖鑑 (點擊查看功效)" />
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+                        {ACID_FOODS.map((food) => (
+                            <button 
+                                key={food.name}
+                                onClick={() => setActiveFood(activeFood === food ? null : food)}
+                                className={`p-3 rounded-lg text-center transition-all ${activeFood === food ? 'bg-lime-600 text-white shadow-inner' : 'bg-lime-50 text-lime-800 hover:bg-lime-100'}`}
+                            >
+                                <div className="font-bold">{food.name}</div>
+                            </button>
+                        ))}
+                    </div>
+                    {activeFood && (
+                        <div className="bg-lime-50 p-4 rounded-lg border border-lime-200 animate-fade-in">
+                            <strong className="text-lime-800">{activeFood.name}：</strong>
+                            <span className="text-stone-700">{activeFood.desc}</span>
+                        </div>
+                    )}
+                    {!activeFood && <p className="text-xs text-stone-400 text-center">點選上方食物可查看對肝臟的具體幫助。</p>}
+                </Card>
+            );
+        };
+
+        const SymptomChecker = () => {
+            const [activeSymptom, setActiveSymptom] = useState(null);
+            return (
+                <Card className="border-l-4 border-l-orange-400">
+                    <SectionTitle icon={<AlertCircle className="w-5 h-5 text-orange-600" />} title="缺氧症狀檢測" />
+                    <div className="flex flex-wrap gap-2 mb-4">
+                        {SYMPTOMS.map((sym) => (
+                            <button
+                                key={sym.name}
+                                onClick={() => setActiveSymptom(activeSymptom === sym ? null : sym)}
+                                className={`px-3 py-1.5 rounded-full text-sm transition-all ${activeSymptom === sym ? 'bg-orange-500 text-white' : 'bg-orange-100 text-orange-800 hover:bg-orange-200'}`}
+                            >
+                                {sym.name}
+                            </button>
+                        ))}
+                    </div>
+                    {activeSymptom ? (
+                        <div className="bg-orange-50 p-3 rounded-lg border border-orange-200 animate-fade-in text-sm">
+                            <strong className="text-orange-800">{activeSymptom.name}：</strong>
+                            <p className="text-stone-700 mt-1">{activeSymptom.detail}</p>
+                        </div>
+                    ) : (
+                        <p className="text-xs text-stone-400">若出現以上症狀，可能為缺氧細胞症候群警訊。</p>
+                    )}
+                </Card>
+            );
+        };
+
+        const NaturalTherapyCard = () => (
+            <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-100">
+                <SectionTitle icon={<BookOpen className="w-5 h-5 text-blue-600" />} title="自然療法與營養補充" />
+                <div className="space-y-4 text-sm">
+                    <div className="bg-white/60 p-3 rounded-lg">
+                        <h4 className="font-bold text-blue-800 mb-2">🌱 關鍵營養補充</h4>
+                        <ul className="list-disc list-inside space-y-1 text-stone-700">
+                            <li><strong>奶薊草：</strong>每天 500mg (保護肝細胞)</li>
+                            <li><strong>維生素D3：</strong>每天 10,000-20,000 IU</li>
+                            <li><strong>硒 (Selenium)：</strong>每天 200mcg (抗氧化)</li>
+                            <li><strong>TUDCA：</strong>早晚空腹各兩粒</li>
+                        </ul>
+                    </div>
+                    <div className="bg-white/60 p-3 rounded-lg">
+                         <h4 className="font-bold text-indigo-800 mb-2">🧘 生活調整</h4>
+                         <ul className="list-disc list-inside space-y-1 text-stone-700">
+                            <li><strong>斷食：</strong>建議每天至少 18 小時</li>
+                            <li><strong>呼吸練習：</strong>吸4秒，屏4秒，呼6秒 (每日15分)</li>
+                            <li><strong>姿勢矯正：</strong>避免脊椎走位導致器官缺氧</li>
+                         </ul>
+                    </div>
+                </div>
+            </Card>
+        );
+
+        const App = () => {
+            const [isFullScreen, setIsFullScreen] = useState(false);
+            const [liverHealth, setLiverHealth] = useState(0);
+            const appRef = useRef(null);
+
+            useEffect(() => {
+                // Simulate loading progress for visual effect from original file
+                setTimeout(() => setLiverHealth(85), 500);
+            }, []);
+
+            const toggleFullScreen = () => {
+                if (!document.fullscreenElement) {
+                    try {
+                        if (appRef.current.requestFullscreen) appRef.current.requestFullscreen();
+                        else if (appRef.current.webkitRequestFullscreen) appRef.current.webkitRequestFullscreen();
+                    } catch (err) { console.warn("Fullscreen blocked", err); }
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                }
+            };
+
+            useEffect(() => {
+                const handleFSChange = () => setIsFullScreen(!!document.fullscreenElement);
+                document.addEventListener('fullscreenchange', handleFSChange);
+                return () => document.removeEventListener('fullscreenchange', handleFSChange);
+            }, []);
+
+            return (
+                <div ref={appRef} className={`min-h-screen bg-stone-50 font-sans text-stone-800 transition-all duration-500 ${isFullScreen ? 'p-8 overflow-y-auto' : 'p-4 md:p-8'}`}>
+                    {/* --- Header --- */}
+                    <header className="max-w-7xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 animate-slide-down">
+                        <div>
+                            <div className="flex items-center gap-3">
+                                <div className="bg-emerald-600 text-white p-2 rounded-lg shadow-lg shadow-emerald-200">
+                                    <Activity className="w-6 h-6" />
+                                </div>
+                                <h1 className="text-2xl md:text-3xl font-bold text-emerald-950 tracking-tight">
+                                    林美卿生命教育經絡學 <span className="hidden md:inline mx-2 text-emerald-300">|</span> <span className="text-emerald-700 text-xl font-normal">互動式健康儀表板</span>
+                                </h1>
+                            </div>
+                            <p className="text-stone-500 mt-1 ml-1 text-sm">基於課程影片與補充教材的智慧導覽系統</p>
+                        </div>
+                        <div className="flex items-center gap-3 self-end md:self-auto">
+                            <span className="px-3 py-1 bg-stone-200 text-stone-600 text-xs font-mono rounded-full">v{VERSION}</span>
+                            <button onClick={toggleFullScreen} className="flex items-center gap-2 px-4 py-2 bg-white border border-stone-200 rounded-lg hover:bg-emerald-50 text-stone-600 hover:text-emerald-600 transition-colors shadow-sm">
+                                {isFullScreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+                                <span className="text-sm font-medium hidden sm:inline">{isFullScreen ? '退出全螢幕' : '全螢幕模式'}</span>
+                            </button>
+                        </div>
+                    </header>
+
+                    {/* --- Main Content Grid --- */}
+                    <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        {/* Left Column */}
+                        <div className="lg:col-span-2 space-y-6">
+                            {/* Video Player Cover */}
+                            <div className="space-y-2">
+                                <div onClick={() => window.open(VIDEO_URL, '_blank')} className="bg-black rounded-xl overflow-hidden shadow-xl aspect-video relative group z-10 cursor-pointer border border-stone-800" title="點擊開啟 YouTube 播放">
+                                    <img src={VIDEO_THUMBNAIL} alt="Video Thumbnail" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300 group-hover:scale-105 transform transition-transform" />
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="w-16 h-16 bg-red-600/90 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-red-600 transition-all duration-300 backdrop-blur-sm">
+                                             <PlaySolid className="w-8 h-8 text-white ml-1" />
+                                        </div>
+                                    </div>
+                                    <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-md text-white text-xs font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-white/10">
+                                        <ExternalLink className="w-3 h-3" /> 點擊前往 YouTube 觀看
+                                    </div>
+                                </div>
+                                <p className="text-xs text-stone-400 text-center">註：因版權設定限制嵌入，點擊上方封面將開啟 YouTube 視窗播放。</p>
+                            </div>
+
+                            {/* Concept Cards (Rich Text from Uploaded File) */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <Card className="border-l-4 border-l-sky-400">
+                                    <SectionTitle icon={<BookOpen className="w-5 h-5 text-sky-600" />} title="酸入肝理論詳解" />
+                                    <p className="text-sm text-stone-600 leading-relaxed mb-2">
+                                        中醫「五味入五臟」學說中，酸味對肝臟有特殊親和力。<strong>其作用為「收斂」過度旺盛的陽氣</strong>，特別適合高血壓、情緒火爆者。
+                                    </p>
+                                    <p className="text-sm text-stone-600 leading-relaxed">
+                                        酸味亦可解酒，並促進膽汁與胰臟消化液分泌，幫助食物分解。
+                                    </p>
+                                </Card>
+                                <Card className="border-l-4 border-l-rose-400">
+                                    <SectionTitle icon={<Activity className="w-5 h-5 text-rose-600" />} title="肝細胞發炎逆轉" />
+                                    <p className="text-sm text-stone-600 leading-relaxed mb-3">
+                                        青色食物對應肝臟，可解酒精與毒素。適當斷食與營養補充可促進肝細胞再生。
+                                    </p>
+                                    <div className="bg-stone-100 rounded-full h-2.5 mb-1 overflow-hidden border border-stone-200">
+                                        <div className="bg-gradient-to-r from-emerald-400 to-emerald-600 h-2.5 rounded-full progress-fill shadow-sm" style={{ width: `${liverHealth}%` }}></div>
+                                    </div>
+                                    <div className="flex justify-between text-xs text-stone-500">
+                                        <span>發炎指數監控</span>
+                                        <span>健康目標: 100%</span>
+                                    </div>
+                                </Card>
+                            </div>
+
+                            {/* Interactive Map (Merged Data) */}
+                            <AcupointMap />
+
+                            {/* Food Grid (New) */}
+                            <FoodGrid />
+                        </div>
+
+                        {/* Right Column */}
+                        <div className="space-y-6">
+                            {/* Dosage Calculator */}
+                            <DosageCalculator />
+
+                            {/* Symptom Checker (New) */}
+                            <SymptomChecker />
+
+                            {/* Natural Therapy (New) */}
+                            <NaturalTherapyCard />
+
+                            {/* Routine */}
+                            <RoutineTimeline />
+
+                            {/* Tips */}
+                            <Card className="bg-gradient-to-br from-emerald-600 to-teal-700 text-white border-none">
+                                <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
+                                    <PlayCircle className="w-5 h-5" /> 重要提醒
+                                </h3>
+                                <ul className="space-y-3 text-sm text-emerald-50 opacity-90">
+                                    <li className="flex items-start gap-2">
+                                        <span className="mt-1 w-1.5 h-1.5 bg-emerald-300 rounded-full flex-shrink-0"></span>
+                                        <span>脊椎走位會導致器官缺氧而退化，請保持姿勢端正。</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="mt-1 w-1.5 h-1.5 bg-emerald-300 rounded-full flex-shrink-0"></span>
+                                        <span>適當臥床休息可減輕肝臟負擔，促進肝細胞再生。</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="mt-1 w-1.5 h-1.5 bg-emerald-300 rounded-full flex-shrink-0"></span>
+                                        <span>睡前檸檬汁是「通知」肝臟休息的關鍵信號。</span>
+                                    </li>
+                                </ul>
+                            </Card>
+                        </div>
+                    </main>
+
+                    {/* --- Footer --- */}
+                    <footer className="max-w-7xl mx-auto mt-12 pt-6 border-t border-stone-200 text-center text-stone-400 text-xs pb-8">
+                        <p>© 2025 Interactive Health Dashboard v{VERSION}. Generated based on video content & supplementary materials.</p>
+                        <p className="mt-2">免責聲明：本網頁僅供資訊參考，非醫療建議。若有身體不適，請諮詢專業醫師。</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
