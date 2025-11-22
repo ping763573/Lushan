@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生命教育經絡視覺化 v1.3.0 (豐富整合版)</title>
+    <!-- 引入 FontAwesome 以支援圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 根變數 - 統一配色 */
+        :root {
+            --color-bg-primary: #f5f3f0;
+            --color-bg-secondary: #ffffff;
+            --color-text-primary: #1f2121;
+            --color-text-secondary: #626c7c;
+            --color-accent: #218092;        /* 主色 - 湖水藍 */
+            --color-accent-hover: #1a6a78;
+            --color-soil: #8b7355;          /* 土 - 脾胃 */
+            --color-wood: #6ba876;          /* 木 - 肝膽 */
+            --color-water: #4a90b8;         /* 水 - 腎 */
+            --color-fire: #d85a4e;          /* 火 - 心 */
+            --color-metal: #c9a876;         /* 金 - 肺 */
+            
+            --color-alert-red: #c0392b;     /* 警示紅 (發炎/火) */
+            --color-alert-blue: #2980b9;    /* 警示藍 (缺氧/寒) */
+            --color-gold: #d4ac0d;          /* 黃金 (強調) */
+
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+        }
+
+        /* 全域樣式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK TC', 'Microsoft JhengHei', sans-serif;
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- Layout Components --- */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: var(--color-bg-secondary);
+            border-bottom: 1px solid #e8e4e0;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .version-badge {
+            font-size: 12px;
+            background-color: var(--color-accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: var(--color-accent);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        .section {
+            background-color: var(--color-bg-secondary);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #e8e4e0;
+            box-shadow: var(--shadow-md);
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--color-accent);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .icon-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--color-accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        /* --- Five Elements Grid --- */
+        .five-elements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .element-card {
+            border-radius: var(--radius);
+            padding: 20px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 2px solid transparent;
+        }
+        .element-card h3 { font-size: 16px; margin-bottom: 8px;}
+        .element-card p { font-size: 13px; line-height: 1.4; opacity: 0.9; }
+
+        .element-card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); }
+        .element-wood { background: linear-gradient(135deg, #6ba876 0%, #5a9463 100%); }
+        .element-fire { background: linear-gradient(135deg, #d85a4e 0%, #c04539 100%); }
+        .element-soil { background: linear-gradient(135deg, #8b7355 0%, #7a6246 100%); }
+        .element-metal { background: linear-gradient(135deg, #c9a876 0%, #b89963 100%); }
+        .element-water { background: linear-gradient(135deg, #4a90b8 0%, #3a7aa8 100%); }
+
+        /* --- Breathing Animation --- */
+        .breathing-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            background-color: #f8fafc;
+            border-radius: var(--radius);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes breathCircleAnim {
+            0% { transform: scale(1); opacity: 0.8; border-color: var(--color-water); }
+            50% { transform: scale(1.6); opacity: 0.3; border-color: var(--color-wood); }
+            100% { transform: scale(1); opacity: 0.8; border-color: var(--color-water); }
+        }
+
+        .breath-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 4px solid var(--color-water);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--color-accent);
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(74, 144, 184, 0.2);
+            /* Animation set by JS */
+        }
+
+        .breath-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            z-index: 10;
+        }
+
+        .btn-control {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        .btn-control.active {
+            background-color: var(--color-accent);
+            color: white;
+            border-color: var(--color-accent);
+            box-shadow: 0 2px 8px rgba(33, 128, 146, 0.3);
+        }
+
+        /* --- Hand Diagnosis Interactive --- */
+        .hand-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            background-color: #fffcf8;
+            padding: 20px;
+            border-radius: var(--radius);
+            border: 1px solid #eee;
+        }
+
+        .hand-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .btn-mode {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0.6;
+            transition: all 0.3s;
+        }
+        .btn-mode.active { opacity: 1; transform: scale(1.05); }
+        .btn-mode.blue { background-color: var(--color-alert-blue); color: white; }
+        .btn-mode.red { background-color: var(--color-alert-red); color: white; }
+
+        .hand-svg {
+            max-height: 450px;
+            width: 100%;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+
+        .hand-zone {
+            cursor: pointer;
+            fill: transparent;
+            transition: all 0.3s ease;
+        }
+        .hand-zone:hover {
+            stroke: var(--color-gold);
+            stroke-width: 3;
+            fill: rgba(255, 255, 255, 0.2);
+        }
+        .hand-zone.active {
+            stroke: var(--color-gold);
+            stroke-width: 4;
+            fill: rgba(212, 172, 13, 0.1);
+        }
+
+        .diagnosis-box {
+            margin-top: 20px;
+            width: 100%;
+            background: white;
+            border-left: 4px solid var(--color-accent);
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: none; /* Hidden by default */
+            animation: slideUp 0.3s ease-out;
+        }
+        .diagnosis-box.show { display: block; }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Common Tables & Lists --- */
+        .nutrition-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        .nutrition-table th {
+            background-color: var(--color-accent);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .nutrition-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e8e4e0;
+        }
+        .nutrition-table tr:hover { background-color: #fafaf8; }
+
+        /* 新增：十二經絡運行表格樣式 */
+        .meridian-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+            text-align: center;
+        }
+        .meridian-table th, .meridian-table td {
+            border: 1px solid #ddd;
+            padding: 10px 5px;
+        }
+        .meridian-table th {
+            background-color: var(--color-accent);
+            color: white;
+            font-weight: 600;
+        }
+        .meridian-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* 新增：情志表格樣式 */
+        .emotion-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        .emotion-table th, .emotion-table td {
+            padding: 12px;
+            border: 1px solid #e8e4e0;
+            text-align: center;
+        }
+        .emotion-table th {
+            background-color: #f7f7f7;
+            font-weight: 600;
+        }
+        .wood-row { background-color: rgba(107, 168, 118, 0.1); }
+        .fire-row { background-color: rgba(216, 90, 78, 0.1); }
+        .soil-row { background-color: rgba(139, 115, 85, 0.1); }
+        .metal-row { background-color: rgba(201, 168, 118, 0.1); }
+        .water-row { background-color: rgba(74, 144, 184, 0.1); }
+
+        /* --- Checklist --- */
+        .checklist {
+            list-style: none;
+            margin-top: 16px;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .checklist-item:hover { background-color: #f0f9ff; }
+        .check-box {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        .checklist-item.checked .check-box {
+            background-color: var(--color-accent);
+            border-color: var(--color-accent);
+        }
+        .checklist-item.checked span {
+            text-decoration: line-through;
+            color: #aaa;
+        }
+
+        /* --- Mindset Switch --- */
+        .mindset-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        .mindset-btn {
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            background: #fafaf8;
+        }
+        .mindset-btn:hover { transform: translateY(-2px); }
+        .mindset-btn.heaven:hover { background-color: #fef3c7; color: #92400e; border-color: #fcd34d; }
+        .mindset-btn.hell:hover { background-color: #e5e7eb; color: #374151; border-color: #d1d5db; }
+
+        .mindset-display {
+            margin-top: 16px;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            background-color: #f9fafb;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.5s;
+        }
+
+        /* --- Prayer Section --- */
+        .prayer-section {
+            background: linear-gradient(135deg, #f5f3f0 0%, #fafaf8 100%);
+            padding: 30px;
+            border-radius: var(--radius);
+            border: 2px solid #e8e4e0;
+            text-align: center;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--color-text-secondary);
+            font-size: 12px;
+            border-top: 1px solid #e8e4e0;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .five-elements { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+            .header { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .btn-primary { align-self: flex-end; }
+            .mindset-grid { grid-template-columns: 1fr; }
+            .grid { grid-template-columns: 1fr !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">
+            <i class="fa-solid fa-seedling" style="color: var(--color-wood);"></i>
+            <span>生命教育經絡視覺化</span>
+            <div class="version-badge">v1.3.0 豐富整合版</div>
+        </div>
+        <button class="btn-primary" onclick="toggleFullscreen()">
+            <i class="fa-solid fa-expand"></i> 全螢幕
+        </button>
+    </div>
+
+    <div class="container" id="mainContent">
+        <!-- 介紹章節：五行五臟基礎 -->
+        <div class="section">
+            <div class="section-title">
+                <div class="icon-circle"><i class="fa-solid fa-book-open"></i></div>
+                <span>五行五臟基礎</span>
+            </div>
+            <p style="color: var(--color-text-secondary); margin-bottom: 16px;">
+                「萬物土中生，萬物土中消。」人體五臟對應五行，脾胃屬土，是消化和營養吸收的中心。當脾胃健康（土肥），肝膽（木）才能茁壯，進而使全身循環達到最佳狀態。
+            </p>
+            
+            <div class="five-elements">
+                <div class="element-card element-wood">
+                    <h3><i class="fa-solid fa-tree"></i> 木 - 肝膽</h3>
+                    <p>主生長，需脾胃(土)滋養。製造血液，膽汁助消化。</p>
+                </div>
+                <div class="element-card element-fire">
+                    <h3><i class="fa-solid fa-fire"></i> 火 - 心</h3>
+                    <p>主血脈精神。依賴氧氣，推動血液循環全身。</p>
+                </div>
+                <div class="element-card element-soil">
+                    <h3><i class="fa-solid fa-mountain-sun"></i> 土 - 脾胃</h3>
+                    <p>萬物之母。消化吸收，滋養所有臟器之本。</p>
+                </div>
+                <div class="element-card element-metal">
+                    <h3><i class="fa-solid fa-wind"></i> 金 - 肺</h3>
+                    <p>主氣。透過呼吸交換氧氣，將氣送入丹田。</p>
+                </div>
+                <div class="element-card element-water">
+                    <h3><i class="fa-solid fa-water"></i> 水 - 腎</h3>
+                    <p>主藏精。儲存能量，支持生長與長期健康。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 新增章節：十二經絡運行圖 (子午流注) -->
+        <div class="section">
+            <div class="section-title">
+                <div class="icon-circle" style="background-color: var(--color-fire);"><i class="fa-solid fa-clock"></i></div>
+                <span>十二經絡運行與作息 (子午流注)</span>
+            </div>
+            
+            <p style="color: var(--color-text-secondary); margin-bottom: 16px;">
+                人體經絡氣血運行有規律的時辰，掌握這些時辰進行養生，可事半功倍。
+            </p>
+
+            <table class="meridian-table">
+                <thead>
+                    <tr>
+                        <th>時間</th>
+                        <th>經絡</th>
+                        <th>臟腑</th>
+                        <th>建議作息</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="color: var(--color-fire);">
+                        <td>23:00-01:00</td>
+                        <td>膽經</td>
+                        <td>木</td>
+                        <td>熟睡！讓膽經排毒和造血。</td>
+                    </tr>
+                    <tr style="color: var(--color-fire);">
+                        <td>01:00-03:00</td>
+                        <td>肝經</td>
+                        <td>木</td>
+                        <td>熟睡！肝臟深度修復時段。</td>
+                    </tr>
+                    <tr style="color: var(--color-metal);">
+                        <td>03:00-05:00</td>
+                        <td>肺經</td>
+                        <td>金</td>
+                        <td>深度睡眠，有咳醒者需注意肺部。</td>
+                    </tr>
+                    <tr style="color: var(--color-metal);">
+                        <td>05:00-07:00</td>
+                        <td>大腸經</td>
+                        <td>金</td>
+                        <td>起床，排便，清理腸道。</td>
+                    </tr>
+                    <tr style="color: var(--color-soil);">
+                        <td>07:00-09:00</td>
+                        <td>胃經</td>
+                        <td>土</td>
+                        <td>吃營養早餐，是胃消化最好的時段。</td>
+                    </tr>
+                    <tr style="color: var(--color-soil);">
+                        <td>09:00-11:00</td>
+                        <td>脾經</td>
+                        <td>土</td>
+                        <td>脾運化吸收，腦力工作效率高。</td>
+                    </tr>
+                    <tr style="color: var(--color-fire);">
+                        <td>11:00-13:00</td>
+                        <td>心經</td>
+                        <td>火</td>
+                        <td>午休小憩，養心時間。</td>
+                    </tr>
+                    <tr style="color: var(--color-fire);">
+                        <td>13:00-15:00</td>
+                        <td>小腸經</td>
+                        <td>火</td>
+                        <td>下午茶，吸收食物精華。</td>
+                    </tr>
+                    <tr style="color: var(--color-water);">
+                        <td>15:00-17:00</td>
+                        <td>膀胱經</td>
+                        <td>水</td>
+                        <td>多喝水，排毒，精神專注時段。</td>
+                    </tr>
+                    <tr style="color: var(--color-water);">
+                        <td>17:00-19:00</td>
+                        <td>腎經</td>
+                        <td>水</td>
+                        <td>儲存能量，適合晚餐但不可過飽。</td>
+                    </tr>
+                    <tr style="color: var(--color-fire);">
+                        <td>19:00-21:00</td>
+                        <td>心包經</td>
+                        <td>火</td>
+                        <td>飯後散步，保持心情愉悅。</td>
+                    </tr>
+                    <tr style="color: var(--color-water);">
+                        <td>21:00-23:00</td>
+                        <td>三焦經</td>
+                        <td>水</td>
+                        <td>睡前放鬆，準備入眠。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 呼吸訓練 -->
+        <div class="section">
+            <div class="section-title">
+                <div class="icon-circle"><i class="fa-solid fa-lungs"></i></div>
+                <span>丹田呼吸訓練</span>
+            </div>
+            
+            <div class="grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;">
+                <div class="breathing-guide">
+                    <h4 style="color: var(--color-water); margin-bottom: 10px;">長壽呼吸法</h4>
+                    <p style="font-size: 14px; color: var(--color-text-secondary); margin-bottom: 10px;">
+                        文本：「狗一分鐘50次壽命短，龜慢吸長壽。」
+                    </p>
+                    <ul style="font-size: 13px; color: var(--color-text-secondary); padding-left: 20px; line-height: 1.8;">
+                        <li>舌頭抵住上顎，鼻吸鼻吐。</li>
+                        <li>吸氣時氣沉丹田（腹部鼓起）。</li>
+                        <li>吐氣時腹部自然凹下。</li>
+                        <li>目標：每分鐘 7 次以下。</li>
+                    </ul>
+                </div>
+
+                <!-- 互動呼吸球 -->
+                <div class="breathing-container">
+                    <div id="breathCircle" class="breath-circle">吸氣</div>
+                    <div class="breath-controls">
+                        <!-- 點擊時傳入事件物件 -->
+                        <button class="btn-control" data-mode="normal" onclick="setBreathSpeed('normal', event)">一般 (16次/分)</button>
+                        <button class="btn-control" data-mode="deep" onclick="setBreathSpeed('deep', event)">龜息 (6次/分)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 經絡與健康 (SVG 手診互動整合) -->
+        <div class="section">
+            <div class="section-title">
+                <div class="icon-circle"><i class="fa-solid fa-hand-dots"></i></div>
+                <span>手診健康解碼</span>
+            </div>
+            
+            <p style="margin-bottom: 16px; color: var(--color-text-secondary);">
+                手是內臟的延伸，觀察手掌的青筋（缺氧）與紅絲（發炎），即可了解身體內部的健康狀況。請點擊下方手掌區域查看詳情。
+            </p>
+
+            <div class="hand-container">
+                <!-- 控制按鈕 -->
+                <div class="hand-controls">
+                    <button class="btn-mode blue active" id="btnBlue" onclick="toggleVeinMode('blue')">
+                        <i class="fa-solid fa-droplet"></i> 青筋(缺氧)
+                    </button>
+                    <button class="btn-mode red" id="btnRed" onclick="toggleVeinMode('red')">
+                        <i class="fa-solid fa-fire"></i> 紅筋(發炎)
+                    </button>
+                </div>
+
+                <!-- 手掌 SVG -->
+                <svg viewBox="0 0 400 520" class="hand-svg" id="handSvg">
+                    <defs>
+                        <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter>
+                    </defs>
+                    <!-- 手掌輪廓 (保留原有的輪廓路徑) -->
+                    <path d="M130,500 C100,500 70,420 70,370 L70,250 C70,230 60,200 40,180 C20,160 20,130 40,110 C60,90 90,100 100,120 L110,150 L120,100 C120,70 140,50 160,50 C180,50 190,70 190,100 L190,60 C190,40 210,20 230,20 C250,20 270,40 270,60 L270,100 L270,80 C270,60 290,40 310,40 C330,40 350,60 350,80 L350,220 C350,280 370,320 370,350 C370,420 340,500 260,500 Z" fill="#fcece3" stroke="#dcb4a4" stroke-width="3" />
+                    
+                    <!-- 血管層 (動態變色) -->
+                    <g id="veinLayer" opacity="0.8">
+                        <path d="M80,150 Q95,165 110,155" stroke="#2980b9" stroke-width="3" fill="none" class="vein-path" /> <!-- 拇指區域血管示意 -->
+                        <path d="M180,260 Q210,300 240,270" stroke="#2980b9" stroke-width="4" fill="none" class="vein-path" /> <!-- 掌心區域血管示意 -->
+                        <path d="M160,420 Q200,440 240,420" stroke="#2980b9" stroke-width="3" fill="none" class="vein-path" /> <!-- 手腕區域血管示意 -->
+                        <path d="M230,30 L230,60" stroke="#2980b9" stroke-width="2" stroke-dasharray="4,2" fill="none" class="vein-path" /> <!-- 指尖區域血管示意 -->
+                    </g>
+
+                    <!-- 互動熱區 -->
+                    <circle cx="95" cy="160" r="35" class="hand-zone" onclick="showDiagnosis('thumb')" />
+                    <circle cx="210" cy="280" r="45" class="hand-zone" onclick="showDiagnosis('palm')" />
+                    <rect x="140" y="400" width="140" height="50" rx="10" class="hand-zone" onclick="showDiagnosis('wrist')" />
+                    <path d="M210,20 L250,20 L250,90 L210,90 Z" class="hand-zone" onclick="showDiagnosis('tips')" />
+                </svg>
+
+                <!-- 診斷結果區 -->
+                <div id="diagnosisBox" class="diagnosis-box">
+                    <h3 id="diagTitle" style="color: var(--color-text-primary); margin-bottom: 8px;">診斷標題</h3>
+                    <p id="diagContent" style="color: var(--color-text-secondary); font-size: 14px;">內容...</p>
+                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
+                        <span style="background: #f0f9ff; color: var(--color-accent); padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;" id="diagTip">建議行動</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 新增章節：五臟情志對應 -->
+        <div class="section">
+            <div class="section-title">
+                <div class="icon-circle" style="background-color: var(--color-soil);"><i class="fa-solid fa-face-grimace"></i></div>
+                <span>情志對應與釋放</span>
+            </div>
+            
+            <p style="color: var(--color-text-secondary); margin-bottom: 16px;">
+                情緒是健康的晴雨表。過度的情志波動會直接損傷對應的臟腑，了解並釋放它們是養生的重要一環。
+            </p>
+
+            <table class="emotion-table">
+                <thead>
+                    <tr>
+                        <th>五行</th>
+                        <th>臟腑</th>
+                        <th>主情志 (傷)</th>
+                        <th>正面情志 (養)</th>
+                        <th>對應聲音 (排解)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="wood-row" style="color: var(--color-wood);">
+                        <td>木</td>
+                        <td>肝膽</td>
+                        <td>怒 (怨氣、憤怒)</td>
+                        <td>寬容、決斷力</td>
+                        <td>「噓」音</td>
+                    </tr>
+                    <tr class="fire-row" style="color: var(--color-fire);">
+                        <td>火</td>
+                        <td>心/小腸</td>
+                        <td>喜 (過度興奮)</td>
+                        <td>愉快、安寧</td>
+                        <td>「呵」音</td>
+                    </tr>
+                    <tr class="soil-row" style="color: var(--color-soil);">
+                        <td>土</td>
+                        <td>脾胃</td>
+                        <td>思 (憂慮、思慮過度)</td>
+                        <td>誠信、沉穩</td>
+                        <td>「呼」音</td>
+                    </tr>
+                    <tr class="metal-row" style="color: var(--color-metal);">
+                        <td>金</td>
+                        <td>肺/大腸</td>
+                        <td>悲 (憂傷、抑鬱)</td>
+                        <td>勇敢、豁達</td>
+                        <td>「呬」音</td>
+                    </tr>
+                    <tr class="water-row" style="color: var(--color-water);">
+                        <td>水</td>
+                        <td>腎/膀胱</td>
+                        <td>恐 (驚恐、害怕)</td>
+                        <td>平和、智慧</td>
+                        <td>「吹」音</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 營養與調理 -->
+        <div class="section">
+            <div class="section-title">
+                <div class="icon-circle"><i class="fa-solid fa-utensils"></i></div>
+                <span>食療與營養調理</span>
+            </div>
+            
+            <!-- 重點提示卡 -->
+            <div style="background: #fffBEB; border-left: 4px solid #F59E0B; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                <h4 style="color: #92400E; margin-bottom: 5px;"><i class="fa-solid fa-lemon"></i> 特別關注：酸入肝</h4>
+                <p style="font-size: 13px; color: #B45309;">睡前喝檸檬醋或吃堅果配苦茶油。酸味有助於肝臟修復與血管軟化，是對抗硬化的關鍵。</p>
+            </div>
+
+            <table class="nutrition-table">
+                <thead>
+                    <tr>
+                        <th>目標臟器</th>
+                        <th>食物類別</th>
+                        <th>推薦食物</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>肝臟</strong></td>
+                        <td>酸性食物</td>
+                        <td>檸檬、醋、泡菜、酸梅</td>
+                    </tr>
+                    <tr>
+                        <td><strong>脾胃</strong></td>
+                        <td>黃色食物</td>
+                        <td>地瓜、南瓜、薑黃</td>
+                    </tr>
+                    <tr>
+                        <td><strong>腎臟</strong></td>
+                        <td>黑色/礦物質</td>
+                        <td>黑芝麻、珍珠粉 (上藥)、黑豆</td>
+                    </tr>
+                    <tr>
+                        <td><strong>肺部</strong></td>
+                        <td>白色食物</td>
+                        <td>白木耳、山藥、蓮子</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 養生行動清單 -->
+        <div class="section">
+            <div class="section-title">
+                <div class="icon-circle"><i class="fa-solid fa-clipboard-check"></i></div>
+                <span>今日養生行動</span>
+            </div>
+            <ul class="checklist">
+                <li class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="check-box"><i class="fa-solid fa-check"></i></div>
+                    <span>刮痧/拍打背部 (督脈、膀胱經)</span>
+                </li>
+                <li class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="check-box"><i class="fa-solid fa-check"></i></div>
+                    <span>檢查手掌青筋 (自我監測缺氧)</span>
+                </li>
+                <li class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="check-box"><i class="fa-solid fa-check"></i></div>
+                    <span>練習長壽呼吸 (每分鐘 < 7次)</span>
+                </li>
+                <li class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="check-box"><i class="fa-solid fa-check"></i></div>
+                    <span>攝取優質蛋白質 + 礦物質 (珍珠粉)</span>
+                </li>
+                <li class="checklist-item" onclick="toggleCheck(this)">
+                    <div class="check-box"><i class="fa-solid fa-check"></i></div>
+                    <span>晚上 11 點前入睡 (養肝膽)</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 選擇與人生 -->
+        <div class="section">
+            <div class="section-title">
+                <div class="icon-circle"><i class="fa-solid fa-road"></i></div>
+                <span>人生抉擇 - 一念之間</span>
+            </div>
+            
+            <div class="mindset-display" id="mindDisplay">
+                <i class="fa-solid fa-scale-balanced" style="font-size: 40px; color: #ccc; margin-bottom: 10px;"></i>
+                <h3 style="color: var(--color-text-primary);">請選擇你的心境</h3>
+                <p style="font-size: 13px; color: var(--color-text-secondary);">「地獄天堂不是死後，而是當下心情。」</p>
+            </div>
+
+            <div class="mindset-grid">
+                <div class="mindset-btn heaven" onclick="setMindset('heaven')">
+                    <i class="fa-regular fa-face-smile" style="font-size: 24px; margin-bottom: 8px; color: #d97706;"></i>
+                    <h4>天堂之路</h4>
+                    <p style="font-size: 12px; color: #666;">選擇原諒，放下怨恨</p>
+                </div>
+                <div class="mindset-btn hell" onclick="setMindset('hell')">
+                    <i class="fa-solid fa-link-slash" style="font-size: 24px; margin-bottom: 8px; color: #4b5563;"></i>
+                    <h4>地獄之路</h4>
+                    <p style="font-size: 12px; color: #666;">執著攻擊，沉溺報復</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 內心祈禱 -->
+        <div class="prayer-section">
+            <h3><i class="fa-solid fa-hands-praying"></i> 內心祈禱</h3>
+            <p style="font-size: 15px; line-height: 1.8; color: var(--color-text-secondary); font-style: italic;">
+                「我只是一粒塵土，但願是有營養的活土。<br>
+                若我有被利用的價值，我願意被你栽種，我也願意竭盡所能、盡其本分。<br>
+                讓我身邊的生命，因為我而得到滋潤、茁壯。」
+            </p>
+        </div>
+
+        <!-- 頁腳 -->
+        <div class="footer">
+            <p>🌍 生命教育經絡視覺化 v1.3.0 豐富整合版 | 基於林美清老師課程</p>
+            <p style="margin-top: 8px; color: #a8a8a8;">2025 | 軟體設計大師生成</p>
+        </div>
+    </div>
+
+    <script>
+        // --- 全螢幕功能 ---
+        function toggleFullscreen() {
+            const elem = document.getElementById('mainContent');
+            if (!document.fullscreenElement) {
+                elem.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // --- 呼吸動畫邏輯 ---
+        const breathCircle = document.getElementById('breathCircle');
+        let breathInterval;
+
+        /**
+         * 設定呼吸模式和速度。
+         * 函式已修復，可安全處理初始化時沒有 event 的情況。
+         * @param {string} mode - 'normal' (16次/分) 或 'deep' (6次/分)。
+         * @param {Event} [event] - 點擊事件物件 (可選)。
+         */
+        function setBreathSpeed(mode, event) {
+            // 重置動畫
+            breathCircle.style.animation = 'none';
+            breathCircle.offsetHeight; // trigger reflow
+            clearInterval(breathInterval);
+            
+            // 取得所有控制按鈕，並根據傳入的 mode 參數更新狀態
+            document.querySelectorAll('.btn-control').forEach(btn => {
+                const btnMode = btn.getAttribute('data-mode');
+                if (btnMode === mode) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // 設定參數
+            let durationStr = mode === 'normal' ? '3.75s' : '10s'; // 16次/分 vs 6次/分
+            breathCircle.style.animation = `breathCircleAnim ${durationStr} infinite ease-in-out`;
+            
+            let state = 'in';
+            breathCircle.innerText = '吸氣';
+            
+            let durationMs = mode === 'normal' ? 3750 : 10000;
+            breathInterval = setInterval(() => {
+                state = state === 'in' ? 'out' : 'in';
+                breathCircle.innerText = state === 'in' ? '吸氣' : '吐氣';
+            }, durationMs / 2);
+        }
+
+        // 初始化呼吸：延遲呼叫確保 DOM 元素已載入，並使用安全呼叫
+        document.addEventListener('DOMContentLoaded', () => {
+            setBreathSpeed('deep');
+        });
+
+        // --- 手診互動邏輯 ---
+        let currentVeinMode = 'blue';
+        const diagnosisData = {
+            'thumb': {
+                title: '大拇指根部 / 大魚際',
+                blue: '【腦部缺氧】指節發青，代表後腦勺供氧不足。容易出現說話「卡卡」、詞不達意。',
+                red: '【腦部壓力】若出現紅色血絲，代表腦部微血管壓力大，用腦過度。',
+                tip: '建議：刮開頸部亞門穴，疏通頭部回流。'
+            },
+            'palm': {
+                title: '手掌中心 / 胃區',
+                blue: '【消化停滯】掌心青筋，代表胃寒、消化不良。橫向青筋可能伴隨腰痠。',
+                red: '【胃火旺盛】掌心泛紅，代表胃發炎或嚴重脹氣 (食物發酵)。',
+                tip: '建議：少吃產氣食物，多拍打腹股溝。'
+            },
+            'wrist': {
+                title: '手腕橫紋 / 下焦',
+                blue: '【生殖/腰部】青筋代表婦科/生殖系統寒濕，或腰部舊傷。',
+                red: '【發炎警訊】暗紅或紫紅，代表該處器官有發炎或沾黏。',
+                tip: '建議：拍打臀部環跳穴，疏通下半身。'
+            },
+            'tips': {
+                title: '手指末梢',
+                blue: '【循環不良】手指冰冷發青，心臟無力將血打至末梢。',
+                red: '【高血壓警示】「紅筋加青筋」代表嚴重缺氧與高壓風險。',
+                tip: '建議：拍打手臂內側心包經。'
+            }
+        };
+
+        function toggleVeinMode(mode) {
+            currentVeinMode = mode;
+            
+            // 更新按鈕
+            document.getElementById('btnBlue').classList.toggle('active', mode === 'blue');
+            document.getElementById('btnRed').classList.toggle('active', mode === 'red');
+
+            // 更新 SVG 顏色
+            const paths = document.querySelectorAll('.vein-path');
+            const color = mode === 'blue' ? '#2980b9' : '#c0392b';
+            paths.forEach(p => p.setAttribute('stroke', color));
+            
+            // 重置診斷框
+            document.getElementById('diagnosisBox').classList.remove('show');
+            document.querySelectorAll('.hand-zone').forEach(el => el.classList.remove('active'));
+        }
+
+        function showDiagnosis(part) {
+            const data = diagnosisData[part];
+            const box = document.getElementById('diagnosisBox');
+            
+            // 填入資料
+            document.getElementById('diagTitle').innerText = data.title;
+            document.getElementById('diagContent').innerText = currentVeinMode === 'blue' ? data.blue : data.red;
+            document.getElementById('diagTip').innerText = data.tip;
+
+            // 樣式更新
+            box.classList.add('show');
+            box.style.borderLeftColor = currentVeinMode === 'blue' ? 'var(--color-alert-blue)' : 'var(--color-alert-red)';
+            
+            // SVG 區域高亮
+            document.querySelectorAll('.hand-zone').forEach(el => el.classList.remove('active'));
+            // 確保事件物件存在
+            if (event && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // 如果沒有事件物件，嘗試用查詢選擇器來點亮區域
+                const selectedZone = document.querySelector(`.hand-zone[onclick*="${part}"]`);
+                if (selectedZone) selectedZone.classList.add('active');
+            }
+        }
+
+        // --- 清單勾選 ---
+        function toggleCheck(el) {
+            el.classList.toggle('checked');
+            // 簡單的視覺切換由 CSS 處理
+        }
+
+        // --- 心念切換 ---
+        function setMindset(type) {
+            const display = document.getElementById('mindDisplay');
+            
+            if (type === 'heaven') {
+                display.style.background = '#fffbeb';
+                display.style.border = '1px solid #fcd34d';
+                display.innerHTML = `
+                    <i class="fa-regular fa-face-smile" style="font-size: 40px; color: #d97706; margin-bottom: 10px;"></i>
+                    <h3 style="color: #92400e;">天堂：當下的快樂</h3>
+                    <p style="font-size: 13px; color: #b45309;">「笑容燦爛，成為滋潤他人的好土。」</p>
+                `;
+            } else {
+                display.style.background = '#e5e7eb';
+                display.style.border = '1px solid #d1d5db';
+                display.innerHTML = `
+                    <i class="fa-solid fa-cloud-bolt" style="font-size: 40px; color: #4b5563; margin-bottom: 10px;"></i>
+                    <h3 style="color: #1f2937;">地獄：無盡的糾結</h3>
+                    <p style="font-size: 13px; color: #4b5563;">「攻擊與怨恨，讓你沒有時間走回幸福之路。」</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
