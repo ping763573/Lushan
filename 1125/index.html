@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康脊椎調整指南 v1.0.0</title>
+    <style>
+        :root {
+            --color-primary: #2d7e7e;
+            --color-primary-hover: #1d5d5d;
+            --color-bg: #f5f3f0;
+            --color-surface: #ffffff;
+            --color-text: #1a1a1a;
+            --color-text-secondary: #666666;
+            --color-border: #d4cfc9;
+            --color-accent-1: #e8d5c4;
+            --color-accent-2: #d4e8e4;
+            --color-accent-3: #f0e4d6;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius: 8px;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2d7e7e 0%, #1d5d5d 100%);
+            color: white;
+            padding: var(--spacing-lg) var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .version-badge {
+            background: rgba(255,255,255,0.2);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .fullscreen-btn {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .fullscreen-btn:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--color-surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .nav-item:last-child {
+            border-bottom: none;
+        }
+
+        .nav-btn {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: var(--spacing-md);
+            text-align: left;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--color-text);
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--color-accent-2);
+            color: var(--color-primary);
+        }
+
+        .nav-btn.active {
+            background: var(--color-accent-2);
+            color: var(--color-primary);
+            font-weight: 600;
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .content {
+            flex: 1;
+            background: var(--color-surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow-y: auto;
+            padding: var(--spacing-lg);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-hidden {
+            display: none;
+        }
+
+        .content h2 {
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-md);
+            font-size: 22px;
+            border-bottom: 2px solid var(--color-accent-2);
+            padding-bottom: var(--spacing-md);
+        }
+
+        .content h3 {
+            color: var(--color-text);
+            margin: var(--spacing-lg) 0 var(--spacing-md) 0;
+            font-size: 16px;
+        }
+
+        .content p {
+            margin-bottom: var(--spacing-md);
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+        }
+
+        .step-box {
+            background: var(--color-accent-1);
+            border-left: 4px solid var(--color-primary);
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            border-radius: var(--radius);
+        }
+
+        .step-box strong {
+            color: var(--color-primary);
+        }
+
+        .info-box {
+            background: var(--color-accent-2);
+            border: 1px solid var(--color-primary);
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            border-radius: var(--radius);
+        }
+
+        .tips-list {
+            list-style-position: inside;
+            margin: var(--spacing-md) 0;
+            padding-left: var(--spacing-md);
+        }
+
+        .tips-list li {
+            margin: var(--spacing-sm) 0;
+            color: var(--color-text-secondary);
+        }
+
+        .scroll-hint {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            margin-top: auto;
+            padding-top: var(--spacing-md);
+            text-align: center;
+        }
+
+        /* Fullscreen styles */
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            border-radius: 0 !important;
+        }
+
+        .fullscreen .header {
+            border-radius: 0;
+        }
+
+        .fullscreen .container {
+            border-radius: 0;
+        }
+
+        .fullscreen .sidebar {
+            border-radius: 0;
+        }
+
+        .fullscreen .content {
+            border-radius: 0;
+        }
+
+        .fullscreen-btn.exit {
+            background: rgba(255,0,0,0.3);
+        }
+
+        .fullscreen-btn.exit:hover {
+            background: rgba(255,0,0,0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+
+            .sidebar {
+                width: 100%;
+                max-height: 200px;
+            }
+
+            .content {
+                padding: var(--spacing-md);
+            }
+
+            .header {
+                padding: var(--spacing-md);
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .nav-btn {
+                padding: var(--spacing-sm) var(--spacing-md);
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-sm);
+            }
+
+            .sidebar {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-sm);
+                max-height: none;
+            }
+
+            .nav-item {
+                border: 1px solid var(--color-border);
+                border-bottom: 1px solid var(--color-border);
+            }
+
+            .nav-btn {
+                padding: var(--spacing-sm);
+                text-align: center;
+                font-size: 12px;
+            }
+
+            .step-box {
+                padding: var(--spacing-sm);
+            }
+        }
+
+        /* Scrollbar styling */
+        .sidebar::-webkit-scrollbar,
+        .content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track,
+        .content::-webkit-scrollbar-track {
+            background: var(--color-accent-3);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb,
+        .content::-webkit-scrollbar-thumb {
+            background: var(--color-primary);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div>
+            <h1>🏥 健康脊椎調整指南</h1>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <span class="version-badge">版本 v1.0.0</span>
+            <button class="fullscreen-btn" id="fullscreenBtn" onclick="toggleFullscreen()">⛶ 全螢幕</button>
+        </div>
+    </header>
+
+    <div class="container" id="mainContainer">
+        <nav class="sidebar">
+            <ul class="nav-list">
+                <li class="nav-item"><button class="nav-btn active" onclick="showSection('intro')">📌 課程介紹</button></li>
+                <li class="nav-item"><button class="nav-btn" onclick="showSection('morning')">🌅 早晨運動</button></li>
+                <li class="nav-item"><button class="nav-btn" onclick="showSection('water-pipe')">🔵 水管調整</button></li>
+                <li class="nav-item"><button class="nav-btn" onclick="showSection('binding')">🎀 綁腿秘訣</button></li>
+                <li class="nav-item"><button class="nav-btn" onclick="showSection('sleep')">😴 睡眠調理</button></li>
+                <li class="nav-item"><button class="nav-btn" onclick="showSection('leg-length')">📏 腿長短調整</button></li>
+                <li class="nav-item"><button class="nav-btn" onclick="showSection('gallbladder')">💪 膽經調理</button></li>
+                <li class="nav-item"><button class="nav-btn" onclick="showSection('tips')">💡 生活建議</button></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <!-- Section 1: Intro -->
+            <section id="intro" class="section-content">
+                <h2>📌 脊椎調整課程介紹</h2>
+                <p>本課程針對現代人常見的脊椎問題進行系統教學，透過簡單易行的調整方法，幫助您改善身體狀況。</p>
+                
+                <h3>課程重點</h3>
+                <ul class="tips-list">
+                    <li>每個人的身體需求不同，需要個別調整</li>
+                    <li>脊椎調整不是每天都要做，但要持續維護</li>
+                    <li>正確的姿勢和呼吸至關重要</li>
+                    <li>配合早晨運動和睡前調理效果更佳</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>💡 核心理念：</strong> 身體的各個系統互相連結，調整脊椎時需要全面考慮整體平衡。
+                </div>
+
+                <h3>課程涵蓋範圍</h3>
+                <p>從早晨起床的正確動作開始，涵蓋日常運動、脊椎調整、睡眠改善到身體各部位的協調平衡。</p>
+            </section>
+
+            <!-- Section 2: Morning -->
+            <section id="morning" class="section-content content-hidden">
+                <h2>🌅 早晨運動與起床技巧</h2>
+                <p>正確的早晨運動能夠喚醒身體，打開經絡，為一整天帶來活力。</p>
+
+                <h3>起床步驟</h3>
+                <div class="step-box">
+                    <strong>第一步：</strong> 倒退方式下床，用腳跟著地向後走，目的是拉直晨起僵硬的肌肉
+                </div>
+                <div class="step-box">
+                    <strong>第二步：</strong> 走到洗手間後才起身，讓脊椎逐漸從睡眠狀態甦醒
+                </div>
+                <div class="step-box">
+                    <strong>第三步：</strong> 蹲下時保持背部挺直，頭部隨著下蹲，膝蓋不受壓力
+                </div>
+
+                <h3>晨起運動</h3>
+                <ul class="tips-list">
+                    <li>喝一杯薑茶（加3-4片生薑），幫助身體溫暖</li>
+                    <li>進行瑜伽滾輪運動，拉開整個背部</li>
+                    <li>做腳部彎曲動作，配合擦拭潤霜，5-10分鐘</li>
+                    <li>檢查手機消息時可以保持伸展姿勢</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>⚡ 早晨是最緊的時候</strong>，需要特別注意拉伸和放鬆。
+                </div>
+            </section>
+
+            <!-- Section 3: Water Pipe -->
+            <section id="water-pipe" class="section-content content-hidden">
+                <h2>🔵 水管調整療法</h2>
+                <p>水管調整是課程的核心療法，通過特定直徑的硬滾筒刺激脊椎，達到舒緩和調整效果。</p>
+
+                <h3>水管規格</h3>
+                <div class="info-box">
+                    <strong>標準直徑：</strong> 7.5 - 8 公分<br>
+                    <strong>材質：</strong> 硬質水管，包裹襪套防滑<br>
+                    <strong>包套費用：</strong> 約 80 元
+                </div>
+
+                <h3>躺水管的要點</h3>
+                <ul class="tips-list">
+                    <li>一定要綁三條腿帶，確保安全穩定</li>
+                    <li>需要硬質地板，不能在軟墊上進行</li>
+                    <li>膝蓋必須彎起來，絕不能直腿</li>
+                    <li>新手建議一天 20 分鐘，經常做可增加至 40 分鐘</li>
+                </ul>
+
+                <h3>正確位置</h3>
+                <div class="step-box">
+                    <strong>命門穴位：</strong> 水管放在肚臍正下方的位置，這是關鍵的調整點
+                </div>
+
+                <h3>適應過程</h3>
+                <p>初期可能感到酸痛，這是正常的。如果特別痛，可以輕輕挪動位置，每 1-2 分鐘調整一次，直到找到舒適點。</p>
+
+                <div class="info-box">
+                    <strong>💪 進階做法：</strong> 躺到尾椎時，可以刺激環跳穴和骨盆區域，對膝蓋和髖部問題特別有幫助。
+                </div>
+            </section>
+
+            <!-- Section 4: Binding -->
+            <section id="binding" class="section-content content-hidden">
+                <h2>🎀 綁腿的正確方法</h2>
+                <p>綁腿是調整脊椎時最重要的安全措施，提供穩定性和支撐力。</p>
+
+                <h3>三條綁帶的用途</h3>
+                <ul class="tips-list">
+                    <li><strong>膝蓋上方：</strong> 固定上腿，防止鬆動</li>
+                    <li><strong>膝蓋下方：</strong> 穩定脛部，保護膝關節</li>
+                    <li><strong>腳踝附近：</strong> 固定下肢，確保整體成型</li>
+                </ul>
+
+                <h3>綁腿要領</h3>
+                <div class="step-box">
+                    <strong>鬆緊度：</strong> 不能太鬆（膝蓋會鬆動），也不能太緊（影響血液循環）。手掌厚度可滑動為適當松緊。
+                </div>
+
+                <h3>綁腿時間表</h3>
+                <ul class="tips-list">
+                    <li><strong>坐著工作：</strong> 只綁膝蓋上方一條，提供腰部支撐</li>
+                    <li><strong>躺著調整：</strong> 綁三條，提供完整脊椎保護</li>
+                    <li><strong>睡眠調理：</strong> 冬天怕冷的人綁三條，促進血液循環</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>🔥 綁腿好處：</strong>
+                    <ul class="tips-list">
+                        <li>手腳不再冰冷</li>
+                        <li>睡眠品質大幅提升</li>
+                        <li>消除疲勞效率高</li>
+                        <li>氣血循環暢通</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 5: Sleep -->
+            <section id="sleep" class="section-content content-hidden">
+                <h2>😴 睡眠調理與改善</h2>
+                <p>睡眠品質直接影響身體修復，透過特定調整可以顯著改善失眠問題。</p>
+
+                <h3>骨盆與睡眠的關係</h3>
+                <p>人體的氣血循環樞紐在骨盆區域。骨盆位置不正確時，氣血流通受阻，導致缺氧，睡眠中容易翻身，每 5 分鐘翻一次身體，影響睡眠深度。</p>
+
+                <h3>失眠者的特徵</h3>
+                <ul class="tips-list">
+                    <li>大腿外側摸起來有粗糙感、一粒粒突起</li>
+                    <li>手心容易冰冷（靜脈回流差）</li>
+                    <li>睡前想睡卻睡不著，大腦無法放鬆</li>
+                    <li>經常打哈欠、缺氧感</li>
+                </ul>
+
+                <h3>睡前調理法</h3>
+                <div class="step-box">
+                    <strong>床邊水管法：</strong> 在床旁邊地板上放置水管，綁好腿帶後躺在上面 10 分鐘，刺激尾椎區域。血液流動加速，腦神經滋養充足，不到 10 分鐘睡意就會來臨。
+                </div>
+
+                <h3>快速恢復睡眠習慣</h3>
+                <ul class="tips-list">
+                    <li>堅持一週，睡眠問題會顯著改善</li>
+                    <li>調整後可直接爬上床繼續睡眠</li>
+                    <li>不需要綁腿也可以進行床邊調理</li>
+                    <li>如果中途需要起身，直接拆掉綁帶即可</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>💤 核心原理：</strong> 尾椎的上、中、下三療穴位直接連接腦部神經，刺激這些穴位能快速調理腦神經，改善睡眠。
+                </div>
+            </section>
+
+            <!-- Section 6: Leg Length -->
+            <section id="leg-length" class="section-content content-hidden">
+                <h2>📏 腿長短調整</h2>
+                <p>腿長短差異會導致骨盆傾斜，引發多種身體問題。通過特定動作可以自我調整。</p>
+
+                <h3>如何判斷腿長短</h3>
+                <ul class="tips-list">
+                    <li>站著上樓梯時，習慣先邁哪隻腳，那隻腳較長</li>
+                    <li>走路時，裙子容易往某一邊滑落</li>
+                    <li>躺著時，膝蓋彎曲看高度，高的那邊腿較長</li>
+                    <li>骨盆高低不一致，導致腰酸背痛</li>
+                </ul>
+
+                <h3>自我調整方法</h3>
+                <div class="step-box">
+                    <strong>內旋調整：</strong> 躺著時，將較長的腳膝蓋彎起，大腿骨內旋（轉向身體中線）到極限，然後伸直踢出，腳會變短。
+                </div>
+
+                <div class="step-box">
+                    <strong>外旋調整：</strong> 相反方向操作，將腳外旋（遠離身體中線）到極限，然後踢出，腳會變長。
+                </div>
+
+                <h3>調整頻率</h3>
+                <ul class="tips-list">
+                    <li>沒有長短問題的人也可以調整，能消除一天的疲勞</li>
+                    <li>每次調整雙腳各做一次，確保平衡</li>
+                    <li>調整後會感覺精神變好，臉型更正</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>🎯 骨盆關鍵：</strong> 骨盆位置正確直接影響下顎骨健康、牙齒狀況和整體臉型。
+                </div>
+            </section>
+
+            <!-- Section 7: Gallbladder -->
+            <section id="gallbladder" class="section-content content-hidden">
+                <h2>💪 膽經調理與代謝</h2>
+                <p>膽經關係到脂質代謝和身體能量分配，調理膽經能提升整體健康。</p>
+
+                <h3>膽經的重要性</h3>
+                <ul class="tips-list">
+                    <li>大腿外側的膽經負責脂質分解</li>
+                    <li>膽經暢通，代謝效率提升</li>
+                    <li>膽經堵塞導致睡眠不佳和皮膚問題</li>
+                    <li>手指粗糙、血液循環差都與膽經有關</li>
+                </ul>
+
+                <h3>膽經調理方法</h3>
+                <div class="step-box">
+                    <strong>坐姿壓法：</strong> 坐在水管上，利用自身重量刺激大腿外側膽經，配合手臂運動增加刺激效果。
+                </div>
+
+                <div class="step-box">
+                    <strong>跪姿敲打法：</strong> 跪在水管旁邊，用手敲打膽經區域 30 秒到 1 分鐘，之後膽經會明顯放鬆。提前擦潤霜效果更佳。
+                </div>
+
+                <h3>飲食搭配建議</h3>
+                <ul class="tips-list">
+                    <li>膽經好的人可以吃油脂食物而不容易發胖</li>
+                    <li>油炒的菜有助膽汁分泌，幫助消化</li>
+                    <li>適度的鹽分是必要的，不要過度低鹽飲食</li>
+                    <li>早上喝薑茶最重要，晚上喝為輔助</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>⚡ 警惕信號：</strong> 如果大腿外側摸起來一粒一粒粗糙，代表膽經代謝不好，很可能睡眠品質也有問題。
+                </div>
+            </section>
+
+            <!-- Section 8: Tips -->
+            <section id="tips" class="section-content content-hidden">
+                <h2>💡 生活建議與常見問題</h2>
+                <p>整合日常生活中的實用建議，幫助您更好地維護身體健康。</p>
+
+                <h3>飲食建議</h3>
+                <ul class="tips-list">
+                    <li><strong>薑茶：</strong> 早上最重要，晚上為輔助，冬天怕冷的人可以早晚都喝</li>
+                    <li><strong>油脂：</strong> 適度的油脂幫助膽汁分泌，不要完全避免</li>
+                    <li><strong>鹽分：</strong> 正常飲食即可，不需要過度低鹽</li>
+                </ul>
+
+                <h3>運動習慣</h3>
+                <ul class="tips-list">
+                    <li>沒有長短腿問題也要定期調整，消除日常疲勞</li>
+                    <li>每天 20 分鐘水管調整是基礎維護</li>
+                    <li>條件不好的人（如我本身）需要每天進行調整</li>
+                    <li>走遠路的人要用兩隻手上擎，保持脊椎平衡</li>
+                </ul>
+
+                <h3>起床時的秘訣</h3>
+                <div class="step-box">
+                    <strong>交替起身法：</strong> 如果習慣從左邊下床，隔天就從右邊起身。這樣可以調整大腿骨的長短，維持骨盆平衡。
+                </div>
+
+                <h3>男性特別提醒</h3>
+                <ul class="tips-list">
+                    <li>綁腿時要注意不要壓迫陽具，要將其抬起</li>
+                    <li>正確的綁腿方式不會影響循環或舒適度</li>
+                </ul>
+
+                <h3>常見問題</h3>
+                <div class="info-box">
+                    <strong>Q：躺水管很痛怎麼辦？</strong><br>
+                    A：疼痛是正常的，代表該部位有堵塞。輕輕挪動位置，每 1-2 分鐘調整一次，逐漸適應。不要放過痛點，要持續調整直到舒緩。
+                </div>
+
+                <div class="info-box">
+                    <strong>Q：調整後還需要看醫生嗎？</strong><br>
+                    A：如果有骨刺等已診斷的問題，可以配合調整。調整會通過刺激來改善，與醫療方式互補。
+                </div>
+
+                <div class="info-box">
+                    <strong>Q：多久才能看到效果？</strong><br>
+                    A：睡眠問題約 1 週改善，手腳冰冷也約 1 週見效。堅持很重要！
+                </div>
+
+                <h3>綜合建議</h3>
+                <ul class="tips-list">
+                    <li>身體的每個部位都相互連結，要從整體考慮</li>
+                    <li>沒有人教導我們正確的姿勢和呼吸，自我調整很重要</li>
+                    <li>堅持維護比急功近利更有效果</li>
+                    <li>一個禮拜的習慣養成期間很關鍵，要相信過程</li>
+                </ul>
+            </section>
+
+            <div class="scroll-hint">👇 向下滑動查看更多內容</div>
+        </main>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section-content');
+            sections.forEach(section => section.classList.add('content-hidden'));
+
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('content-hidden');
+
+            // Update active nav button
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function toggleFullscreen() {
+            const container = document.getElementById('mainContainer');
+            const header = document.querySelector('.header');
+            const btn = document.getElementById('fullscreenBtn');
+            const isFullscreen = container.classList.contains('fullscreen');
+
+            if (!isFullscreen) {
+                // Enter fullscreen
+                document.documentElement.requestFullscreen?.() || 
+                document.documentElement.webkitRequestFullscreen?.() ||
+                document.documentElement.mozRequestFullScreen?.();
+
+                container.classList.add('fullscreen');
+                header.classList.add('fullscreen');
+                btn.textContent = '⛶ 結束全螢幕';
+                btn.classList.add('exit');
+            } else {
+                // Exit fullscreen
+                document.exitFullscreen?.() || 
+                document.webkitExitFullscreen?.() ||
+                document.mozCancelFullScreen?.();
+
+                container.classList.remove('fullscreen');
+                header.classList.remove('fullscreen');
+                btn.textContent = '⛶ 全螢幕';
+                btn.classList.remove('exit');
+            }
+        }
+
+        // Initial section setup
+        window.addEventListener('load', () => {
+            showSection('intro');
+        });
+    </script>
+</body>
+</html>
