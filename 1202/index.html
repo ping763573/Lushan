@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康養生保健指南 v1.1.0</title>
+    <style>
+        :root {
+            --color-primary: #2d7a82;
+            --color-primary-light: #3fa3ac;
+            --color-secondary: #e8b4a8;
+            --color-bg: #f5f3f0;
+            --color-surface: #ffffff;
+            --color-text: #2c2c2c;
+            --color-text-light: #666666;
+            --color-accent-1: #6ba587;
+            --color-accent-2: #d9a574;
+            --color-accent-3: #a78bab;
+            --color-error: #d9534f;
+            --color-success: #5cb85c;
+            --color-border: #e0d5ce;
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: var(--font-family);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: var(--color-bg);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-md);
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .version-badge {
+            background-color: rgba(255,255,255,0.25);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-icon {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-icon:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 220px;
+            background-color: var(--color-surface);
+            border-right: 1px solid var(--color-border);
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar-item {
+            padding: 12px 16px;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            color: var(--color-text-light);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .sidebar-item:hover {
+            background-color: #f9f7f4;
+            color: var(--color-primary);
+        }
+
+        .sidebar-item.active {
+            background-color: #eef7f8;
+            border-left-color: var(--color-primary);
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 28px 32px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 28px;
+            background-color: var(--color-primary);
+            border-radius: 2px;
+        }
+
+        .card {
+            background-color: var(--color-surface);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-primary-light);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-content {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--color-text-light);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .badge-primary {
+            background-color: #e8f4f6;
+            color: var(--color-primary);
+        }
+
+        .badge-accent1 {
+            background-color: #eff5f1;
+            color: var(--color-accent-1);
+        }
+
+        .badge-accent2 {
+            background-color: #fef4ed;
+            color: var(--color-accent-2);
+        }
+
+        .list-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .list-icon {
+            color: var(--color-primary);
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+            width: 24px;
+            text-align: center;
+        }
+
+        .list-text {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--color-text-light);
+        }
+
+        .highlight {
+            background-color: #fff9e6;
+            padding: 1px 6px;
+            border-radius: 3px;
+            color: var(--color-accent-2);
+            font-weight: 500;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            background-color: var(--color-bg);
+        }
+
+        .fullscreen .sidebar {
+            width: 200px;
+        }
+
+        .fullscreen .content-area {
+            padding: 32px 40px;
+        }
+
+        .fullscreen .section-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .fullscreen .card {
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .fullscreen .card-title {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .fullscreen .card-content {
+            font-size: 15px;
+            line-height: 1.9;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                max-height: 40px;
+                border-right: none;
+                border-bottom: 1px solid var(--color-border);
+                overflow-x: auto;
+                display: flex;
+            }
+
+            .sidebar-item {
+                white-space: nowrap;
+                border-left: none;
+                border-right: 1px solid var(--color-border);
+                border-bottom: none;
+            }
+
+            .sidebar-item.active {
+                border-left: none;
+                border-bottom: 3px solid var(--color-primary);
+            }
+
+            .main-content {
+                flex-direction: column;
+            }
+
+            .content-area {
+                padding: 20px 16px;
+            }
+
+            .section-title {
+                font-size: 20px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-title {
+                font-size: 16px;
+            }
+
+            .version-badge {
+                display: none;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .card-title {
+                font-size: 14px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d0c7be;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b8aca2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                ❤️ 健康養生保健指南
+                <span class="version-badge">v1.1.0</span>
+            </div>
+            <div class="header-actions">
+                <button class="btn-icon" id="fullscreenBtn" title="全螢幕">⛶</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-item active" data-section="overview">概覽</div>
+                <div class="sidebar-item" data-section="diabetes">糖尿病預防</div>
+                <div class="sidebar-item" data-section="hypertension">高血壓預防</div>
+                <div class="sidebar-item" data-section="spine">脊椎健康</div>
+                <div class="sidebar-item" data-section="exercise">運動保健</div>
+                <div class="sidebar-item" data-section="nutrition">營養飲食</div>
+                <div class="sidebar-item" data-section="footcare">足部保健</div>
+            </div>
+
+            <div class="content-area">
+                <!-- 概覽 -->
+                <div id="overview" class="content-section active">
+                    <div class="section-title">健康生活概覽</div>
+                    <div class="card">
+                        <div class="card-title">🌟 核心養生理念</div>
+                        <div class="card-content">
+                            <div style="margin-bottom: 16px;">
+                                <span class="badge badge-primary">日常檢查</span>
+                                <span class="badge badge-accent1">適度運動</span>
+                                <span class="badge badge-accent2">均衡飲食</span>
+                            </div>
+                            <p>不管什麼季節，都要好好照顧自己。每天早上起床和睡覺前進行簡單的身體檢查，注意尿液顏色、排泄、手腳狀況，這是預防疾病的第一道防線。通過持續的自我監測和適度的運動，可以有效預防許多現代健康問題。</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">📋 主要健康風險</div>
+                        <div class="card-content">
+                            <div class="list-item">
+                                <div class="list-icon">1️⃣</div>
+                                <div class="list-text"><span class="highlight">糖尿病</span> - 與肌肉量流失、血液循環差密切相關</div>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-icon">2️⃣</div>
+                                <div class="list-text"><span class="highlight">高血壓</span> - 主要因素是筋骨過硬、營養不均衡</div>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-icon">3️⃣</div>
+                                <div class="list-text"><span class="highlight">脊椎問題</span> - 包括側彎、椎間盤突出等</div>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-icon">4️⃣</div>
+                                <div class="list-text"><span class="highlight">缺氧細胞</span> - 血液循環差導致器官缺氧</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 糖尿病預防 -->
+                <div id="diabetes" class="content-section">
+                    <div class="section-title">糖尿病預防與管理</div>
+                    
+                    <div class="card">
+                        <div class="card-title">🩺 日常檢查清單</div>
+                        <div class="card-content">
+                            <div class="list-item">
+                                <div class="list-icon">✓</div>
+                                <div class="list-text">檢查尿液顏色和異味 - 每日早晚</div>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-icon">✓</div>
+                                <div class="list-text">檢查手腳皮膚 - 觀察是否有紅腫或裂紋</div>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-icon">✓</div>
+                                <div class="list-text">檢查手紋 - 注意紋路是否複雜或深色</div>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-icon">✓</div>
+                                <div class="list-text">檢查腳跟 - 是否有裂痕跡象</div>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-icon">✓</div>
+                                <div class="list-text">檢查指甲 - 顏色是否異常</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">⚠️ 警示信號</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>如果發現以下症狀，需要特別注意：</strong></p>
+                            <ul style="margin-left: 20px; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <li>手腳裂紋呈現 - 表示糖化血紅素已超標</li>
+                                <li>富貴手（手部紅腫裂紋）- 已進入糖尿病前期</li>
+                                <li>腳跟裂紋 - 血液循環變差的信號</li>
+                                <li>最慢四年後會發展為糖尿病（如果不加以改善）</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🌡️ 熱水浸泡療法</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>這是最有效的預防方法：</strong></p>
+                            <ol style="margin-left: 20px; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <li>準備一個盆子，倒入燙但不會燙傷的熱水</li>
+                                <li>準備椅子，避免跌倒風險</li>
+                                <li>腳先適應熱度（約3次「哎喲」後）</li>
+                                <li>每次浸泡 <span class="highlight">10分鐘</span></li>
+                                <li>頻率：退休族每天早晚各1次，上班族至少晚上1次</li>
+                                <li>可偶爾泡溫泉替代</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🍚 飲食控制原則</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>必須同時控制飲食：</strong></p>
+                            <div class="list-item" style="border: none; margin: 0;">
+                                <div class="list-icon">•</div>
+                                <div class="list-text">暫時減少麵包、麵類、饅頭的攝取</div>
+                            </div>
+                            <div class="list-item" style="border: none; margin: 0;">
+                                <div class="list-icon">•</div>
+                                <div class="list-text">一天可吃3湯匙飯量，或只吃一餐飯</div>
+                            </div>
+                            <div class="list-item" style="border: none; margin: 0;">
+                                <div class="list-icon">•</div>
+                                <div class="list-text">飯粒不要過亮（過度拋光的米）</div>
+                            </div>
+                            <div class="list-item" style="border: none; margin: 0;">
+                                <div class="list-icon">•</div>
+                                <div class="list-text">蛋白質和礦物質（青菜）必須充足</div>
+                            </div>
+                            <div class="list-item" style="border: none; margin: 0;">
+                                <div class="list-icon">•</div>
+                                <div class="list-text">補充鉀含量高的食物（番茄、葡萄乾）</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">⚡ 為什麼瘦人也會得糖尿病?</div>
+                        <div class="card-content">
+                            <p><strong>兩大因素：</strong></p>
+                            <p style="margin: 12px 0; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <span class="highlight">1. 先天性</span> - 母親懷孕期間飲食不當（過量碳水化合物和糖分），導致胰島素抵抗
+                            </p>
+                            <p style="margin: 12px 0; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <span class="highlight">2. 肌肉量流失</span> - 退休後缺乏運動，肌肉流失導致基礎代謝下降
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 高血壓預防 -->
+                <div id="hypertension" class="content-section">
+                    <div class="section-title">高血壓預防</div>
+                    
+                    <div class="card">
+                        <div class="card-title">💪 筋骨硬度是主因</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>高血壓的主要排名因素：</strong></p>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">1️⃣</div>
+                                <div class="list-text">筋骨過硬（最主要因素）- 血管收縮導致血壓升高</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">2️⃣</div>
+                                <div class="list-text">營養不均衡 - 缺乏鈣等礦物質</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">⚡</div>
+                                <div class="list-text">只要蹲不下去，就一定會有高血壓</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🧘 拉筋鬆筋是關鍵</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>預防高血壓的最佳方法：</strong></p>
+                            <ul style="margin-left: 20px; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <li>經常讓自己能夠蹲得下去</li>
+                                <li>能夠折疊身體就要折疊</li>
+                                <li>把筋骨拉軟是預防高血壓的根本</li>
+                                <li>日常可靠著牆壁、床邊或瑜伽輪進行拉筋</li>
+                                <li>但運動不一定只能做瑜伽，日常活動拉筋也有效</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">📌 膝蓋保護原則</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>正確的起坐方式（日本人最懂）：</strong></p>
+                            <div style="background-color: #f5f3f0; padding: 12px; border-radius: 6px; font-size: 14px; line-height: 1.8;">
+                                <p><strong>下坐時：</strong>頭先下去，膝蓋保持直立，屁股再下去</p>
+                                <p style="margin-top: 8px;"><strong>起身時：</strong>膝蓋拉直，頭才能起來（頭-膝蓋是對應的）</p>
+                                <p style="margin-top: 8px;"><strong>結果：</strong>一輩子膝蓋不會痛，不會發炎，不會磨損</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🏃 日常運動建議</div>
+                        <div class="card-content">
+                            <ul style="margin-left: 20px; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <li>運動很重要，但拉筋更重要</li>
+                                <li>不運動的話，經常拉筋也能預防高血壓</li>
+                                <li>光有運動（走路、跑步）但不拉筋，高血壓還是會報到</li>
+                                <li>年齡不是藉口 - 80歲以前都還是年輕人，都可以拉筋</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 脊椎健康 -->
+                <div id="spine" class="content-section">
+                    <div class="section-title">脊椎健康管理</div>
+                    
+                    <div class="card">
+                        <div class="card-title">🔍 脊椎側彎的警示</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>觀察肩膀高低差異：</strong></p>
+                            <div class="list-item" style="border: none; margin: 0;">
+                                <div class="list-icon">✓</div>
+                                <div class="list-text">如果左肩比右肩低，則左側卡骨較高</div>
+                            </div>
+                            <div class="list-item" style="border: none; margin: 0;">
+                                <div class="list-icon">✓</div>
+                                <div class="list-text">脊椎會因此彎曲向低側傾斜</div>
+                            </div>
+                            <div class="list-item" style="border: none; margin: 0;">
+                                <div class="list-icon">✓</div>
+                                <div class="list-text">長期脊椎側彎會導致走路不穩</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🎯 長短腳的辨識方法</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>如何判斷哪隻腳較長：</strong></p>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">📌</div>
+                                <div class="list-text"><strong>走路時：</strong>裙子往一邊滾，表示另一邊腳較長</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">📌</div>
+                                <div class="list-text"><strong>上樓梯：</strong>哪隻腳先上，表示該腳較長</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">📌</div>
+                                <div class="list-text"><strong>下樓梯：</strong>哪隻腳撐較久，表示該腳較長</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">📌</div>
+                                <div class="list-text"><strong>睡眠習慣：</strong>習慣放在上面的腳較長</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">📌</div>
+                                <div class="list-text"><strong>側躺舒適度：</strong>側到哪邊舒服，表示那邊腳較長</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">📌</div>
+                                <div class="list-text"><strong>躺下時：</strong>膝蓋彎曲高度不同 - 高的那邊腳較長</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">📌</div>
+                                <div class="list-text"><strong>臉型對稱：</strong>臉較大的一邊對應腳較短的一側</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">⚠️ 重要提示</div>
+                        <div class="card-content" style="background-color: #fff5f5; padding: 12px; border-radius: 6px; border-left: 4px solid var(--color-error);">
+                            <p style="font-size: 14px; line-height: 1.8; color: var(--color-error);">
+                                <strong>大多數長短腳是「假性」的！</strong> 這是因為脊椎彎曲導致，並非真正的骨骼長度差異。通過正確的脊椎調整，可以改善這個問題。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🔧 椎間盤突出保健</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>「敲板」運動（預防椎間盤突出）：</strong></p>
+                            <ol style="margin-left: 20px; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <li>躺著，膝蓋碰胸部，頭腳都不碰地面</li>
+                                <li>做完「敲板」後，必須立即做「拉直」</li>
+                                <li>躺下，腰不碰地，膝蓋碰地</li>
+                                <li>這兩個動作配合使用效果最好</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🧩 脊椎壓縮與放鬆</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>認識脊椎壓縮：</strong></p>
+                            <ul style="margin-left: 20px; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <li>久坐、長時間低頭，會讓脊椎節節被壓縮，導致痠痛與疲勞</li>
+                                <li>脊椎節節沾黏，會讓血液與神經傳導變差，容易全身痠重</li>
+                                <li>透過拉長、伸展與扭轉，可以幫助脊椎「解壓縮」並恢復彈性</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 運動保健 -->
+                <div id="exercise" class="content-section">
+                    <div class="section-title">運動保健指南</div>
+                    
+                    <div class="card">
+                        <div class="card-title">🧘 脊椎側彎矯正運動</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>跪姿脊椎扭轉運動：</strong></p>
+                            <ol style="margin-left: 20px; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <li>跪著，膝蓋往後縮短約一個拳頭</li>
+                                <li>屁股坐在同側腳的腳跟（例：矯正左側就坐右腳跟）</li>
+                                <li>肩膀對應對側膝蓋（例：右肩對應左膝蓋）</li>
+                                <li>趴下，手肘和手心貼地</li>
+                                <li>保持3分鐘最好，2分鐘也可以</li>
+                                <li>一週做一次，每週進步一點點</li>
+                                <li>兩週後會明顯感受到脊椎變軟</li>
+                            </ol>
+                            <p style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border); font-size: 14px; line-height: 1.6; color: var(--color-error);"><strong>⚠️ 提醒：</strong>如果有脊椎問題，建議先補充鈣質（珍珠粉），再進行拉筋運動。</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">📏 脊椎解壓縮小練習</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>每天5分鐘脊椎伸展：</strong></p>
+                            <ul style="margin-left: 20px; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <li>站立或坐姿，雙手往上高舉，想像頭頂被向上拉長</li>
+                                <li>吸氣時拉長脊椎，吐氣時放鬆肩頸，重複10次</li>
+                                <li>配合左右側彎與輕微扭轉，幫助每一節脊椎打開空間</li>
+                                <li>辦公室久坐者可每小時做一次，減少脊椎壓力</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🏋️ 瑜伽輪使用方法</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>安全使用瑜伽輪的建議：</strong></p>
+                            <ul style="margin-left: 20px; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <li>開始時在床邊或牆邊進行，確保安全</li>
+                                <li>每次練習約15分鐘，依自身狀況調整</li>
+                                <li>脊椎會逐漸軟化，習慣後穩定度會提高</li>
+                                <li>建議先觀看詳細影片教學，再實際操作</li>
+                                <li>飯後至少間隔1小時再使用</li>
+                                <li>早晚皆可練習，以不勉強為原則</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">💪 肌肉保護策略</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>退休後必須維護肌肉量：</strong></p>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">✓</div>
+                                <div class="list-text">足夠的蛋白質攝取 - 防止肌肉流失</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">✓</div>
+                                <div class="list-text">規律運動 - 保持基礎代謝</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">✓</div>
+                                <div class="list-text">拉筋運動 - 維持筋骨靈活性</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">✓</div>
+                                <div class="list-text">完全不吃碳水會讓脾胃虛弱 - 需要適量碳水</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 營養飲食 -->
+                <div id="nutrition" class="content-section">
+                    <div class="section-title">營養飲食原則</div>
+                    
+                    <div class="card">
+                        <div class="card-title">🌾 碳水化合物的選擇</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>台灣居住地理位置考量：</strong></p>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">🍚</div>
+                                <div class="list-text">米食是最適合的 - 符合東亞人體質</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">❌</div>
+                                <div class="list-text">避免過多麵粉食物 - 容易導致腸胃問題與濕氣</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">⚠️</div>
+                                <div class="list-text">大麥、麵包、麵條 - 過量會讓大腸蠕動不協調、長痘痘</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🥗 三大營養要素</div>
+                        <div class="card-content">
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">1️⃣</div>
+                                <div class="list-text"><strong>米飯 - 脾胃需要</strong><br>心臟需要米飯供能，不是麵包或麵類</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">2️⃣</div>
+                                <div class="list-text"><strong>蛋白質 - 肌肉維護</strong><br>足夠的蛋白質預防肌肉流失和代謝下降</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">3️⃣</div>
+                                <div class="list-text"><strong>礦物質 - 血管健康</strong><br>青菜含50%礦物質+50%碳水，不能完全避免碳水</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🧂 鉀的重要性</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>缺乏鉀會導致什麼：</strong></p>
+                            <ul style="margin-left: 20px; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <li>脾胃虛弱 - 導致無力</li>
+                                <li>心臟無力</li>
+                                <li>嚴重平血症狀</li>
+                                <li>體力衰退，容易暈倒或無力</li>
+                            </ul>
+                            <p style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border); font-size: 14px; line-height: 1.6;"><strong>富含鉀的食物：</strong>番茄、葡萄乾等。血壓正常的人可安心補充鉀。</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🍽️ 其他關鍵補充</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>日常補充重點：</strong></p>
+                            <ul style="margin-left: 20px; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <li>適量補充鈣質：可透過乳製品、小魚乾或珍珠粉等來源</li>
+                                <li>搭配足夠蛋白質，有助於維護骨骼與肌肉</li>
+                                <li>避免極端飲食（完全無碳水或只吃單一食物）</li>
+                                <li>每天至少攝取多樣化顏色蔬菜，補足礦物質與維生素</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🚫 控制血糖甜食技巧</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>為什麼缺乏鉀會想吃甜食：</strong></p>
+                            <p style="font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                當鉀攝取不足時，身體會本能地想要吃甜食。如果能補充足夠的鉀，自然會降低對甜食的渴望，更容易控制血糖。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🏥 孕期營養警示</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>為什麼瘦人也會得糖尿病：</strong></p>
+                            <p style="font-size: 14px; line-height: 1.8; color: var(--color-text-light); margin-bottom: 12px;">
+                                母親在懷孕期間過量進食（「一人吃兩人補」的觀念），尤其是過多碳水化合物和糖分，會耗盡胎兒的胰島素儲備。這類兒童長大後更容易患糖尿病，即使體重正常。
+                            </p>
+                            <p style="font-size: 14px; line-height: 1.6; color: var(--color-text-light); background-color: #fff9e6; padding: 10px; border-radius: 4px;"><strong>教育意義：</strong>適當的孕期飲食不僅影響當代，更關係到下一代的健康。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 足部保健 -->
+                <div id="footcare" class="content-section">
+                    <div class="section-title">足部保健與熱水療法</div>
+                    
+                    <div class="card">
+                        <div class="card-title">🛁 熱水浸泡的科學原理</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>為什麼浸泡熱水能預防糖尿病：</strong></p>
+                            <ul style="margin-left: 20px; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <li>促進血液循環 - 特別是末梢循環</li>
+                                <li>刺激神經末梢 - 增加感知能力</li>
+                                <li>幫助排毒 - 通過毛孔打開</li>
+                                <li>調節血糖 - 通過改善循環</li>
+                                <li>放鬆肌肉 - 特別是腿部肌肉</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🌡️ 正確的足部浸泡步驟</div>
+                        <div class="card-content">
+                            <div style="background-color: #f0f8f9; padding: 16px; border-radius: 8px; border-left: 4px solid var(--color-primary);">
+                                <p style="font-size: 14px; line-height: 1.8; color: var(--color-text-light); margin-bottom: 12px;"><strong>第一步：準備工作</strong></p>
+                                <ul style="margin-left: 20px; font-size: 14px; line-height: 1.6; color: var(--color-text-light);">
+                                    <li>準備一個盆子（沒有浴缸也可以）</li>
+                                    <li>準備椅子避免跌倒</li>
+                                    <li>倒入燙但不會燙傷的熱水</li>
+                                </ul>
+
+                                <p style="font-size: 14px; line-height: 1.8; color: var(--color-text-light); margin: 16px 0 12px 0; border-top: 1px solid #d0e8eb; padding-top: 12px;"><strong>第二步：適應過程</strong></p>
+                                <ul style="margin-left: 20px; font-size: 14px; line-height: 1.6; color: var(--color-text-light);">
+                                    <li>腳先接觸熱水（大約3次「哎喲」後適應）</li>
+                                    <li>手可以摸一下調整溫度</li>
+                                    <li>慢慢全部浸入</li>
+                                </ul>
+
+                                <p style="font-size: 14px; line-height: 1.8; color: var(--color-text-light); margin: 16px 0 12px 0; border-top: 1px solid #d0e8eb; padding-top: 12px;"><strong>第三步：浸泡時間</strong></p>
+                                <ul style="margin-left: 20px; font-size: 14px; line-height: 1.6; color: var(--color-text-light);">
+                                    <li>每次浸泡 <span class="highlight">10分鐘</span></li>
+                                    <li>不要太短也不要太長</li>
+                                </ul>
+
+                                <p style="font-size: 14px; line-height: 1.8; color: var(--color-text-light); margin: 16px 0 12px 0; border-top: 1px solid #d0e8eb; padding-top: 12px;"><strong>第四步：頻率建議</strong></p>
+                                <ul style="margin-left: 20px; font-size: 14px; line-height: 1.6; color: var(--color-text-light);">
+                                    <li><strong>退休族：</strong>早晚各1次</li>
+                                    <li><strong>上班族：</strong>至少晚上1次，有時間早上加1次</li>
+                                    <li><strong>特別建議：</strong>睡前那一次最重要</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🔴 足部裂紋的警示</div>
+                        <div class="card-content">
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">⚠️</div>
+                                <div class="list-text"><strong>手有裂紋 + 紅腫</strong> = 已進入糖尿病前期（富貴手）</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">⚠️</div>
+                                <div class="list-text"><strong>腳跟有裂紋</strong> = 糖化血紅素超標</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">⏰</div>
+                                <div class="list-text"><strong>時間警告</strong> = 最慢四年內會發展為糖尿病</div>
+                            </div>
+                            <div class="list-item" style="border: none;">
+                                <div class="list-icon">✅</div>
+                                <div class="list-text"><strong>改變機會</strong> = 現在改變飲食和泡腳可逆轉</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🦶 足部日常治療與保養</div>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>簡單可行的足部照護：</strong></p>
+                            <ul style="margin-left: 20px; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <li>每天洗澡後擦乾腳部，特別是趾縫，避免潮濕滋生黴菌</li>
+                                <li>針對乾裂部位，可薄擦保濕乳霜或油類，搭配棉襪幫助吸收</li>
+                                <li>避免自行修剪厚繭與深裂口，嚴重時尋求專業足部門診或皮膚科</li>
+                                <li>有糖尿病或血液循環差者，更要每天檢查腳底是否有水泡、傷口</li>
+                                <li>選擇透氣、合腳的鞋襪，減少摩擦與壓迫，保護足跟與足弓</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">🚫 避免的生活習慣</div>
+                        <div class="card-content">
+                            <ul style="margin-left: 20px; font-size: 14px; line-height: 1.8; color: var(--color-text-light);">
+                                <li>避免長期穿著不透氣的鞋子</li>
+                                <li>定期檢查腳部皮膚狀況</li>
+                                <li>不要忽視初期症狀（裂紋、乾燥）</li>
+                                <li>保持腳部清潔和乾燥</li>
+                                <li>冬天特別要注意保濕，避免過度乾裂</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全螢幕功能
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const container = document.querySelector('.container');
+
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(err => {
+                    alert(`全螢幕請求失敗: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        // 側邊欄導航
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const sectionId = item.getAttribute('data-section');
+                
+                // 移除所有active類
+                sidebarItems.forEach(i => i.classList.remove('active'));
+                contentSections.forEach(s => s.classList.remove('active'));
+                
+                // 新增active類
+                item.classList.add('active');
+                document.getElementById(sectionId).classList.add('active');
+
+                // 平滑滾動到頂部
+                const contentArea = document.querySelector('.content-area');
+                contentArea.scrollTop = 0;
+            });
+        });
+
+        // 響應式調整
+        function handleResize() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth <= 768) {
+                sidebar.style.flexDirection = 'row';
+            } else {
+                sidebar.style.flexDirection = 'column';
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        // 監聽全螢幕變化
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                container.classList.add('fullscreen');
+                fullscreenBtn.textContent = '⛶';
+            } else {
+                container.classList.remove('fullscreen');
+                fullscreenBtn.textContent = '⛶';
+            }
+        });
+    </script>
+</body>
+</html>
