@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生命教育經絡學：逆轉新陳代謝與血糖管理 | 版本 1.0.1</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: flex-start;
+        }
+        
+        /* 頂部標題欄 */
+        .header {
+            width: 100%;
+            background: linear-gradient(135deg, #2c7873 0%, #6fb3b8 100%);
+            color: white;
+            padding: 1.2rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .logo-title h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+        
+        .logo-title p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .version-control {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .version-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .fullscreen-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .fullscreen-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        /* 主內容區 */
+        .main-content {
+            display: flex;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex-grow: 1;
+            gap: 2rem;
+        }
+        
+        /* 左側導航 */
+        .sidebar {
+            width: 300px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .sidebar-title {
+            font-size: 1.3rem;
+            color: #2c7873;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .sidebar-title i {
+            color: #6fb3b8;
+        }
+        
+        .outline-list {
+            list-style-type: none;
+        }
+        
+        .outline-item {
+            margin-bottom: 0.8rem;
+        }
+        
+        .outline-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+        }
+        
+        .outline-link:hover {
+            background-color: #f0f9f9;
+            color: #2c7873;
+        }
+        
+        .outline-link.active {
+            background-color: #e8f4f4;
+            color: #2c7873;
+            border-left: 3px solid #2c7873;
+            font-weight: 500;
+        }
+        
+        .outline-link i {
+            margin-right: 0.8rem;
+            width: 20px;
+            text-align: center;
+            color: #6fb3b8;
+        }
+        
+        .outline-sublist {
+            list-style-type: none;
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* 右側內容區 */
+        .content-area {
+            flex: 1;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            overflow-y: auto;
+            height: calc(100vh - 180px);
+            position: relative;
+        }
+        
+        .content-scroll-container {
+            height: 100%;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        /* 自定義滾動條 */
+        .content-scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .content-scroll-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .content-scroll-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        
+        .content-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #2c7873;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .section-subtitle {
+            font-size: 1.3rem;
+            color: #4a9e95;
+            margin: 1.5rem 0 1rem;
+        }
+        
+        .content-text {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        
+        .content-text.highlight {
+            background-color: #f0f9f9;
+            padding: 1.2rem;
+            border-radius: 8px;
+            border-left: 4px solid #6fb3b8;
+        }
+        
+        /* 視覺化圖表區域 */
+        .visualization-area {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #eaeaea;
+        }
+        
+        .vis-title {
+            font-size: 1.2rem;
+            color: #2c7873;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .vis-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: space-around;
+            margin-top: 1.5rem;
+        }
+        
+        .vis-card {
+            flex: 1;
+            min-width: 250px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .vis-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .vis-card h4 {
+            color: #2c7873;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .meridian-diagram {
+            width: 100%;
+            height: 200px;
+            background-color: #f0f9f9;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        
+        .meridian-line {
+            position: absolute;
+            background-color: #ff6b6b;
+            height: 3px;
+            border-radius: 3px;
+        }
+        
+        .meridian-line:nth-child(1) {
+            width: 80%;
+            top: 30%;
+            left: 10%;
+            transform: rotate(5deg);
+        }
+        
+        .meridian-line:nth-child(2) {
+            width: 70%;
+            top: 50%;
+            left: 15%;
+            transform: rotate(-5deg);
+        }
+        
+        .meridian-line:nth-child(3) {
+            width: 60%;
+            top: 70%;
+            left: 20%;
+            transform: rotate(3deg);
+        }
+        
+        .blood-vessel {
+            position: absolute;
+            background-color: #2c7873;
+            height: 3px;
+            border-radius: 3px;
+        }
+        
+        .blood-vessel:nth-child(4) {
+            width: 75%;
+            top: 40%;
+            left: 12%;
+            transform: rotate(-3deg);
+        }
+        
+        .blood-vessel:nth-child(5) {
+            width: 65%;
+            top: 60%;
+            left: 18%;
+            transform: rotate(8deg);
+        }
+        
+        .organ-icons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+        }
+        
+        .organ-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .organ-icon.liver {
+            background-color: #ff9f43;
+        }
+        
+        .organ-icon.kidney {
+            background-color: #2c7873;
+        }
+        
+        .organ-icon.heart {
+            background-color: #ee5a52;
+        }
+        
+        .organ-icon.stomach {
+            background-color: #6fb3b8;
+        }
+        
+        /* 血糖轉化圖 */
+        .sugar-path {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        
+        .sugar-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100px;
+        }
+        
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #6fb3b8;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .step-label {
+            font-weight: 500;
+            color: #2c7873;
+            font-size: 0.9rem;
+        }
+        
+        .step-arrow {
+            flex-grow: 1;
+            height: 2px;
+            background-color: #ddd;
+            margin: 0 10px;
+            position: relative;
+        }
+        
+        .step-arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid #ddd;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+        
+        /* 版本歷史 */
+        .version-history {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .version-list {
+            list-style-type: none;
+            margin-top: 1rem;
+        }
+        
+        .version-item {
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            background-color: #f8f9fa;
+            border-left: 4px solid #6fb3b8;
+        }
+        
+        .version-number {
+            font-weight: 600;
+            color: #2c7873;
+        }
+        
+        .version-date {
+            font-size: 0.9rem;
+            color: #777;
+            margin-left: 1rem;
+        }
+        
+        .version-desc {
+            margin-top: 0.5rem;
+            color: #555;
+        }
+        
+        /* 響應式設計 */
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+            
+            .content-area {
+                height: auto;
+                max-height: 70vh;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .version-control {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .content-area {
+                padding: 1.5rem;
+            }
+            
+            .sugar-path {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+            
+            .step-arrow {
+                display: none;
+            }
+        }
+        
+        /* 全螢幕樣式 */
+        .fullscreen-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            background-color: #f8f9fa;
+            overflow-y: auto;
+        }
+        
+        .fullscreen-mode .header {
+            position: sticky;
+            top: 0;
+        }
+        
+        .fullscreen-mode .main-content {
+            max-width: 100%;
+            padding: 1rem;
+            height: calc(100vh - 100px);
+        }
+        
+        .fullscreen-mode .sidebar {
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .fullscreen-mode .content-area {
+            height: calc(100vh - 140px);
+        }
+        
+        /* 當前閱讀位置指示器 */
+        .reading-position {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #2c7873;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            box-shadow: 0 3px 10px rgba(44, 120, 115, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+        
+        .reading-position.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 頂部標題欄 -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-title">
+                    <h1>生命教育經絡學：逆轉新陳代謝與血糖管理</h1>
+                    <p>喚醒自我覺察，透過末梢循環與經絡調整，讓血液漂亮，器官獲得足夠能量</p>
+                </div>
+                <div class="version-control">
+                    <div class="version-badge">版本 1.0.1</div>
+                    <button class="fullscreen-btn" id="fullscreenToggle" title="切換全螢幕模式">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 主內容區 -->
+        <main class="main-content">
+            <!-- 左側導航 -->
+            <aside class="sidebar">
+                <h2 class="sidebar-title"><i class="fas fa-book-open"></i> 課程簡報大綱</h2>
+                <ul class="outline-list">
+                    <li class="outline-item">
+                        <a href="#intro" class="outline-link active" data-section="intro">
+                            <i class="fas fa-spa"></i> 壹、緒論：自我調整與經絡的奧秘
+                        </a>
+                        <ul class="outline-sublist">
+                            <li><a href="#self-adjust" class="outline-link sublink">A. 身體的自我覺察與調整</a></li>
+                            <li><a href="#metabolism" class="outline-link sublink">B. 人體的新陳代謝與血糖需求</a></li>
+                        </ul>
+                    </li>
+                    <li class="outline-item">
+                        <a href="#diet" class="outline-link" data-section="diet">
+                            <i class="fas fa-utensils"></i> 貳、飲食的通道與五臟六腑的運作
+                        </a>
+                    </li>
+                    <li class="outline-item">
+                        <a href="#microcirculation" class="outline-link" data-section="microcirculation">
+                            <i class="fas fa-hands"></i> 參、末梢循環與老化的真相
+                        </a>
+                    </li>
+                    <li class="outline-item">
+                        <a href="#practice" class="outline-link" data-section="practice">
+                            <i class="fas fa-bath"></i> 肆、經絡學的實踐：從洗澡與食療逆轉
+                        </a>
+                    </li>
+                    <li class="outline-item">
+                        <a href="#firstaid" class="outline-link" data-section="firstaid">
+                            <i class="fas fa-first-aid"></i> 伍、經絡急救與提醒
+                        </a>
+                    </li>
+                    <li class="outline-item">
+                        <a href="#visualization" class="outline-link" data-section="visualization">
+                            <i class="fas fa-chart-line"></i> 經絡與血糖視覺化
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+            
+            <!-- 右側內容區 -->
+            <section class="content-area">
+                <!-- 閱讀位置指示器 -->
+                <div class="reading-position" id="readingPosition"></div>
+                
+                <!-- 內容滾動容器 -->
+                <div class="content-scroll-container" id="contentScroll">
+                    <!-- 緒論部分 -->
+                    <div id="intro" class="content-section">
+                        <h2 class="section-title">壹、緒論：自我調整與經絡的奧秘</h2>
+                        
+                        <h3 class="section-subtitle" id="self-adjust">A. 身體的自我覺察與調整</h3>
+                        <div class="content-text highlight">
+                            <p><strong>調整的重要性：</strong>上帝公平，讓人從體會中學習，鼓勵日常調整，而非等到嚴重時才處理（如呼吸困難）。</p>
+                        </div>
+                        
+                        <div class="content-text">
+                            <p><strong>日常功課：</strong>每天練習瑜伽輪、躺水管、拉筋，哪怕只有五到十五分鐘。</p>
+                            <p><strong>檢查指標：</strong>每天早晚觀察手心、腳心的顏色和尿液，顏色不對須立即處理。</p>
+                            <p><strong>血液的統籌：</strong>健康的首要目標是讓「血液漂亮」。</p>
+                        </div>
+                        
+                        <div class="visualization-area">
+                            <h3 class="vis-title"><i class="fas fa-project-diagram"></i> 經絡與血絡的分辨</h3>
+                            <div class="meridian-diagram">
+                                <div class="meridian-line"></div>
+                                <div class="meridian-line"></div>
+                                <div class="meridian-line"></div>
+                                <div class="blood-vessel"></div>
+                                <div class="blood-vessel"></div>
+                            </div>
+                            <div class="content-text">
+                                <p><strong>經（經絡）：</strong> 氣的通道，人斷氣後即消失。</p>
+                                <p><strong>絡（血絡）：</strong> 血的通道，人死了八小時內仍可能滴血。</p>
+                            </div>
+                        </div>
+                        
+                        <h3 class="section-subtitle" id="metabolism">B. 人體的新陳代謝與血糖需求</h3>
+                        <div class="content-text">
+                            <p><strong>血糖的必要性：</strong>身體需要能量，血糖不足會導致頭暈、站不穩、無力。</p>
+                            <p><strong>新陳代謝的核心問題：</strong>許多現代疾病（過瘦、過胖、富貴手、腳跟龜裂等）皆源於新陳代謝問題，而新陳代謝問題實質是血液問題，最終是血糖問題。</p>
+                            <p><strong>器官對血糖的需求：</strong>器官和肌肉都需要血糖，但若代謝不良，血糖會流浪在血液中，無法被器官拿取。</p>
+                            <p><strong>冤枉的糖尿病：</strong>身體器官需要血糖，但血糖卻堵在關節以下，最終成為腎臟和血管的負擔，導致糖尿病。</p>
+                        </div>
+                        
+                        <div class="content-text">
+                            <p>根據逐字稿內容，老師強調：「你如果血糖不夠啊你頭就暈啊站也站不住啊也沒有力道啊所以一定要有足夠的血糖但是血糖要放在哪裡很重要」。這說明了血糖對於身體正常運作的重要性。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 飲食部分 -->
+                    <div id="diet" class="content-section">
+                        <h2 class="section-title">貳、飲食的通道與五臟六腑的運作</h2>
+                        
+                        <h3 class="section-subtitle">A. 血糖的轉化與儲存</h3>
+                        <div class="content-text">
+                            <p><strong>食物的旅程：</strong>所吃的食物（三餐、零食）經由胃的腐蝕消化，通過脾胃（土）。</p>
+                            <p><strong>脾胃的功能：</strong>脾是五臟中唯一「統色血液」的器官。</p>
+                            <p><strong>肝膽的職責：</strong>消化後的營養物經由膽（六腑）到達肝（五臟），肝膽為「造血器官」，負責儲存和製造血液。</p>
+                            <p><strong>肝糖：</strong>吃進去的食物必須轉化為「肝糖」，即身體所需的能量。</p>
+                            <p><strong>將軍之官：</strong>肝臟是將軍之官，專門計算當天消耗的血量，並決定隔天要送出多少血液。</p>
+                        </div>
+                        
+                        <!-- 血糖轉化視覺化 -->
+                        <div class="visualization-area">
+                            <h3 class="vis-title"><i class="fas fa-exchange-alt"></i> 血糖轉化路徑</h3>
+                            <div class="sugar-path">
+                                <div class="sugar-step">
+                                    <div class="step-icon"><i class="fas fa-utensils"></i></div>
+                                    <div class="step-label">食物攝取</div>
+                                </div>
+                                <div class="step-arrow"></div>
+                                <div class="sugar-step">
+                                    <div class="step-icon"><i class="fas fa-stomach"></i></div>
+                                    <div class="step-label">脾胃消化</div>
+                                </div>
+                                <div class="step-arrow"></div>
+                                <div class="sugar-step">
+                                    <div class="step-icon"><i class="fas fa-prescription-bottle"></i></div>
+                                    <div class="step-label">肝膽轉化</div>
+                                </div>
+                                <div class="step-arrow"></div>
+                                <div class="sugar-step">
+                                    <div class="step-icon"><i class="fas fa-battery-full"></i></div>
+                                    <div class="step-label">肝糖能量</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="section-subtitle">B. 礦物質的攝取與腎臟的保護</h3>
+                        <div class="content-text">
+                            <p><strong>礦物質的來源與重要性：</strong>礦物質來自蔬菜、水果、水裡長出的東西。足夠的礦物質可預防微量元素缺乏，減少大腸問題。</p>
+                            <p><strong>巨量元素鉀（K）：</strong>鉀是身體需求量最高的宏量元素，建議攝取量為4700至6200單位。</p>
+                            <p><strong>高鉀食物：</strong>青菜、大番茄、奇異果、葡萄乾等。葡萄乾因乾燥且甜，是快速補鉀的最佳選擇。</p>
+                            <p><strong>補鉀的誤區：</strong>香蕉糖分較多，不宜作為主要補鉀食物。</p>
+                            <p><strong>缺鉀的警訊：</strong>缺鉀的人特別愛吃甜食，長期下來容易導致腎臟和糖尿病問題。</p>
+                            <p><strong>血糖與腎臟：</strong>糖化血色素過高會傷害腎臟，因為腎臟長期浸泡在糖水裡。腎臟是人體下水道的最後一道器官，通常會先受損。</p>
+                            <p><strong>低鈉醬油警示：</strong>腎臟功能有問題的人需要低鉀、低鈉飲食。低鈉醬油通常是高鉀醬油，應避免購買，建議選擇中庸（正常）醬油。</p>
+                        </div>
+                        
+                        <div class="content-text">
+                            <p>根據逐字稿內容，老師特別提醒：「葡萄乾這個你要攝取葡萄乾你把它當成每天的一小均勻比如說你要去爬山你怕你爬一爬哦覺得覺得口渴然後覺得暈覺得累多餓葡萄乾最快補假葡萄乾最快為什麼？它是乾燥的它甜它乾燥的」。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 末梢循環部分 -->
+                    <div id="microcirculation" class="content-section">
+                        <h2 class="section-title">參、末梢循環與老化的真相</h2>
+                        
+                        <h3 class="section-subtitle">A. 老化與末梢的關聯</h3>
+                        <div class="content-text">
+                            <p><strong>疲勞之處：</strong>全身最容易疲勞的是腳。中國有「老寒」一說。</p>
+                            <p><strong>老化根源：</strong>人會老化是從末梢（微循環）和關節開始的。</p>
+                            <p><strong>不當的沐浴習慣：</strong>忙碌的沖澡方式（沖一沖）默默地偷走健康，導致慢性病。末梢循環差的人睡眠品質亦會受影響。</p>
+                        </div>
+                        
+                        <h3 class="section-subtitle">B. 末梢回流差的臨床表徵</h3>
+                        <div class="content-text">
+                            <p><strong>手掌訊號：</strong>手心過紅、有紅色白點，代表糖化血色素已有狀況。青筋很多又有紅筋，在經絡領域代表缺氧細胞，西醫角度可翻譯為肺癌徵兆。</p>
+                            <p><strong>紋路雜亂：</strong>手掌心紋路雜亂，在經絡學上反映下腹部的問題（如子宮癌、攝護腺、大腸癌等）。</p>
+                            <p><strong>手腳狀況：</strong>末梢回流差導致手腳乾燥，久了會出現青筋浮起，形成靜脈曲張（缺氧的血管）。腳跟龜裂、脫皮、死皮多，均是糖化血色素回流不佳的指標。</p>
+                        </div>
+                        
+                        <div class="visualization-area">
+                            <h3 class="vis-title"><i class="fas fa-hands"></i> 末梢循環檢測指標</h3>
+                            <div class="vis-container">
+                                <div class="vis-card">
+                                    <h4>手掌訊號</h4>
+                                    <p>手心過紅、紅色白點、青筋紅筋交錯</p>
+                                    <p><strong>可能表徵：</strong>糖化血色素異常、缺氧細胞</p>
+                                </div>
+                                <div class="vis-card">
+                                    <h4>腳部狀況</h4>
+                                    <p>腳跟龜裂、脫皮、死皮多、靜脈曲張</p>
+                                    <p><strong>可能表徵：</strong>末梢回流差、糖化血色素回流不佳</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="content-text">
+                            <p>逐字稿中提到：「人會老化是莫燒身體安都在關節我當時會做筆記啦會做筆記但是我無法領會我無法領悟以為哦當時的我認為哦我聽懂我認為我聽懂」，這說明了末梢循環與老化之間的深刻關聯。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 實踐部分 -->
+                    <div id="practice" class="content-section">
+                        <h2 class="section-title">肆、經絡學的實踐：從洗澡與食療逆轉</h2>
+                        
+                        <h3 class="section-subtitle">A. 重視沐浴：促進末梢回流（新陳代謝）</h3>
+                        <div class="content-text highlight">
+                            <p><strong>足浴/泡澡的養生：</strong>洗澡是非常重要的養生方法，不應用付。</p>
+                        </div>
+                        
+                        <div class="content-text">
+                            <p><strong>目標：</strong>讓腳趾尖的回流暖度很順暢，一直到膝蓋。</p>
+                            <p><strong>足浴步驟（無浴缸者）：</strong>坐在椅子上，將腳放入盆中，先用熱水沖腳尖再沖腳跟。水的温度要達到自己能接受的極限，但不會燙傷。</p>
+                            <ul style="margin-left: 2rem; margin-bottom: 1.5rem;">
+                                <li><strong>重複開關水龍頭（7到10次）：</strong>讓腳適應熱度，刺激末梢血液往膝蓋跑，感受到刺刺的熱流。</li>
+                                <li><strong>腳比手適應熱度弱，代表腳已非常疲勞，回流不好，血管沉澱。</strong></li>
+                            </ul>
+                            <p><strong>泡澡要求（適用於一般人）：</strong>至少一天一次，泡腳20至30分鐘，讓手腳都回流好。泡後記得穿襪子，即使是夏天。</p>
+                            <p><strong>泡澡要求（適用於中風或重症者）：</strong>建議一天泡澡三次，一次一小時，泡至肚臍。</p>
+                            <ul style="margin-left: 2rem;">
+                                <li><strong>安全要求：</strong>必須坐在椅子上，避免跌倒。</li>
+                                <li><strong>方法：</strong>腳先熱起來，水慢慢加。手必須保持在外面，直到全身出汗後，手才可以放下。</li>
+                            </ul>
+                        </div>
+                        
+                        <h3 class="section-subtitle">B. 逆轉肝腎功能的食療妙方</h3>
+                        <div class="content-text">
+                            <p><strong>胃酸逆流與脹氣解方：</strong>白天吃醋碇（吞下不咬，以免傷食道絨毛），晚上喝檸檬汁。</p>
+                            <ul style="margin-left: 2rem; margin-bottom: 1.5rem;">
+                                <li><strong>原理：</strong>醋和檸檬的酸入肝，幫助肝臟整理胃酸環境。</li>
+                                <li><strong>逆流原因：</strong>兩餐之間太密，或心臟氣不足。</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="visualization-area">
+                            <h3 class="vis-title"><i class="fas fa-lemon"></i> 檸檬汁加油：逆轉腎絲球過濾率（GFR）</h3>
+                            <div class="content-text">
+                                <p><strong>功效：</strong>固肝、固胃，可逆轉腎絲球率。</p>
+                                <p><strong>配方：</strong>檸檬原汁 100cc + 油 20cc（橄欖油或苦茶油）。</p>
+                                <p><strong>橄欖油選擇：</strong>必須購買「玻璃瓶」裝，且標有「特級冷壓初榨」六個字（生喝用）。</p>
+                                <p><strong>服用方式：</strong>搖一搖後喝下，一天一次。最佳時間是晚上睡前空腹，或兩餐之間空腹（需空腹兩小時，喝後一小時才能用餐）。</p>
+                                <p><strong>禁用條件：</strong>有潰瘍（胃潰瘍、食道潰瘍、消化道潰瘍）者不得使用。</p>
+                                <p><strong>臨床反饋：</strong>腎絲球過濾率曾有案例從 50 提升至 73（年長者）。</p>
+                            </div>
+                            
+                            <h4 style="margin-top: 1.5rem;">咖啡加油（針對低 GFR 者）：</h4>
+                            <div class="content-text">
+                                <p><strong>配方：</strong>黑咖啡 + 特級冷壓初榨橄欖油 20cc。</p>
+                                <p><strong>服用方式：</strong>用餐後 30 分鐘到一小時之間飲用（非空腹），搖勻慢飲。</p>
+                                <p><strong>健康人建議：</strong>可採間歇性飲用，例如喝一天休息三天。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="content-text">
+                            <p>根據逐字稿，老師分享了一個成功案例：「他們的聖求率才一季哦一季多久?三到四個月嘛對不對?從開學到結束他們失求率從 50 升到 73 就這樣喝一天一次 50 升到 73 一個年紀大人 73 很贊呢」。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 急救部分 -->
+                    <div id="firstaid" class="content-section">
+                        <h2 class="section-title">伍、經絡急救與提醒</h2>
+                        
+                        <h3 class="section-subtitle">A. 中風急救處理（放血）</h3>
+                        <div class="content-text highlight">
+                            <p><strong>第一時間：</strong>不管發生什麼事，先放血。</p>
+                        </div>
+                        
+                        <div class="content-text">
+                            <p><strong>放血位置：</strong>百會穴、啞門穴、指甲邊緣（武血）、腳指甲邊緣。</p>
+                            <p><strong>案例啟示：</strong>立即放血能挽救病人神智，使語言和肢體活動保持清晰，避免傳統的嚴重腦血栓症狀。</p>
+                        </div>
+                        
+                        <h3 class="section-subtitle">B. 結語</h3>
+                        <div class="content-text">
+                            <p><strong>心態調整：</strong>學習經絡的目的是「預防生病」，而非害怕死亡。</p>
+                            <p><strong>持續精進：</strong>老師鼓勵大家持續學習與實踐，每十年對健康會有更深的領悟。</p>
+                            <p><strong>祝福：</strong>透過上述調整，可望使身體年齡逆齡三到五歲，達到健康且滿足的狀態。</p>
+                        </div>
+                        
+                        <div class="content-text">
+                            <p>逐字稿中老師強調：「我們今天來學經落不是因為怕死對不對？每個人都會死從出生到一生末一定會死我們都很清楚對不對？...我們只是為了預防生病嘛對不對？我預防生病我不是怕死啊死一定會死啦」。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 視覺化部分 -->
+                    <div id="visualization" class="content-section">
+                        <h2 class="section-title">經絡與血糖管理視覺化</h2>
+                        
+                        <div class="visualization-area">
+                            <h3 class="vis-title"><i class="fas fa-heartbeat"></i> 五臟六腑功能圖</h3>
+                            <div class="organ-icons">
+                                <div class="organ-icon liver" title="肝臟：將軍之官，儲存與製造血液">
+                                    <i class="fas fa-prescription-bottle"></i>
+                                </div>
+                                <div class="organ-icon kidney" title="腎臟：人體下水道，最後一道器官">
+                                    <i class="fas fa-filter"></i>
+                                </div>
+                                <div class="organ-icon heart" title="心臟：血液循環動力">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="organ-icon stomach" title="脾胃：統色血液，消化轉化">
+                                    <i class="fas fa-stomach"></i>
+                                </div>
+                            </div>
+                            <div class="content-text" style="margin-top: 1.5rem;">
+                                <p><strong>肝臟：</strong>將軍之官，專門計算當天消耗的血量，並決定隔天要送出多少血液。</p>
+                                <p><strong>腎臟：</strong>人體下水道最後一道器官，糖化血色素過高會傷害腎臟。</p>
+                                <p><strong>脾胃：</strong>五臟中唯一「統色血液」的器官，食物消化轉化的關鍵。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="visualization-area">
+                            <h3 class="vis-title"><i class="fas fa-chart-bar"></i> 新陳代謝問題關聯圖</h3>
+                            <div class="vis-container">
+                                <div class="vis-card">
+                                    <h4>新陳代謝問題</h4>
+                                    <p>導致血液問題，最終是血糖問題</p>
+                                    <p><strong>表現症狀：</strong></p>
+                                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                                        <li>過瘦或過胖</li>
+                                        <li>富貴手</li>
+                                        <li>腳跟龜裂</li>
+                                        <li>血糖異常</li>
+                                    </ul>
+                                </div>
+                                <div class="vis-card">
+                                    <h4>解決方向</h4>
+                                    <p>從末梢循環與經絡調整入手</p>
+                                    <p><strong>關鍵方法：</strong></p>
+                                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                                        <li>正確沐浴（足浴/泡澡）</li>
+                                        <li>食療調整（檸檬汁加油）</li>
+                                        <li>日常經絡保養</li>
+                                        <li>礦物質攝取</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 版本歷史 -->
+                    <div class="version-history">
+                        <h3 class="section-subtitle"><i class="fas fa-history"></i> 版本歷史</h3>
+                        <ul class="version-list">
+                            <li class="version-item">
+                                <div><span class="version-number">版本 1.0.1</span><span class="version-date">2023-12-09</span></div>
+                                <div class="version-desc">改善導航功能，點擊左側大綱項目時，右側會跳轉到該項目內容並允許上下滾動查看上下文。</div>
+                            </li>
+                            <li class="version-item">
+                                <div><span class="version-number">版本 1.0.0</span><span class="version-date">2023-12-09</span></div>
+                                <div class="version-desc">初始版本，根據課程簡報大綱與逐字稿建立完整內容結構與視覺化元素。</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script>
+        // 全螢幕切換功能
+        const fullscreenToggle = document.getElementById('fullscreenToggle');
+        const appContainer = document.querySelector('.app-container');
+        
+        fullscreenToggle.addEventListener('click', function() {
+            if (!document.fullscreenElement) {
+                if (appContainer.requestFullscreen) {
+                    appContainer.requestFullscreen();
+                } else if (appContainer.webkitRequestFullscreen) {
+                    appContainer.webkitRequestFullscreen();
+                } else if (appContainer.msRequestFullscreen) {
+                    appContainer.msRequestFullscreen();
+                }
+                appContainer.classList.add('fullscreen-mode');
+                fullscreenToggle.innerHTML = '<i class="fas fa-compress"></i>';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                appContainer.classList.remove('fullscreen-mode');
+                fullscreenToggle.innerHTML = '<i class="fas fa-expand"></i>';
+            }
+        });
+        
+        // 全螢幕狀態變化監聽
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('msfullscreenchange', handleFullscreenChange);
+        
+        function handleFullscreenChange() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+                appContainer.classList.remove('fullscreen-mode');
+                fullscreenToggle.innerHTML = '<i class="fas fa-expand"></i>';
+            }
+        }
+        
+        // 導航功能
+        const outlineLinks = document.querySelectorAll('.outline-link:not(.sublink)');
+        const contentSections = document.querySelectorAll('.content-section');
+        const contentScrollContainer = document.getElementById('contentScroll');
+        const readingPosition = document.getElementById('readingPosition');
+        
+        // 點擊導航項目時的處理函數
+        function navigateToSection(sectionId, smooth = true) {
+            // 移除所有active類
+            outlineLinks.forEach(l => l.classList.remove('active'));
+            contentSections.forEach(section => section.classList.remove('active'));
+            
+            // 添加active類到當前點擊的鏈接
+            const activeLink = document.querySelector(`[data-section="${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+            
+            // 顯示對應的內容區
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                
+                // 計算滾動位置（將目標部分置於頂部）
+                const scrollPosition = targetSection.offsetTop;
+                
+                // 平滑滾動到目標位置
+                if (smooth) {
+                    contentScrollContainer.scrollTo({
+                        top: scrollPosition - 20,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    contentScrollContainer.scrollTop = scrollPosition - 20;
+                }
+                
+                // 顯示當前閱讀位置
+                updateReadingPosition(sectionId);
+            }
+        }
+        
+        // 更新閱讀位置指示器
+        function updateReadingPosition(sectionId) {
+            const sectionNames = {
+                'intro': '緒論：自我調整與經絡的奧秘',
+                'diet': '飲食的通道與五臟六腑的運作',
+                'microcirculation': '末梢循環與老化的真相',
+                'practice': '經絡學的實踐：從洗澡與食療逆轉',
+                'firstaid': '經絡急救與提醒',
+                'visualization': '經絡與血糖視覺化'
+            };
+            
+            readingPosition.textContent = sectionNames[sectionId] || '閱讀中';
+            readingPosition.classList.add('show');
+            
+            // 3秒後隱藏指示器
+            setTimeout(() => {
+                readingPosition.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 為主要導航項目添加點擊事件
+        outlineLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetSection = this.getAttribute('data-section');
+                navigateToSection(targetSection);
+            });
+        });
+        
+        // 子導航功能
+        const subLinks = document.querySelectorAll('.sublink');
+        subLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 獲取父級主要導航項目
+                const parentLink = this.closest('.outline-item').querySelector('.outline-link:not(.sublink)');
+                const parentSectionId = parentLink.getAttribute('data-section');
+                
+                // 先導航到父節點
+                navigateToSection(parentSectionId, true);
+                
+                // 然後滾動到子標題
+                setTimeout(() => {
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        const scrollPosition = targetElement.offsetTop;
+                        contentScrollContainer.scrollTo({
+                            top: scrollPosition - 20,
+                            behavior: 'smooth'
+                        });
+                        
+                        // 更新閱讀位置指示器
+                        updateReadingPosition(parentSectionId);
+                    }
+                }, 300);
+            });
+        });
+        
+        // 監聽滾動事件，更新當前閱讀位置指示
+        let scrollTimeout;
+        contentScrollContainer.addEventListener('scroll', function() {
+            // 清除之前的計時器
+            clearTimeout(scrollTimeout);
+            
+            // 設置新的計時器
+            scrollTimeout = setTimeout(() => {
+                // 找到當前最靠近頂部的部分
+                let currentSectionId = 'intro';
+                let minDistance = Infinity;
+                
+                contentSections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    const distance = Math.abs(rect.top);
+                    
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        currentSectionId = section.id;
+                    }
+                });
+                
+                // 更新導航的高亮狀態
+                outlineLinks.forEach(l => l.classList.remove('active'));
+                const activeLink = document.querySelector(`[data-section="${currentSectionId}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+                
+                // 更新閱讀位置指示器
+                updateReadingPosition(currentSectionId);
+            }, 100);
+        });
+        
+        // 初始化：顯示第一個內容區
+        document.addEventListener('DOMContentLoaded', function() {
+            // 確保緒論部分為默認顯示
+            navigateToSection('intro', false);
+            
+            // 添加一些動畫效果
+            const visCards = document.querySelectorAll('.vis-card');
+            visCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.classList.add('animate__animated', 'animate__fadeInUp');
+            });
+            
+            // 版本號點擊顯示詳細資訊
+            const versionBadge = document.querySelector('.version-badge');
+            versionBadge.addEventListener('click', function() {
+                navigateToSection('visualization');
+                
+                // 滾動到版本歷史部分
+                setTimeout(() => {
+                    const versionHistory = document.querySelector('.version-history');
+                    contentScrollContainer.scrollTo({
+                        top: versionHistory.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }, 300);
+            });
+        });
+        
+        // 添加一些動態視覺效果
+        const meridianLines = document.querySelectorAll('.meridian-line, .blood-vessel');
+        meridianLines.forEach(line => {
+            line.addEventListener('mouseenter', function() {
+                this.style.transform = this.style.transform + ' scale(1.05)';
+            });
+            
+            line.addEventListener('mouseleave', function() {
+                this.style.transform = this.style.transform.replace(' scale(1.05)', '');
+            });
+        });
+    </script>
+</body>
+</html>
