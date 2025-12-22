@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中醫經絡與五行養生 - 互動學習網</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        tcm: {
+                            red: '#8c3f3f',
+                            bg: '#fdfbf7',
+                            text: '#4a4036',
+                            gold: '#d4af37',
+                            sage: '#8a9a5b',
+                            water: '#4facfe',
+                            wood: '#8a9a5b',
+                            fire: '#ff6b6b',
+                            earth: '#feca57',
+                            metal: '#c8d6e5'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif TC"', 'serif'],
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #fdfbf7;
+            color: #4a4036;
+        }
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #8c3f3f;
+        }
+        
+        /* 五輸穴水流動畫 - 增強版 */
+        .river-container {
+            position: relative;
+            padding: 40px 0;
+            overflow: hidden;
+        }
+        .river-stream {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: linear-gradient(90deg, #a5d8ff 0%, #4facfe 50%, #005bea 100%);
+            transform: translateY(-50%);
+            border-radius: 10px;
+            z-index: 0;
+            box-shadow: 0 0 15px rgba(79, 172, 254, 0.3);
+        }
+        .river-particles {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: float-right 3s linear infinite;
+        }
+        @keyframes float-right {
+            0% { transform: translateX(0) translateY(-50%); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(100vw) translateY(-50%); opacity: 0; }
+        }
+
+        /* 卡片懸停效果 */
+        .hover-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            border-color: #d4af37;
+        }
+
+        /* 穴位節點樣式 */
+        .point-node {
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        .point-node:hover {
+            transform: scale(1.1);
+        }
+        
+        /* 原穴特別標示 */
+        .yuan-point-badge {
+            animation: pulse-gold 2s infinite;
+        }
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <nav class="sticky top-0 z-50 bg-tcm-bg/95 backdrop-blur shadow-md border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-yin-yang text-tcm-red text-2xl mr-3"></i>
+                    <span class="font-serif font-bold text-xl text-tcm-text">經絡養生互動網</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#zang-fu" class="text-tcm-text hover:text-tcm-red font-medium">五臟六腑</a>
+                    <a href="#five-elements" class="text-tcm-text hover:text-tcm-red font-medium">五行營養</a>
+                    <a href="#shu-points" class="text-tcm-text hover:text-tcm-red font-medium">五輸穴</a>
+                    <a href="#checker" class="text-tcm-text hover:text-tcm-red font-medium">症狀快篩</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="bg-tcm-red text-white py-16">
+        <div class="max-w-4xl mx-auto text-center px-4">
+            <h1 class="font-serif text-4xl md:text-5xl font-bold mb-6">探索人體的奧秘</h1>
+            <p class="text-lg md:text-xl opacity-90 leading-relaxed">
+                從「網膜三焦」到「五輸穴水流」，<br>帶您深入了解身體經絡的生理結構與自我修復機制。
+            </p>
+            <a href="#zang-fu" class="mt-8 inline-block bg-white text-tcm-red px-8 py-3 rounded-full font-bold hover:bg-tcm-gold hover:text-white transition duration-300">
+                開始探索
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <!-- 五臟六腑區塊 -->
+        <section id="zang-fu" class="scroll-mt-24">
+            <h2 class="font-serif text-3xl font-bold text-tcm-text section-title">五臟與六腑的對話</h2>
+            <p class="mb-8 text-lg text-gray-600">點擊下方按鈕，切換查看「陰（實心）」與「陽（空心）」器官的特性差異。</p>
+
+            <div class="flex justify-center mb-8 space-x-4">
+                <button onclick="switchOrgan('yin')" id="btn-yin" class="px-6 py-2 rounded-full bg-tcm-red text-white shadow-lg transition transform scale-105">五臟 (陰)</button>
+                <button onclick="switchOrgan('yang')" id="btn-yang" class="px-6 py-2 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 transition">六腑 (陽)</button>
+            </div>
+
+            <div id="yin-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+                <div class="hover-card bg-white p-6 rounded-xl border border-gray-100">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 text-green-700">
+                        <i class="fa-solid fa-tree text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">肝 (Liver)</h3>
+                    <p class="text-gray-600">將軍之官，負責計算血液與能量。像樹葉一樣，需要礦物質滋養。</p>
+                </div>
+                <div class="hover-card bg-white p-6 rounded-xl border border-gray-100">
+                    <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4 text-red-700">
+                        <i class="fa-solid fa-heart text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">心 (Heart)</h3>
+                    <p class="text-gray-600">維生系統的最後一道防線。決定生死的關鍵。</p>
+                </div>
+                <div class="hover-card bg-white p-6 rounded-xl border border-gray-100">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4 text-yellow-700">
+                        <i class="fa-brands fa-pagelines text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">脾 (Spleen)</h3>
+                    <p class="text-gray-600">統血，與胃合作消化，是後天之本。</p>
+                </div>
+                <div class="hover-card bg-white p-6 rounded-xl border border-gray-100">
+                    <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4 text-gray-600">
+                        <i class="fa-solid fa-lungs text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">肺 (Lung)</h3>
+                    <p class="text-gray-600">氣的交換場所，與皮膚（皮毛）息息相關。</p>
+                </div>
+                <div class="hover-card bg-white p-6 rounded-xl border border-gray-100">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4 text-blue-700">
+                        <i class="fa-solid fa-water text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">腎 (Kidney)</h3>
+                    <p class="text-gray-600">先天之本，藏精。</p>
+                </div>
+                <div class="hover-card bg-orange-50 p-6 rounded-xl border border-orange-100 ring-2 ring-orange-200">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4 text-orange-700">
+                        <i class="fa-solid fa-shield-heart text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">心包 (Pericardium)</h3>
+                    <p class="text-gray-600"><strong>心臟的警衛</strong>。代心受邪，保護君主之官。</p>
+                </div>
+            </div>
+
+            <div id="yang-content" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="hover-card bg-white p-6 rounded-xl border border-gray-100">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4 text-yellow-700">
+                        <i class="fa-solid fa-bowl-rice text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">胃 (Stomach)</h3>
+                    <p class="text-gray-600">食物的第一道關卡（屬土）。</p>
+                </div>
+                <div class="hover-card bg-white p-6 rounded-xl border border-gray-100">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 text-green-700">
+                        <i class="fa-solid fa-seedling text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">膽 (Gallbladder)</h3>
+                    <p class="text-gray-600">與肝相照，猶如樹根，吸收養分。</p>
+                </div>
+                <div class="hover-card bg-white p-6 rounded-xl border border-gray-100">
+                    <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4 text-gray-600">
+                        <i class="fa-solid fa-arrows-spin text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">大腸 (Large Intestine)</h3>
+                    <p class="text-gray-600">傳導之官，排除廢物。</p>
+                </div>
+                 <div class="hover-card bg-white p-6 rounded-xl border border-gray-100">
+                    <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4 text-red-600">
+                        <i class="fa-solid fa-fire text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">小腸 (Small Intestine)</h3>
+                    <p class="text-gray-600">受盛之官，泌別清濁。</p>
+                </div>
+                 <div class="hover-card bg-white p-6 rounded-xl border border-gray-100">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4 text-blue-600">
+                        <i class="fa-solid fa-droplet text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">膀胱 (Bladder)</h3>
+                    <p class="text-gray-600">州都之官，儲存與排泄尿液。</p>
+                </div>
+                <div class="hover-card bg-purple-50 p-6 rounded-xl border border-purple-100 ring-2 ring-purple-200">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4 text-purple-700">
+                        <i class="fa-solid fa-network-wired text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">三焦 (San Jiao)</h3>
+                    <p class="text-gray-600"><strong>全身網膜 (網紗油)</strong>。主氣的導引，連接上中下焦，確保器官間的交流。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 五行營養區塊 -->
+        <section id="five-elements" class="scroll-mt-24 bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-gray-100">
+            <h2 class="font-serif text-3xl font-bold text-tcm-text section-title">五行營養：種樹的智慧</h2>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-8 mt-8">
+                <div class="flex-1 text-center group cursor-pointer">
+                    <div class="w-24 h-24 mx-auto bg-gray-200 rounded-full flex items-center justify-center group-hover:bg-gray-300 transition duration-300">
+                        <i class="fa-solid fa-gem text-3xl text-gray-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mt-4">金 (礦物/離子)</h3>
+                    <p class="text-sm text-gray-500 mt-2">土壤中的養分</p>
+                    <div class="mt-4 p-4 bg-gray-50 rounded-lg text-left text-sm opacity-0 group-hover:opacity-100 transition duration-300 transform translate-y-2 group-hover:translate-y-0">
+                        <p>珍珠粉、微量元素。若不足，樹木長不好，易致心跳聲大、焦慮。</p>
+                    </div>
+                </div>
+
+                <div class="text-gray-300 text-2xl hidden md:block"><i class="fa-solid fa-arrow-right"></i></div>
+
+                <div class="flex-1 text-center group cursor-pointer">
+                    <div class="w-24 h-24 mx-auto bg-yellow-200 rounded-full flex items-center justify-center group-hover:bg-yellow-300 transition duration-300">
+                        <i class="fa-solid fa-mound text-3xl text-yellow-700"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mt-4">土 (脾胃)</h3>
+                    <p class="text-sm text-gray-500 mt-2">種樹的土壤</p>
+                    <div class="mt-4 p-4 bg-yellow-50 rounded-lg text-left text-sm opacity-0 group-hover:opacity-100 transition duration-300 transform translate-y-2 group-hover:translate-y-0">
+                        <p>「有土斯有財」。食物需經六腑消化，由脾胃吸收礦物質。</p>
+                    </div>
+                </div>
+
+                <div class="text-gray-300 text-2xl hidden md:block"><i class="fa-solid fa-arrow-right"></i></div>
+
+                <div class="flex-1 text-center group cursor-pointer">
+                    <div class="w-24 h-24 mx-auto bg-green-200 rounded-full flex items-center justify-center group-hover:bg-green-300 transition duration-300">
+                        <i class="fa-solid fa-tree text-3xl text-green-700"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mt-4">木 (肝膽)</h3>
+                    <p class="text-sm text-gray-500 mt-2">樹根與樹葉</p>
+                    <div class="mt-4 p-4 bg-green-50 rounded-lg text-left text-sm opacity-0 group-hover:opacity-100 transition duration-300 transform translate-y-2 group-hover:translate-y-0">
+                        <p>肝為葉，膽為根。吸收足夠礦物質，樹木才茂盛，筋膜才柔軟。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 五輸穴區塊 (已更新) -->
+        <section id="shu-points" class="scroll-mt-24">
+            <h2 class="font-serif text-3xl font-bold text-tcm-text section-title">五輸穴：人體的能量河流</h2>
+            <p class="mb-4 text-gray-600">將滑鼠懸停在河流節點上，查看詳細對應症狀。</p>
+            
+            <div class="bg-blue-50/50 p-6 rounded-xl border border-blue-100 mb-8">
+                <h3 class="font-bold text-blue-800 mb-2"><i class="fa-solid fa-circle-info mr-2"></i> 五輸穴口訣總覽 (Classic Indication)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 text-sm text-blue-900">
+                    <div class="bg-white p-3 rounded shadow-sm border-l-4 border-blue-400"><strong>井</strong> 主心下滿 / 急救</div>
+                    <div class="bg-white p-3 rounded shadow-sm border-l-4 border-blue-400"><strong>滎</strong> 主身熱 / 發炎</div>
+                    <div class="bg-white p-3 rounded shadow-sm border-l-4 border-blue-400"><strong>輸</strong> 主體重節痛</div>
+                    <div class="bg-white p-3 rounded shadow-sm border-l-4 border-blue-400"><strong>經</strong> 主喘咳寒熱</div>
+                    <div class="bg-white p-3 rounded shadow-sm border-l-4 border-blue-400"><strong>合</strong> 主逆氣而洩</div>
+                </div>
+            </div>
+
+            <div class="river-container bg-white rounded-2xl shadow-inner border border-gray-200">
+                <div class="river-stream"></div>
+                <div class="river-particles"></div>
+                
+                <div class="relative z-10 grid grid-cols-5 gap-2 px-2 text-center h-64 items-center">
+                    
+                    <!-- 井穴 -->
+                    <div class="group relative cursor-help point-node flex flex-col items-center">
+                        <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full border-4 border-white shadow-lg flex flex-col items-center justify-center text-white z-20 transition group-hover:scale-110 group-hover:from-tcm-red group-hover:to-red-600">
+                            <span class="font-bold text-xl">井</span>
+                            <span class="text-xs opacity-90">Jing</span>
+                        </div>
+                        <div class="mt-4 font-bold text-gray-700 bg-white/80 px-3 py-1 rounded-full shadow-sm backdrop-blur">所出為井</div>
+                        <p class="text-xs text-gray-500 mt-1">水源出處</p>
+                        
+                        <!-- Tooltip -->
+                        <div class="absolute top-24 left-1/2 transform -translate-x-1/2 w-64 bg-white p-5 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30 translate-y-4 group-hover:translate-y-0 border border-gray-100">
+                            <div class="text-tcm-red font-bold text-lg mb-2 flex items-center"><i class="fa-solid fa-truck-medical mr-2"></i>急救 / 神智</div>
+                            <p class="text-sm text-gray-600 mb-2 leading-relaxed">
+                                <strong>位置：</strong>多位於指甲邊。<br>
+                                <strong>應用：</strong>急性狀況、心下滿、開竅醒神。
+                            </p>
+                            <hr class="my-2 border-gray-100">
+                            <ul class="text-xs text-left list-disc list-inside text-gray-500 space-y-1">
+                                <li>少商(肺)：喉嚨痛、發燒</li>
+                                <li>商陽(大腸)：鼻腔過敏</li>
+                                <li>隱白(脾)：止血、安神</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 滎穴 -->
+                    <div class="group relative cursor-help point-node flex flex-col items-center">
+                        <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full border-4 border-white shadow-lg flex flex-col items-center justify-center text-white z-20 transition group-hover:scale-110 group-hover:from-tcm-fire group-hover:to-red-500">
+                            <span class="font-bold text-xl">滎</span>
+                            <span class="text-xs opacity-90">Ying</span>
+                        </div>
+                        <div class="mt-4 font-bold text-gray-700 bg-white/80 px-3 py-1 rounded-full shadow-sm backdrop-blur">所溜為滎</div>
+                         <p class="text-xs text-gray-500 mt-1">涓涓細流</p>
+
+                         <!-- Tooltip -->
+                         <div class="absolute top-24 left-1/2 transform -translate-x-1/2 w-64 bg-white p-5 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30 translate-y-4 group-hover:translate-y-0 border border-gray-100">
+                            <div class="text-tcm-fire font-bold text-lg mb-2 flex items-center"><i class="fa-solid fa-fire mr-2"></i>身熱 / 發炎</div>
+                            <p class="text-sm text-gray-600 mb-2 leading-relaxed">
+                                <strong>特徵：</strong>水流微大，稍有動力。<br>
+                                <strong>應用：</strong>退燒、消炎、硬塊消除。
+                            </p>
+                            <hr class="my-2 border-gray-100">
+                            <p class="text-xs text-left text-gray-500">
+                                <strong>二間穴(大腸)：</strong>手部有硬塊或發炎時可按壓。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 輸穴 (+原穴概念) -->
+                    <div class="group relative cursor-help point-node flex flex-col items-center">
+                        <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full border-4 border-white shadow-lg flex flex-col items-center justify-center text-white z-20 transition group-hover:scale-110 yuan-point-badge">
+                            <span class="font-bold text-2xl">輸</span>
+                            <span class="text-xs opacity-90">Shu (Stream)</span>
+                            <span class="text-[10px] bg-tcm-gold px-2 rounded-full mt-1 text-black font-bold">含原穴概念</span>
+                        </div>
+                        <div class="mt-4 font-bold text-gray-700 bg-white/80 px-3 py-1 rounded-full shadow-sm backdrop-blur">所注為輸</div>
+                        <p class="text-xs text-gray-500 mt-1">大池塘/匯聚</p>
+
+                         <!-- Tooltip -->
+                         <div class="absolute top-28 left-1/2 transform -translate-x-1/2 w-72 bg-white p-5 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30 translate-y-4 group-hover:translate-y-0 border-2 border-tcm-gold/30">
+                            <div class="text-tcm-text font-bold text-lg mb-2 flex items-center"><i class="fa-solid fa-weight-hanging mr-2"></i>體重節痛</div>
+                            <p class="text-sm text-gray-600 mb-2 leading-relaxed">
+                                <strong>意象：</strong>水流匯聚成大池塘。<br>
+                                <strong>應用：</strong>關節痠痛、身體沉重、風濕痛。
+                            </p>
+                            <div class="bg-yellow-50 p-3 rounded-lg mt-2 border border-yellow-100">
+                                <p class="text-xs font-bold text-tcm-gold mb-1"><i class="fa-regular fa-lightbulb mr-1"></i>原穴法則 (Yuan Point)</p>
+                                <p class="text-xs text-gray-600">
+                                    • <strong>陰經：</strong>輸穴即原穴 (輸原同穴)<br>
+                                    • <strong>陽經：</strong>輸穴與原穴分開 (輸原分別)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 經穴 -->
+                    <div class="group relative cursor-help point-node flex flex-col items-center">
+                        <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full border-4 border-white shadow-lg flex flex-col items-center justify-center text-white z-20 transition group-hover:scale-110 group-hover:from-tcm-metal group-hover:to-gray-400 group-hover:text-gray-800">
+                            <span class="font-bold text-xl">經</span>
+                            <span class="text-xs opacity-90">Jing</span>
+                        </div>
+                        <div class="mt-4 font-bold text-gray-700 bg-white/80 px-3 py-1 rounded-full shadow-sm backdrop-blur">所行為經</div>
+                        <p class="text-xs text-gray-500 mt-1">水流湍急</p>
+
+                         <!-- Tooltip -->
+                         <div class="absolute top-24 left-1/2 transform -translate-x-1/2 w-64 bg-white p-5 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30 translate-y-4 group-hover:translate-y-0 border border-gray-100">
+                            <div class="text-gray-700 font-bold text-lg mb-2 flex items-center"><i class="fa-solid fa-wind mr-2"></i>喘咳寒熱</div>
+                            <p class="text-sm text-gray-600 mb-2 leading-relaxed">
+                                <strong>狀態：</strong>水流湍急，暢通無阻。<br>
+                                <strong>應用：</strong>久咳不癒、氣喘、忽冷忽熱。
+                            </p>
+                            <hr class="my-2 border-gray-100">
+                            <p class="text-xs text-left text-gray-500">
+                                <strong>解谿穴(胃)：</strong>治療胃酸逆流引起的咳嗽(土侮金)。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 合穴 -->
+                    <div class="group relative cursor-help point-node flex flex-col items-center">
+                        <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full border-4 border-white shadow-lg flex flex-col items-center justify-center text-white z-20 transition group-hover:scale-110 group-hover:from-tcm-earth group-hover:to-yellow-600">
+                            <span class="font-bold text-xl">合</span>
+                            <span class="text-xs opacity-90">He</span>
+                        </div>
+                        <div class="mt-4 font-bold text-gray-700 bg-white/80 px-3 py-1 rounded-full shadow-sm backdrop-blur">所入為合</div>
+                        <p class="text-xs text-gray-500 mt-1">匯入大海</p>
+
+                         <!-- Tooltip -->
+                         <div class="absolute top-24 right-0 transform w-64 bg-white p-5 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30 translate-y-4 group-hover:translate-y-0 border border-gray-100">
+                            <div class="text-tcm-text font-bold text-lg mb-2 flex items-center"><i class="fa-solid fa-water mr-2"></i>逆氣而洩</div>
+                            <p class="text-sm text-gray-600 mb-2 leading-relaxed">
+                                <strong>位置：</strong>手肘、膝蓋附近。<br>
+                                <strong>應用：</strong>臟腑病變、嘔吐、拉肚子、腸胃氣逆。
+                            </p>
+                            <hr class="my-2 border-gray-100">
+                            <p class="text-xs text-left text-gray-500">
+                                <strong>足三里(胃)：</strong>長壽穴、調理腸胃、小孩哭鬧。
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+            <div class="text-center mt-6 text-sm text-gray-500">
+                <i class="fa-solid fa-hand-pointer mr-2 animate-bounce"></i> 
+                小提示：滑鼠停留在圓圈上可查看各穴位的主治症狀
+            </div>
+        </section>
+
+        <!-- 症狀快篩區塊 -->
+        <section id="checker" class="scroll-mt-24 bg-tcm-text rounded-2xl p-8 md:p-12 text-white shadow-xl">
+            <div class="flex flex-col md:flex-row gap-12 items-start">
+                <div class="flex-1">
+                    <h2 class="font-serif text-3xl font-bold text-tcm-gold mb-4">身體症狀快篩</h2>
+                    <p class="text-gray-300 mb-6">身體不舒服卻不知道原因？選擇您目前的症狀，查看中醫觀點的建議解方。</p>
+                    
+                    <label class="block mb-2 font-bold text-sm text-gray-300">請選擇您的症狀：</label>
+                    <select id="symptom-select" class="w-full p-4 rounded-lg bg-gray-800 text-white border border-gray-600 focus:border-tcm-gold focus:ring-1 focus:ring-tcm-gold outline-none">
+                        <option value="">-- 請下拉選擇 --</option>
+                        <option value="ear_heartbeat">睡覺時耳朵聽到心跳聲 (蹦蹦聲)</option>
+                        <option value="morning_stiffness">早上起床手腳僵硬、緊繃</option>
+                        <option value="night_cramp">半夜抽筋 / 痛風</option>
+                        <option value="itchy_skin">季節性全身癢 / 急性蕁麻疹</option>
+                        <option value="throat_pain">喉嚨痛 / 咽喉腫</option>
+                        <option value="acid_cough">胃酸逆流引起的咳嗽</option>
+                        <option value="child_cry">小孩消化不良 / 哭鬧</option>
+                    </select>
+
+                    <button onclick="checkSymptom()" class="mt-6 w-full bg-tcm-red hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                        查看建議
+                    </button>
+                </div>
+
+                <div class="flex-1 w-full">
+                    <div id="result-box" class="h-full min-h-[250px] bg-white/10 backdrop-blur rounded-xl p-8 border border-white/20 hidden">
+                        <h3 id="result-title" class="text-2xl font-bold text-tcm-gold mb-3"></h3>
+                        <p id="result-desc" class="text-lg leading-relaxed mb-4"></p>
+                        <div class="bg-black/20 p-4 rounded-lg">
+                            <span class="font-bold text-sm uppercase tracking-wider text-gray-400 block mb-1">建議方案</span>
+                            <p id="result-action" class="text-white font-bold"></p>
+                        </div>
+                    </div>
+                    <div id="default-box" class="h-full min-h-[250px] flex items-center justify-center border-2 border-dashed border-gray-600 rounded-xl text-gray-500">
+                        請左側選擇症狀以顯示結果
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 py-12 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="font-serif italic text-lg mb-4">「有土斯有財，金在土中。」</p>
+            <p class="text-sm">本網頁內容整理自中醫經絡課程講稿，僅供學習參考。</p>
+        </div>
+    </footer>
+
+    <script>
+        // 五臟六腑切換邏輯
+        function switchOrgan(type) {
+            const yinContent = document.getElementById('yin-content');
+            const yangContent = document.getElementById('yang-content');
+            const btnYin = document.getElementById('btn-yin');
+            const btnYang = document.getElementById('btn-yang');
+
+            if (type === 'yin') {
+                yinContent.classList.remove('hidden');
+                yangContent.classList.add('hidden');
+                
+                btnYin.classList.add('bg-tcm-red', 'text-white', 'scale-105', 'shadow-lg');
+                btnYin.classList.remove('bg-gray-200', 'text-gray-600');
+                
+                btnYang.classList.remove('bg-tcm-red', 'text-white', 'scale-105', 'shadow-lg');
+                btnYang.classList.add('bg-gray-200', 'text-gray-600');
+            } else {
+                yinContent.classList.add('hidden');
+                yangContent.classList.remove('hidden');
+
+                btnYang.classList.add('bg-tcm-red', 'text-white', 'scale-105', 'shadow-lg');
+                btnYang.classList.remove('bg-gray-200', 'text-gray-600');
+                
+                btnYin.classList.remove('bg-tcm-red', 'text-white', 'scale-105', 'shadow-lg');
+                btnYin.classList.add('bg-gray-200', 'text-gray-600');
+            }
+        }
+
+        // 症狀快篩邏輯
+        function checkSymptom() {
+            const select = document.getElementById('symptom-select');
+            const resultBox = document.getElementById('result-box');
+            const defaultBox = document.getElementById('default-box');
+            const title = document.getElementById('result-title');
+            const desc = document.getElementById('result-desc');
+            const action = document.getElementById('result-action');
+
+            const data = {
+                'ear_heartbeat': {
+                    title: '礦物質嚴重不足',
+                    desc: '當耳朵貼著枕頭聽到明顯心跳聲，代表營養攝取偏頗，缺乏礦物質（金）。',
+                    action: '口含珍珠粉一分鐘後吞下，或補充離子態礦物質。'
+                },
+                'morning_stiffness': {
+                    title: '肝血回流障礙 / 蛋白質過量',
+                    desc: '晚餐蛋白質吃太多，礦物質相對不足，導致肝臟負擔重，筋膜緊繃。',
+                    action: '白天喝醋，睡前吃檸檬（酸入肝），平衡礦物質。'
+                },
+                'night_cramp': {
+                    title: '肝醣障礙 / 缺鈣',
+                    desc: '肝醣能量中的礦物質成分少於蛋白質，導致肌肉無法放鬆。',
+                    action: '補充檸檬（連皮營養）或珍珠粉，減少晚餐大魚大肉。'
+                },
+                'itchy_skin': {
+                    title: '急性蕁麻疹 / 腠理鬱熱',
+                    desc: '換季時皮膚表層與底層（腠理）溫度不一致，毒素排不出。',
+                    action: '用熱毛巾（戴雙層手套防燙）熱敷患處，打開毛孔讓熱氣散出。可配合辣木油加珍珠粉修復。'
+                },
+                'throat_pain': {
+                    title: '肺經火氣 / 咽喉腫痛',
+                    desc: '可能是感冒前兆或發炎反應。',
+                    action: '按壓或放血「少商穴」（大拇指指甲內側）。'
+                },
+                'acid_cough': {
+                    title: '胃酸逆流引起的咳嗽',
+                    desc: '土（胃）侮金（肺），導致久咳不癒、忽冷忽熱。',
+                    action: '找胃經的「解谿穴」（腳踝處）進行調理。'
+                },
+                'child_cry': {
+                    title: '消化不良 / 成長痛',
+                    desc: '小孩腸胃發育中，容易脹氣或情緒不穩。',
+                    action: '輕輕敲打或按摩「足三里」（膝蓋下方），亦可按「合谷穴」。'
+                }
+            };
+
+            const selected = select.value;
+
+            if (selected && data[selected]) {
+                defaultBox.classList.add('hidden');
+                resultBox.classList.remove('hidden');
+                
+                // Add animation
+                resultBox.classList.remove('animate-fade-in-up');
+                void resultBox.offsetWidth; // trigger reflow
+                resultBox.classList.add('animate-fade-in-up');
+
+                title.textContent = data[selected].title;
+                desc.textContent = data[selected].desc;
+                action.textContent = data[selected].action;
+            } else {
+                defaultBox.classList.remove('hidden');
+                resultBox.classList.add('hidden');
+            }
+        }
+    </script>
+
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</body>
+</html>
