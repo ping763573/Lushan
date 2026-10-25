@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full select-none">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>終極舒壓大鈴鐺 🔔💥 | 點開就能玩 不用下載</title>
+  
+  <!-- Facebook Open Graph 社交分享大圖卡設定 -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="終極舒壓大鈴鐺 🔔💥 點開就能玩 不用下載">
+  <meta property="og:description" content="怒火衝天、社畜崩潰、躺平擺爛？狂敲專屬魔性大鈴鐺，多種心情模式、出氣筒名牌與超誇張爆破特效，一秒釋放所有壓力！">
+  <meta property="og:image" content="og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="終極舒壓大鈴鐺 - 點開就能玩 不用下載">
+
+  <!-- Twitter Card 標籤相容設定 -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="終極舒壓大鈴鐺 🔔💥 點開就能玩 不用下載">
+  <meta name="twitter:description" content="超魔性舒壓神器！多種心情矩陣、自訂出氣筒名牌與終極核爆特效，點擊立刻釋放壓力！">
+  <meta name="twitter:image" content="og.jpg">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Noto+Sans+TC:wght@600;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    body {
+      font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+    }
+    
+    /* 螢幕震動動畫 */
+    @keyframes screen-shake-mild {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-5px, 4px) rotate(-1deg); }
+      40% { transform: translate(5px, -4px) rotate(1deg); }
+      60% { transform: translate(-4px, -2px) rotate(0.5deg); }
+      80% { transform: translate(4px, 2px) rotate(-0.5deg); }
+    }
+    @keyframes screen-shake-heavy {
+      0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+      10% { transform: translate(-14px, 10px) rotate(-3.5deg) scale(1.03); }
+      30% { transform: translate(14px, -12px) rotate(3.5deg) scale(1.03); }
+      50% { transform: translate(-15px, -9px) rotate(-2deg); }
+      70% { transform: translate(12px, 12px) rotate(2.5deg); }
+      90% { transform: translate(-8px, 8px) rotate(-1deg); }
+    }
+    .shake-mild {
+      animation: screen-shake-mild 0.22s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+    .shake-heavy {
+      animation: screen-shake-heavy 0.38s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    /* 終極暴走脈衝光暈 */
+    @keyframes ultra-rage-pulse {
+      0%, 100% { box-shadow: inset 0 0 50px rgba(239, 68, 68, 0.85), 0 0 60px rgba(239, 68, 68, 0.7); }
+      50% { box-shadow: inset 0 0 110px rgba(251, 146, 60, 1), 0 0 90px rgba(239, 68, 68, 0.95); }
+    }
+    .ultra-rage-active {
+      animation: ultra-rage-pulse 0.25s infinite alternate;
+    }
+
+    /* 漫畫感大字報噴出動畫 */
+    @keyframes comic-pop {
+      0% { transform: translate(-50%, -50%) scale(0.2) rotate(-15deg); opacity: 0; }
+      45% { transform: translate(-50%, -65%) scale(1.35) rotate(8deg); opacity: 1; }
+      75% { transform: translate(-50%, -75%) scale(1.1) rotate(-4deg); opacity: 0.95; }
+      100% { transform: translate(-50%, -95%) scale(0.85) rotate(5deg); opacity: 0; }
+    }
+    .comic-callout {
+      position: absolute;
+      left: 50%;
+      top: 42%;
+      pointer-events: none;
+      animation: comic-pop 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      text-shadow: 4px 4px 0 #000, -2px -2px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 0 8px 16px rgba(0,0,0,0.7);
+    }
+
+    /* 衝擊波光圈 */
+    @keyframes shockwave-grow {
+      0% { transform: scale(0.6); opacity: 1; border-width: 8px; }
+      100% { transform: scale(2.2); opacity: 0; border-width: 1px; }
+    }
+    .shockwave-ring {
+      position: absolute;
+      border-radius: 9999px;
+      pointer-events: none;
+      animation: shockwave-grow 0.45s ease-out forwards;
+    }
+
+    /* 3D 巨型鈴鐺核心 */
+    .bell-3d-wrap {
+      perspective: 900px;
+    }
+    .bell-btn {
+      transition: transform 0.05s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.05s ease, filter 0.08s ease;
+      transform-origin: center bottom;
+    }
+    .bell-btn:active, .bell-btn.pressed {
+      transform: translateY(22px) scale(1.24, 0.7) !important;
+      filter: brightness(1.3) contrast(1.2);
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* 玻璃碎裂 SVG */
+    .shatter-crack {
+      stroke-dasharray: 600;
+      stroke-dashoffset: 600;
+      animation: crack-spread 0.4s ease-out forwards;
+    }
+    @keyframes crack-spread {
+      to { stroke-dashoffset: 0; }
+    }
+  </style>
+</head>
+<body id="app-body" class="bg-slate-950 text-slate-100 h-full flex flex-col justify-between overflow-x-hidden transition-colors duration-500 select-none pb-safe">
+
+  <!-- 全螢幕白閃光層 -->
+  <div id="flash-overlay" class="fixed inset-0 bg-white pointer-events-none opacity-0 z-50 transition-opacity duration-100"></div>
+
+  <!-- 螢幕碎裂效果層 -->
+  <svg id="crack-svg" class="fixed inset-0 w-full h-full pointer-events-none z-40 opacity-0 transition-opacity duration-300" viewBox="0 0 400 700">
+    <path class="shatter-crack" d="M200,350 L120,220 L80,180 M200,350 L280,240 L350,210 M200,350 L150,470 L90,540 M200,350 L270,460 L330,580 M120,220 L180,140 M280,240 L260,130 M150,470 L210,560 M270,460 L240,610" stroke="rgba(255,255,255,0.75)" stroke-width="3" stroke-linecap="round" fill="none" />
+  </svg>
+
+  <!-- 頂部導航與狀態列 -->
+  <header class="w-full max-w-md mx-auto pt-3 px-4 flex flex-col gap-2 z-30">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span id="mood-avatar" class="text-3xl animate-bounce">🔥</span>
+        <div>
+          <h1 id="app-heading" class="text-lg font-black tracking-wider text-rose-500 leading-tight">終極舒壓大鈴鐺</h1>
+          <p id="app-quote" class="text-xs text-slate-400 font-bold truncate max-w-[210px]">「今日怒氣：開除老闆，摔爛鍵盤！」</p>
+        </div>
+      </div>
+      
+      <!-- 快捷功能開關 -->
+      <div class="flex items-center gap-1.5">
+        <!-- 盲盒隨機模式 -->
+        <button id="toggle-random" class="px-2.5 py-1.5 rounded-full text-xs font-black border border-slate-700 bg-slate-800 text-slate-300 shadow active:scale-90 transition-transform flex items-center gap-1">
+          <span>🎲</span>
+          <span id="random-txt">盲盒: 關</span>
+        </button>
+        <!-- 貼出氣名牌 -->
+        <button id="btn-custom-target" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 shadow flex items-center justify-center text-sm active:scale-90 transition-transform" title="自訂出氣筒">
+          🎯
+        </button>
+        <!-- 靜音開關 -->
+        <button id="toggle-mute" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 shadow flex items-center justify-center text-sm active:scale-90 transition-transform" title="靜音">
+          🔊
+        </button>
+        <!-- 震動開關 -->
+        <button id="toggle-haptic" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 shadow flex items-center justify-center text-sm active:scale-90 transition-transform" title="震動開關">
+          📳
+        </button>
+      </div>
+    </div>
+
+    <!-- 暴走能量條 (Rage Meter) -->
+    <div class="w-full bg-slate-900/95 rounded-full h-4 p-0.5 border border-slate-800 flex items-center relative overflow-hidden shadow-inner">
+      <div id="rage-progress" class="h-full rounded-full bg-gradient-to-r from-yellow-400 via-orange-500 to-rose-600 transition-all duration-150 w-0 shadow-lg"></div>
+      <span id="rage-label" class="absolute inset-0 flex items-center justify-center text-[10px] font-black tracking-widest text-white/95 drop-shadow">發洩怒氣值 0%</span>
+      <!-- 滿能量觸發終極核爆按鈕 -->
+      <button id="btn-nuke" class="hidden absolute right-1 px-2.5 py-0.5 bg-yellow-400 text-black text-[10px] font-black rounded-full animate-bounce shadow-md">
+        ☢️ 終極核爆！
+      </button>
+    </div>
+  </header>
+
+  <!-- 八大心情即時切換卡片滑動列 -->
+  <nav class="w-full max-w-md mx-auto px-3 mt-1.5 z-30">
+    <div id="mood-tabs-container" class="flex space-x-2 overflow-x-auto no-scrollbar py-1 text-xs font-black">
+      <!-- 由 JS 動態生成 8 大心情標籤 -->
+    </div>
+  </nav>
+
+  <!-- 中央主區域：粒子畫布 + 巨型 3D 鈴鐺 -->
+  <main class="relative flex-1 flex flex-col items-center justify-center max-w-md mx-auto w-full px-4 overflow-hidden">
+    <!-- 物理 Emoji 重力噴泉 Canvas -->
+    <canvas id="particle-canvas" class="absolute inset-0 pointer-events-none z-10 w-full h-full"></canvas>
+
+    <!-- 衝擊波與漫畫大字報容器 -->
+    <div id="fx-container" class="absolute inset-0 pointer-events-none z-30 flex items-center justify-center"></div>
+
+    <!-- 連擊 Combo 與稱號 -->
+    <div class="relative z-20 flex flex-col items-center mb-2" id="combo-display">
+      <div class="flex items-center gap-1.5">
+        <span class="text-xs uppercase font-extrabold tracking-widest text-slate-500">COMBO SMASH</span>
+        <span id="combo-num" class="text-4xl font-black text-rose-500 tracking-tighter drop-shadow-md">0</span>
+        <span id="rage-badge" class="hidden text-xs bg-red-600 text-white font-black px-2 py-0.5 rounded-full animate-ping">暴走中 🔥</span>
+      </div>
+      <p id="action-hint" class="text-xs font-bold text-slate-400 mt-0.5 min-h-[18px]">按一下解氣，按住不放瘋狂機關槍！</p>
+    </div>
+
+    <!-- 巨型 3D 鈴鐺本體 -->
+    <div class="bell-3d-wrap relative flex items-center justify-center p-3 z-20">
+      <!-- 外圍光暈呼吸圈 -->
+      <div id="halo-ring" class="absolute w-72 h-72 sm:w-80 sm:h-80 rounded-full bg-rose-500/20 blur-2xl transition-all duration-300 pointer-events-none"></div>
+
+      <!-- 鈴鐺外底座 -->
+      <div id="bell-base" class="w-64 h-64 sm:w-72 sm:h-72 rounded-full p-4 flex items-center justify-center border-4 shadow-2xl transition-all duration-300 bg-gradient-to-b from-slate-800 to-slate-900 border-rose-500/50 shadow-rose-950/60 relative">
+        
+        <!-- 自訂貼上的出氣筒名牌標籤 -->
+        <div id="target-badge" class="hidden absolute -top-3 bg-amber-400 text-black px-3 py-0.5 rounded-full text-xs font-black shadow-lg border-2 border-black rotate-[-6deg] z-30 tracking-wider">
+          出氣對象：<span id="target-name">老闆</span>
+        </div>
+
+        <!-- 核心點擊鈴鐺按鈕 -->
+        <button id="smash-bell-btn" class="bell-btn w-full h-full rounded-full flex flex-col items-center justify-center text-white relative cursor-pointer outline-none shadow-2xl" style="background: radial-gradient(circle at 35% 30%, #ff5252, #d50000 65%, #8b0000 100%); box-shadow: 0 16px 0 #5c0000, 0 20px 30px rgba(0,0,0,0.6), inset 0 6px 8px rgba(255,255,255,0.6), inset 0 -10px 16px rgba(0,0,0,0.5);">
+          <!-- 頂部高光質感 -->
+          <div class="absolute inset-0 rounded-full bg-gradient-to-t from-transparent via-white/10 to-white/35 pointer-events-none"></div>
+          
+          <span id="bell-core-icon" class="text-6xl sm:text-7xl mb-1 filter drop-shadow-lg transition-transform duration-100">🔔</span>
+          <span id="bell-core-name" class="text-xl sm:text-2xl font-black tracking-wider uppercase drop-shadow-md text-amber-200">大怒破壞鐘</span>
+          <span id="bell-core-sub" class="text-[10px] tracking-widest font-extrabold opacity-90 mt-1 bg-black/40 px-3 py-0.5 rounded-full border border-white/20">點擊或長壓掃射</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 聲線音高與機關槍調節工具列 -->
+    <div class="w-full max-w-xs mt-3 z-20 flex items-center justify-between gap-2 bg-slate-900/80 backdrop-blur rounded-xl px-3 py-1.5 border border-slate-800">
+      <span class="text-[11px] font-black text-slate-400 whitespace-nowrap">🐿️ 音高調節</span>
+      <input id="pitch-slider" type="range" min="0.4" max="2.2" step="0.05" value="1.0" class="w-full accent-rose-500 h-1.5 bg-slate-700 rounded-lg cursor-pointer">
+      <span id="pitch-value-txt" class="text-[11px] font-black text-rose-400 w-9 text-right">1.0x</span>
+    </div>
+  </main>
+
+  <!-- 底部面板：當前心情的 5 款專屬特技音效矩陣 + 自動狂按模式 -->
+  <footer class="w-full max-w-md mx-auto px-3 pb-3 z-20 flex flex-col gap-2">
+    <div class="bg-slate-900/90 backdrop-blur-md rounded-2xl p-2.5 border border-slate-800 shadow-xl">
+      <div class="flex items-center justify-between px-1 mb-1.5">
+        <span id="palette-title" class="text-xs font-black text-slate-400 flex items-center gap-1">
+          <span>🔥</span> 怒火專屬舒壓矩陣 (隨選隨打)
+        </span>
+        <!-- 自動機關槍開關 -->
+        <button id="toggle-autoclick" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors flex items-center gap-1 active:scale-95">
+          <span>⚡</span>
+          <span id="autoclick-txt">自動狂按: 關</span>
+        </button>
+      </div>
+      
+      <!-- 5 款音效快捷選取網格 -->
+      <div id="sound-matrix-grid" class="grid grid-cols-5 gap-1.5">
+        <!-- JS 動態生成 -->
+      </div>
+    </div>
+  </footer>
+
+  <!-- 自訂出氣筒彈窗 Modal -->
+  <div id="target-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border-2 border-rose-500 rounded-3xl p-5 w-full max-w-xs shadow-2xl flex flex-col gap-3">
+      <h3 class="text-base font-black text-white flex items-center gap-2">🎯 設定你的專屬出氣筒</h3>
+      <p class="text-xs text-slate-400 font-medium">輸入你想狂扁的對象或事情，直接貼在鈴鐺上開扁！</p>
+      
+      <input id="input-target-name" type="text" maxlength="10" placeholder="例如：改需求主管、週一、窮神" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500">
+      
+      <div class="flex gap-2 mt-2">
+        <button id="btn-clear-target" class="flex-1 py-2 rounded-xl text-xs font-black bg-slate-800 text-slate-300 hover:bg-slate-700">清除貼紙</button>
+        <button id="btn-save-target" class="flex-1 py-2 rounded-xl text-xs font-black bg-rose-600 text-white hover:bg-rose-500">貼上開扁！</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================================
+       1. 八大心情完整資料庫 (色彩、台詞、漫畫字報、音效定義)
+       ============================================================ */
+    const MOOD_DATABASE = {
+      rage: {
+        id: 'rage',
+        name: '怒火衝天',
+        avatar: '🔥',
+        quote: '「今日怒氣：開除老闆，摔爛鍵盤！」',
+        themeBg: 'radial-gradient(circle at 35% 30%, #ff5252, #d50000 65%, #8b0000 100%)',
+        shadowColor: '#5c0000',
+        accentColor: '#ef4444',
+        glowColor: 'rgba(239, 68, 68, 0.45)',
+        btnTitle: '大怒破壞鐘',
+        emojis: ['🔥', '💥', '💢', '💣', '🤬', '🔨'],
+        callouts: ['💥 BANG!!', '💢 忍無可忍！', '💣 徹底炸裂！', '🔥 給我滾！', '👊 毀滅世界！'],
+        vibratePattern: [70, 30, 90, 40, 120],
+        sounds: [
+          { id: 'explosion', name: '終極大爆炸', icon: '💣', type: 'synth_explosion' },
+          { id: 'dish_smash', name: '狂摔大瓷盤', icon: '🍽️', type: 'synth_dish' },
+          { id: 'fire_roar', name: '怒氣大咆哮', icon: '🦁', type: 'synth_scream' },
+          { id: 'slap', name: '大嘴巴子扇', icon: '🖐️', type: 'synth_slap' },
+          { id: 'speech_fire', name: '開除慣老闆', icon: '🤬', type: 'speech', text: '我不幹了！資遣費現在拿來！' }
+        ]
+      },
+      work: {
+        id: 'work',
+        name: '社畜崩潰',
+        avatar: '💼',
+        quote: '「這份企劃誰要看？改到第18版！」',
+        themeBg: 'radial-gradient(circle at 35% 30%, #38bdf8, #0284c7 65%, #0369a1 100%)',
+        shadowColor: '#075985',
+        accentColor: '#0ea5e9',
+        glowColor: 'rgba(14, 165, 233, 0.4)',
+        btnTitle: '加班魂魄鈴',
+        emojis: ['💼', '📊', '☕', '📑', '🏃', '💸'],
+        callouts: ['🚨 催進度警告！', '😱 改到第18版！', '☕ 咖啡打翻了！', '😭 週一不要來！', '🏃‍♂️ 準時下班！'],
+        vibratePattern: [40, 40, 40, 40, 40, 100],
+        sounds: [
+          { id: 'dingding_call', name: '奪命連環CALL', icon: '📞', type: 'synth_call' },
+          { id: 'keyboard_rage', name: '怒砸辦公鍵盤', icon: '⌨️', type: 'synth_keyboard' },
+          { id: 'stamp_reject', name: '超大駁回印章', icon: '🛑', type: 'synth_stamp' },
+          { id: 'clock_out', name: '下班爽打卡', icon: '🍻', type: 'synth_offwork' },
+          { id: 'speech_overtime', name: '老闆又在催', icon: '📢', type: 'speech', text: '改了又改，你到底懂不懂需求啊？！' }
+        ]
+      },
+      dead: {
+        id: 'dead',
+        name: '生無可戀',
+        avatar: '🫠',
+        quote: '「今天也是一條不想翻身的鹹魚...」',
+        themeBg: 'radial-gradient(circle at 35% 30%, #94a3b8, #475569 65%, #1e293b 100%)',
+        shadowColor: '#0f172a',
+        accentColor: '#94a3b8',
+        glowColor: 'rgba(148, 163, 184, 0.35)',
+        btnTitle: '看破紅塵鈴',
+        emojis: ['🫠', '🥀', '🦥', '🐟', '💤', '💧'],
+        callouts: ['🫠 人間不值得', '🥀 算了隨便啦', '💤 讓我躺著', '🦥 靈魂出竅', '💨 毀滅吧趕緊的'],
+        vibratePattern: [15, 80, 15, 90],
+        sounds: [
+          { id: 'erhu_sad', name: '悽慘悲涼胡', icon: '🎻', type: 'synth_erhu' },
+          { id: 'sigh_deep', name: '無奈深嘆氣', icon: '😮‍💨', type: 'synth_sigh' },
+          { id: 'fish_flop', name: '鹹魚翻不動', icon: '🐟', type: 'synth_flop' },
+          { id: 'empty_wind', name: '錢包空空風', icon: '💸', type: 'synth_wind' },
+          { id: 'speech_quit', name: '只想躺平擺爛', icon: '🫠', type: 'speech', text: '人間太累了，我要回火星睡覺。' }
+        ]
+      },
+      glitch: {
+        id: 'glitch',
+        name: '腦袋當機',
+        avatar: '🫨',
+        quote: '「CPU 使用率 999%，記憶體已溢位。」',
+        themeBg: 'radial-gradient(circle at 35% 30%, #c084fc, #9333ea 65%, #581c87 100%)',
+        shadowColor: '#3b0764',
+        accentColor: '#a855f7',
+        glowColor: 'rgba(168, 85, 247, 0.45)',
+        btnTitle: '腦霧斷線鈴',
+        emojis: ['🫨', '❓', '🤯', '🌀', '🛸', '👀'],
+        callouts: ['⚠️ 404 NOT FOUND', '❓ 蛤？！', '🫨 腦容量已滿', '🌀 靈魂登出', '📉 當機嗶嗶嗶'],
+        vibratePattern: [120, 50, 20, 50, 180],
+        sounds: [
+          { id: 'windows_bsod', name: '死機藍屏音', icon: '💻', type: 'synth_bsod' },
+          { id: 'crow_awkward', name: '尷尬冷場鴉', icon: '🦅', type: 'synth_crow' },
+          { id: 'kazoo_fail', name: '魔性走音笛', icon: '🪈', type: 'synth_kazoo' },
+          { id: 'brain_snap', name: '理智線啪裂', icon: '🧠', type: 'synth_snap' },
+          { id: 'speech_huh', name: '宇宙級黑人問號', icon: '❓', type: 'speech', text: '蛤？你剛剛到底說了什麼鬼話？' }
+        ]
+      },
+      crazy: {
+        id: 'crazy',
+        name: '瘋癲亢奮',
+        avatar: '🎉',
+        quote: '「瘋狂多巴胺噴發！不要停！」',
+        themeBg: 'radial-gradient(circle at 35% 30%, #fbbf24, #f59e0b 65%, #b45309 100%)',
+        shadowColor: '#78350f',
+        accentColor: '#eab308',
+        glowColor: 'rgba(234, 179, 8, 0.5)',
+        btnTitle: '歡樂尖叫鈴',
+        emojis: ['🎉', '🐔', '🥳', '🎺', '✨', '🎈'],
+        callouts: ['🐔 尖叫吧寶貝！', '🎉 嗨起來！', '🎺 瘋狗出籠！', '🥳 不要停！', '✨ 快樂起飛！'],
+        vibratePattern: [30, 20, 30, 20, 30, 20, 80],
+        sounds: [
+          { id: 'chicken_scream', name: '魔性尖叫雞', icon: '🐔', type: 'synth_chicken' },
+          { id: 'party_horn', name: '開趴拉炮號', icon: '🎉', type: 'synth_horn' },
+          { id: 'spring_boing', name: '超級彈簧啵', icon: '🌀', type: 'synth_spring' },
+          { id: 'groundhog_scream', name: '土撥鼠暴吼', icon: '🐹', type: 'synth_groundhog' },
+          { id: 'speech_laugh', name: '反派癲狂大笑', icon: '🤣', type: 'speech', text: '哈哈哈哈哈！我已經徹底瘋啦！' }
+        ]
+      },
+      meme: {
+        id: 'meme',
+        name: '迷因搞笑',
+        avatar: '🤡',
+        quote: '「只要我不尷尬，尷尬的就是別人。」',
+        themeBg: 'radial-gradient(circle at 35% 30%, #f472b6, #db2777 65%, #9d174d 100%)',
+        shadowColor: '#700c35',
+        accentColor: '#ec4899',
+        glowColor: 'rgba(236, 72, 153, 0.45)',
+        btnTitle: '小丑狂歡鐘',
+        emojis: ['🤡', '💨', '🍌', '💩', '🤪', '🎭'],
+        callouts: ['💨 超級大臭屁！', '🍌 完美香蕉滑倒', '🤡 小丑竟是我自己', '💩 好大一坨', '🤪 ㄎㄧㄤ掉了'],
+        vibratePattern: [50, 30, 50, 100],
+        sounds: [
+          { id: 'fart_bass', name: '噗滋超級屁', icon: '💨', type: 'synth_fart' },
+          { id: 'banana_slip', name: '香蕉滑倒咚', icon: '🍌', type: 'synth_slip' },
+          { id: 'duck_quack', name: '魔性嘎嘎鴨', icon: '🦆', type: 'synth_duck' },
+          { id: 'punch_hit', name: '動漫搞笑拳', icon: '🥊', type: 'synth_punch' },
+          { id: 'speech_meme', name: '戲謔台詞', icon: '🤡', type: 'speech', text: '我就爛！你咬我啊！' }
+        ]
+      },
+      animal: {
+        id: 'animal',
+        name: '萌寵洗腦',
+        avatar: '🐱',
+        quote: '「遇事不決，先吸一口貓貓水豚。」',
+        themeBg: 'radial-gradient(circle at 35% 30%, #34d399, #059669 65%, #064e3b 100%)',
+        shadowColor: '#022c22',
+        accentColor: '#10b981',
+        glowColor: 'rgba(16, 185, 129, 0.45)',
+        btnTitle: '水豚洗腦鈴',
+        emojis: ['🦫', '🐱', '🐕', '🐦', '🍊', '🐾'],
+        callouts: ['🦫 水豚君無所謂', '🐱 貓咪大蛤？！', '🐕 柴犬甩頭汪', '🐦 鴿子魔性點頭', '🍊 水豚泡溫泉'],
+        vibratePattern: [20, 40, 20, 60],
+        sounds: [
+          { id: 'capybara_song', name: '水豚洗腦歌', icon: '🦫', type: 'synth_capybara' },
+          { id: 'cat_huh_speech', name: '貓咪大蛤？！', icon: '🐱', type: 'speech', text: '蛤？！你在工三小？' },
+          { id: 'doge_bark', name: '柴犬魔性汪', icon: '🐕', type: 'synth_doge' },
+          { id: 'pigeon_nod', name: '鴿子點頭波', icon: '🐦', type: 'synth_pigeon' },
+          { id: 'frog_ribbit', name: '孤獨悲傷蛙', icon: '🐸', type: 'synth_frog' }
+        ]
+      },
+      game: {
+        id: 'game',
+        name: '復古電玩',
+        avatar: '🕹️',
+        quote: '「生命只有一條？吃個蘑菇滿血復活！」',
+        themeBg: 'radial-gradient(circle at 35% 30%, #818cf8, #4f46e5 65%, #312e81 100%)',
+        shadowColor: '#1e1b4b',
+        accentColor: '#6366f1',
+        glowColor: 'rgba(99, 102, 241, 0.45)',
+        btnTitle: '電玩重開鐘',
+        emojis: ['🍄', '🪙', '👾', '🕹️', '⭐', '☠️'],
+        callouts: ['🪙 吃金幣爽啦！', '🍄 瑪利歐跳躍！', '🆙 無敵升級！', '👾 踩扁小怪物！', '☠️ 慘烈 GAME OVER'],
+        vibratePattern: [30, 30, 60, 60],
+        sounds: [
+          { id: 'mario_coin', name: '吃金幣叮鈴', icon: '🪙', type: 'synth_coin' },
+          { id: 'mario_jump', name: '經典高跳躍', icon: '🍄', type: 'synth_jump' },
+          { id: 'powerup_fanfare', name: '無敵升級啦', icon: '⭐', type: 'synth_powerup' },
+          { id: 'stomp_squish', name: '踩扁怪物噗', icon: '👾', type: 'synth_stomp' },
+          { id: 'gameover_sad', name: '慘烈慘敗掉級', icon: '☠️', type: 'synth_gameover' }
+        ]
+      }
+    };
+
+    /* ============================================================
+       2. Web Audio API 純原生高階合成器
+       ============================================================ */
+    let audioCtx = null;
+    let globalPitchMultiplier = 1.0;
+    let isMuted = false;
+    let isHapticEnabled = true;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    const AudioEngine = {
+      getPitchedRate() {
+        return (Math.random() * 0.12 - 0.06) + globalPitchMultiplier;
+      },
+
+      playExplosion() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const dur = 0.85;
+        const buf = ctx.createBuffer(1, ctx.sampleRate * dur, ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < buf.length; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (buf.length * 0.4));
+        }
+
+        const noise = ctx.createBufferSource();
+        noise.buffer = buf;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1400 * rate, now);
+        filter.frequency.exponentialRampToValueAtTime(35 * rate, now + dur);
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(1.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + dur);
+
+        const sub = ctx.createOscillator();
+        const subGain = ctx.createGain();
+        sub.type = 'sine';
+        sub.frequency.setValueAtTime(180 * rate, now);
+        sub.frequency.exponentialRampToValueAtTime(20 * rate, now + 0.65);
+        subGain.gain.setValueAtTime(0.9, now);
+        subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        sub.connect(subGain);
+        subGain.connect(ctx.destination);
+
+        noise.start(now);
+        sub.start(now);
+        noise.stop(now + dur);
+        sub.stop(now + 0.65);
+      },
+
+      playDishSmash() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        [3400, 4900, 6400, 8800].forEach((freq) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq * rate, now);
+          osc.frequency.exponentialRampToValueAtTime(350, now + 0.35);
+
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        });
+      },
+
+      playSlap() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(450 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(60 * rate, now + 0.18);
+
+        gain.gain.setValueAtTime(0.8, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      },
+
+      playErhuSad() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(440 * rate, now);
+        osc.frequency.linearRampToValueAtTime(370 * rate, now + 0.3);
+        osc.frequency.linearRampToValueAtTime(293.6 * rate, now + 0.7);
+
+        const lfo = ctx.createOscillator();
+        const lfoGain = ctx.createGain();
+        lfo.frequency.value = 6.5;
+        lfoGain.gain.value = 16 * rate;
+        lfo.connect(osc.frequency);
+        lfo.start(now);
+        lfo.stop(now + 0.75);
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 900;
+        filter.Q.value = 2.5;
+
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.75);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.75);
+      },
+
+      playChickenScream() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc1.type = 'sawtooth';
+        osc2.type = 'square';
+
+        osc1.frequency.setValueAtTime(280 * rate, now);
+        osc1.frequency.exponentialRampToValueAtTime(1450 * rate, now + 0.15);
+        osc1.frequency.exponentialRampToValueAtTime(420 * rate, now + 0.55);
+
+        osc2.frequency.setValueAtTime(285 * rate, now);
+        osc2.frequency.exponentialRampToValueAtTime(1460 * rate, now + 0.15);
+        osc2.frequency.exponentialRampToValueAtTime(410 * rate, now + 0.55);
+
+        gain.gain.setValueAtTime(0.45, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.55);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.55);
+        osc2.stop(now + 0.55);
+      },
+
+      playFart() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const bufferSize = ctx.sampleRate * 0.45;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.65));
+        }
+
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(340 * rate, now);
+        filter.frequency.exponentialRampToValueAtTime(65 * rate, now + 0.42);
+
+        const osc = ctx.createOscillator();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(120 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(32 * rate, now + 0.45);
+
+        const oscGain = ctx.createGain();
+        oscGain.gain.setValueAtTime(0.6, now);
+        oscGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+        const masterGain = ctx.createGain();
+        masterGain.gain.setValueAtTime(1.0, now);
+        masterGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+        noise.connect(filter);
+        filter.connect(masterGain);
+        osc.connect(oscGain);
+        oscGain.connect(masterGain);
+        masterGain.connect(ctx.destination);
+
+        noise.start(now);
+        osc.start(now);
+        noise.stop(now + 0.45);
+        osc.stop(now + 0.45);
+      },
+
+      playCapybara() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+        const notes = [261.6, 329.6, 392.0, 523.2];
+        notes.forEach((freq, idx) => {
+          const t = now + idx * 0.085;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq * rate, t);
+
+          gain.gain.setValueAtTime(0.38, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.075);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.08);
+        });
+      },
+
+      playCoin() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(987.7 * rate, now);
+        osc.frequency.setValueAtTime(1318.5 * rate, now + 0.08);
+
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      },
+
+      playJump() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(140 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(620 * rate, now + 0.2);
+
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.22);
+      },
+
+      playPowerup() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+        const notes = [330, 392, 659, 523, 587, 784];
+        notes.forEach((freq, idx) => {
+          const t = now + idx * 0.05;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq * rate, t);
+
+          gain.gain.setValueAtTime(0.25, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.09);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.095);
+        });
+      },
+
+      playStomp() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(260 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(40 * rate, now + 0.16);
+
+        gain.gain.setValueAtTime(0.45, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.18);
+      },
+
+      playGameover() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+        const notes = [440, 415, 392, 349];
+        notes.forEach((freq, idx) => {
+          const t = now + idx * 0.12;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq * rate, t);
+
+          gain.gain.setValueAtTime(0.22, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.13);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.14);
+        });
+      },
+
+      playSlip() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(360 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(1450 * rate, now + 0.22);
+
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.24);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.24);
+      },
+
+      playDuck() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(390 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(240 * rate, now + 0.22);
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(950 * rate, now);
+        filter.Q.value = 4.5;
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.45, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.24);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.24);
+      },
+
+      playBsod() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(440 * rate, now);
+        osc.frequency.setValueAtTime(220 * rate, now + 0.12);
+        osc.frequency.setValueAtTime(110 * rate, now + 0.25);
+
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.5);
+      },
+
+      playCrow() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const filter = ctx.createBiquadFilter();
+        const gain = ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(700 * rate, now);
+        osc.frequency.linearRampToValueAtTime(540 * rate, now + 0.4);
+
+        filter.type = 'bandpass';
+        filter.frequency.value = 1150 * rate;
+        filter.Q.value = 3.5;
+
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.42);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.42);
+      },
+
+      playKazoo() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(320 * rate, now);
+        osc.frequency.linearRampToValueAtTime(450 * rate, now + 0.15);
+        osc.frequency.linearRampToValueAtTime(260 * rate, now + 0.35);
+
+        gain.gain.setValueAtTime(0.45, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.38);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.38);
+      },
+
+      playSnap() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(2200 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(120 * rate, now + 0.12);
+
+        gain.gain.setValueAtTime(0.65, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.15);
+      },
+
+      playDingDingCall() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        [0, 0.12, 0.24].forEach((tOff) => {
+          const t = now + tOff;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1200 * rate, t);
+          osc.frequency.setValueAtTime(1600 * rate, t + 0.05);
+
+          gain.gain.setValueAtTime(0.4, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.095);
+        });
+      },
+
+      playKeyboardRage() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        for (let i = 0; i < 4; i++) {
+          const t = now + i * 0.035;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime((1000 + Math.random() * 800) * rate, t);
+
+          gain.gain.setValueAtTime(0.4, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.025);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.03);
+        }
+      },
+
+      playStamp() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(260 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(35 * rate, now + 0.25);
+
+        gain.gain.setValueAtTime(0.85, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.28);
+      },
+
+      playOffwork() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        [880, 1174].forEach((freq, i) => {
+          const t = now + i * 0.15;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq * rate, t);
+
+          gain.gain.setValueAtTime(0.45, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.45);
+        });
+      },
+
+      playPartyHorn() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        [523.25, 659.25, 783.99].forEach((freq) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq * rate, now);
+
+          gain.gain.setValueAtTime(0.28, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        });
+      },
+
+      playSpringBoing() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(140 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(950 * rate, now + 0.28);
+
+        gain.gain.setValueAtTime(0.55, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      },
+
+      playGroundhog() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(500 * rate, now);
+        osc.frequency.linearRampToValueAtTime(1100 * rate, now + 0.4);
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.5);
+      },
+
+      playDoge() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(450 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(180 * rate, now + 0.16);
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.55, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.17);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.17);
+      },
+
+      playPigeon() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        [0, 0.12].forEach((offset) => {
+          const t = now + offset;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320 * rate, t);
+          osc.frequency.linearRampToValueAtTime(290 * rate, t + 0.09);
+
+          gain.gain.setValueAtTime(0.35, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.1);
+        });
+      },
+
+      playFrog() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180 * rate, now);
+        osc.frequency.linearRampToValueAtTime(120 * rate, now + 0.15);
+
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.18);
+      },
+
+      playPunch() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(300 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(50 * rate, now + 0.15);
+
+        gain.gain.setValueAtTime(0.8, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.18);
+      },
+
+      playSigh() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const dur = 0.55;
+        const buf = ctx.createBuffer(1, ctx.sampleRate * dur, ctx.sampleRate);
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < buf.length; i++) d[i] = Math.random() * 2 - 1;
+
+        const noise = ctx.createBufferSource();
+        noise.buffer = buf;
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(600 * rate, now);
+        filter.frequency.linearRampToValueAtTime(250 * rate, now + dur);
+        filter.Q.value = 3.0;
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.linearRampToValueAtTime(0.35, now + 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + dur);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        noise.start(now);
+        noise.stop(now + dur);
+      },
+
+      playFlop() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(110 * rate, now);
+        osc.frequency.exponentialRampToValueAtTime(45 * rate, now + 0.2);
+
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.22);
+      },
+
+      playWind() {
+        if (isMuted) return;
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const rate = this.getPitchedRate();
+
+        const bufferSize = ctx.sampleRate * 0.6;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(400 * rate, now);
+        filter.frequency.linearRampToValueAtTime(650 * rate, now + 0.3);
+        filter.frequency.linearRampToValueAtTime(300 * rate, now + 0.6);
+        filter.Q.value = 5.0;
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.linearRampToValueAtTime(0.35, now + 0.25);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        noise.start(now);
+        noise.stop(now + 0.6);
+      },
+
+      speakText(text) {
+        if (isMuted || !('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'zh-TW';
+        u.rate = 1.35 * globalPitchMultiplier;
+        u.pitch = 1.2 * globalPitchMultiplier;
+        window.speechSynthesis.speak(u);
+      }
+    };
+
+    /* ============================================================
+       3. 物理重力反彈 Emoji 粒子系統 (Canvas)
+       ============================================================ */
+    const canvas = document.getElementById('particle-canvas');
+    const cCtx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class PhysicsEmoji {
+      constructor(x, y, emoji, isUltra = false) {
+        this.x = x;
+        this.y = y;
+        this.emoji = emoji;
+        const speed = isUltra ? (14 + Math.random() * 18) : (8 + Math.random() * 12);
+        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.8;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.gravity = 0.55;
+        this.bounce = -0.45;
+        this.floor = canvas.height - 30;
+        this.size = isUltra ? (36 + Math.random() * 22) : (26 + Math.random() * 14);
+        this.rot = Math.random() * 360;
+        this.rotSpeed = (Math.random() - 0.5) * 16;
+        this.alpha = 1.0;
+        this.decay = 0.012 + Math.random() * 0.01;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += this.gravity;
+        this.rot += this.rotSpeed;
+
+        if (this.y >= this.floor) {
+          this.y = this.floor;
+          this.vy *= this.bounce;
+          this.vx *= 0.8;
+        }
+
+        this.alpha -= this.decay;
+      }
+
+      draw(context) {
+        context.save();
+        context.globalAlpha = Math.max(0, this.alpha);
+        context.translate(this.x, this.y);
+        context.rotate((this.rot * Math.PI) / 180);
+        context.font = `${this.size}px 'Noto Color Emoji', sans-serif`;
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText(this.emoji, 0, 0);
+        context.restore();
+      }
+    }
+
+    function spawnCannonEmojis(x, y, emojiList, isUltra = false) {
+      const count = isUltra ? 26 : 14;
+      for (let i = 0; i < count; i++) {
+        const em = emojiList[Math.floor(Math.random() * emojiList.length)];
+        particles.push(new PhysicsEmoji(x + (Math.random() - 0.5) * 40, y, em, isUltra));
+      }
+    }
+
+    function particleLoop() {
+      cCtx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.update();
+        p.draw(cCtx);
+        if (p.alpha <= 0) particles.splice(i, 1);
+      }
+      requestAnimationFrame(particleLoop);
+    }
+    particleLoop();
+
+    /* ============================================================
+       4. 戲劇化視覺反饋引擎
+       ============================================================ */
+    const appBody = document.getElementById('app-body');
+    const flashOverlay = document.getElementById('flash-overlay');
+    const crackSvg = document.getElementById('crack-svg');
+    const fxContainer = document.getElementById('fx-container');
+    const rageProgress = document.getElementById('rage-progress');
+    const rageLabel = document.getElementById('rage-label');
+    const comboNumEl = document.getElementById('combo-num');
+    const rageBadge = document.getElementById('rage-badge');
+    const actionHint = document.getElementById('action-hint');
+    const haloRing = document.getElementById('halo-ring');
+    const btnNuke = document.getElementById('btn-nuke');
+
+    let currentMood = MOOD_DATABASE.rage;
+    let selectedSound = currentMood.sounds[0];
+    let comboCount = 0;
+    let rageScore = 0;
+    let isUltraRage = false;
+    let isRandomBox = false;
+    let customTargetName = '';
+    let comboResetTimer = null;
+    let autoMachineGunTimer = null;
+    let isPointerHolding = false;
+    let autoClickInterval = null;
+
+    function triggerDramaticFX(intensity = 'normal') {
+      const isHeavy = intensity === 'heavy' || isUltraRage;
+
+      appBody.classList.remove('shake-mild', 'shake-heavy');
+      void appBody.offsetWidth;
+      appBody.classList.add(isHeavy ? 'shake-heavy' : 'shake-mild');
+
+      flashOverlay.style.opacity = isHeavy ? '0.7' : '0.25';
+      setTimeout(() => { flashOverlay.style.opacity = '0'; }, isHeavy ? 110 : 60);
+
+      if (rageScore >= 45 || isHeavy) {
+        crackSvg.style.opacity = '1';
+        setTimeout(() => { crackSvg.style.opacity = '0'; }, 500);
+      }
+
+      spawnShockwave();
+      spawnComicCallout();
+
+      if (isHapticEnabled && 'vibrate' in navigator) {
+        if (isHeavy) {
+          navigator.vibrate([80, 40, 100, 50, 160]);
+        } else {
+          navigator.vibrate(currentMood.vibratePattern);
+        }
+      }
+    }
+
+    function spawnShockwave() {
+      const ring = document.createElement('div');
+      ring.className = 'shockwave-ring w-48 h-48 border-4 border-amber-300';
+      ring.style.borderColor = currentMood.accentColor;
+      fxContainer.appendChild(ring);
+      setTimeout(() => ring.remove(), 450);
+    }
+
+    function spawnComicCallout() {
+      let calloutText = currentMood.callouts[Math.floor(Math.random() * currentMood.callouts.length)];
+      if (customTargetName && Math.random() > 0.4) {
+        calloutText = `💥 扁死你，${customTargetName}！`;
+      }
+      const el = document.createElement('div');
+      el.className = 'comic-callout font-black text-2xl sm:text-3xl text-amber-300 whitespace-nowrap tracking-wider';
+      el.textContent = calloutText;
+      const randomLeft = 40 + Math.random() * 20;
+      el.style.left = `${randomLeft}%`;
+      fxContainer.appendChild(el);
+      setTimeout(() => el.remove(), 850);
+    }
+
+    function updateRageAndCombo() {
+      comboCount++;
+      comboNumEl.textContent = comboCount;
+
+      rageScore = Math.min(100, rageScore + 5.5);
+      rageProgress.style.width = `${rageScore}%`;
+      rageLabel.textContent = `發洩怒氣值 ${Math.floor(rageScore)}%`;
+
+      if (rageScore >= 100) {
+        btnNuke.classList.remove('hidden');
+        if (!isUltraRage) activateUltraRage();
+      }
+
+      clearTimeout(comboResetTimer);
+      comboResetTimer = setTimeout(() => {
+        decayRage();
+      }, 1600);
+    }
+
+    function activateUltraRage() {
+      isUltraRage = true;
+      rageBadge.classList.remove('hidden');
+      appBody.classList.add('ultra-rage-active');
+      actionHint.textContent = '🔥 進入終極暴走模式！螢幕快要扛不住啦！';
+      triggerDramaticFX('heavy');
+    }
+
+    function decayRage() {
+      const decayInterval = setInterval(() => {
+        rageScore = Math.max(0, rageScore - 12);
+        rageProgress.style.width = `${rageScore}%`;
+        rageLabel.textContent = `發洩怒氣值 ${Math.floor(rageScore)}%`;
+
+        if (rageScore < 85 && isUltraRage) {
+          isUltraRage = false;
+          rageBadge.classList.add('hidden');
+          btnNuke.classList.add('hidden');
+          appBody.classList.remove('ultra-rage-active');
+          actionHint.textContent = '按一下解氣，按住不放瘋狂機關槍！';
+        }
+
+        if (rageScore <= 0) {
+          clearInterval(decayInterval);
+          comboCount = 0;
+          comboNumEl.textContent = '0';
+        }
+      }, 80);
+    }
+
+    /* ============================================================
+       5. 點擊與音效執行核心
+       ============================================================ */
+    const smashBtn = document.getElementById('smash-bell-btn');
+
+    function executeSmash(isMachineGun = false) {
+      let soundItem = selectedSound;
+
+      if (isRandomBox) {
+        const moodKeys = Object.keys(MOOD_DATABASE);
+        const randMood = MOOD_DATABASE[moodKeys[Math.floor(Math.random() * moodKeys.length)]];
+        soundItem = randMood.sounds[Math.floor(Math.random() * randMood.sounds.length)];
+        bellCoreIcon.textContent = soundItem.icon;
+        bellCoreName.textContent = `🎲 ${soundItem.name}`;
+      }
+
+      playSingleSound(soundItem);
+      triggerDramaticFX(isMachineGun ? 'heavy' : 'normal');
+
+      const rect = smashBtn.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      const originX = rect.left + rect.width / 2 - canvasRect.left;
+      const originY = rect.top + rect.height / 2 - canvasRect.top;
+      spawnCannonEmojis(originX, originY, currentMood.emojis, isUltraRage);
+
+      smashBtn.classList.add('pressed');
+      setTimeout(() => smashBtn.classList.remove('pressed'), 80);
+
+      updateRageAndCombo();
+    }
+
+    function playSingleSound(soundItem) {
+      switch (soundItem.type) {
+        case 'synth_explosion': AudioEngine.playExplosion(); break;
+        case 'synth_dish': AudioEngine.playDishSmash(); break;
+        case 'synth_slap': AudioEngine.playSlap(); break;
+        case 'synth_scream': AudioEngine.playChickenScream(); break;
+        case 'synth_erhu': AudioEngine.playErhuSad(); break;
+        case 'synth_sigh': AudioEngine.playSigh(); break;
+        case 'synth_flop': AudioEngine.playFlop(); break;
+        case 'synth_call': AudioEngine.playDingDingCall(); break;
+        case 'synth_keyboard': AudioEngine.playKeyboardRage(); break;
+        case 'synth_stamp': AudioEngine.playStamp(); break;
+        case 'synth_offwork': AudioEngine.playOffwork(); break;
+        case 'synth_bsod': AudioEngine.playBsod(); break;
+        case 'synth_crow': AudioEngine.playCrow(); break;
+        case 'synth_kazoo': AudioEngine.playKazoo(); break;
+        case 'synth_snap': AudioEngine.playSnap(); break;
+        case 'synth_chicken': AudioEngine.playChickenScream(); break;
+        case 'synth_horn': AudioEngine.playPartyHorn(); break;
+        case 'synth_spring': AudioEngine.playSpringBoing(); break;
+        case 'synth_groundhog': AudioEngine.playGroundhog(); break;
+        case 'synth_fart': AudioEngine.playFart(); break;
+        case 'synth_slip': AudioEngine.playSlip(); break;
+        case 'synth_duck': AudioEngine.playDuck(); break;
+        case 'synth_punch': AudioEngine.playPunch(); break;
+        case 'synth_capybara': AudioEngine.playCapybara(); break;
+        case 'synth_doge': AudioEngine.playDoge(); break;
+        case 'synth_pigeon': AudioEngine.playPigeon(); break;
+        case 'synth_frog': AudioEngine.playFrog(); break;
+        case 'synth_coin': AudioEngine.playCoin(); break;
+        case 'synth_jump': AudioEngine.playJump(); break;
+        case 'synth_powerup': AudioEngine.playPowerup(); break;
+        case 'synth_stomp': AudioEngine.playStomp(); break;
+        case 'synth_gameover': AudioEngine.playGameover(); break;
+        case 'synth_wind': AudioEngine.playWind(); break;
+        case 'speech':
+          const spoken = customTargetName ? `${customTargetName}，${soundItem.text}` : soundItem.text;
+          AudioEngine.speakText(spoken);
+          break;
+        default: AudioEngine.playExplosion(); break;
+      }
+    }
+
+    /* ============================================================
+       6. UI 更新與心情切換綁定
+       ============================================================ */
+    const moodAvatar = document.getElementById('mood-avatar');
+    const appHeading = document.getElementById('app-heading');
+    const appQuote = document.getElementById('app-quote');
+    const bellBase = document.getElementById('bell-base');
+    const bellCoreIcon = document.getElementById('bell-core-icon');
+    const bellCoreName = document.getElementById('bell-core-name');
+    const paletteTitle = document.getElementById('palette-title');
+    const soundMatrixGrid = document.getElementById('sound-matrix-grid');
+    const moodTabsContainer = document.getElementById('mood-tabs-container');
+
+    function initMoodTabs() {
+      moodTabsContainer.innerHTML = '';
+      Object.values(MOOD_DATABASE).forEach((m) => {
+        const btn = document.createElement('button');
+        btn.id = `tab-${m.id}`;
+        btn.className = `flex-shrink-0 px-3.5 py-1.5 rounded-full border transition-all active:scale-95 flex items-center gap-1.5 whitespace-nowrap bg-slate-900 border-slate-800 text-slate-400`;
+        btn.innerHTML = `<span>${m.avatar}</span> <span>${m.name}</span>`;
+        btn.onclick = () => {
+          applyMoodTheme(m.id);
+          if (isHapticEnabled && 'vibrate' in navigator) navigator.vibrate(30);
+        };
+        moodTabsContainer.appendChild(btn);
+      });
+    }
+
+    function applyMoodTheme(moodKey) {
+      currentMood = MOOD_DATABASE[moodKey];
+      selectedSound = currentMood.sounds[0];
+
+      moodAvatar.textContent = currentMood.avatar;
+      appHeading.textContent = `${currentMood.name}大鈴鐺`;
+      appHeading.style.color = currentMood.accentColor;
+      appQuote.textContent = currentMood.quote;
+
+      smashBtn.style.background = currentMood.themeBg;
+      smashBtn.style.boxShadow = `0 16px 0 ${currentMood.shadowColor}, 0 20px 30px rgba(0,0,0,0.6), inset 0 6px 8px rgba(255,255,255,0.6), inset 0 -10px 16px rgba(0,0,0,0.5)`;
+      bellBase.style.borderColor = `${currentMood.accentColor}88`;
+      haloRing.style.backgroundColor = currentMood.glowColor;
+      bellCoreIcon.textContent = currentMood.sounds[0].icon;
+      bellCoreName.textContent = currentMood.btnTitle;
+
+      paletteTitle.innerHTML = `<span>${currentMood.avatar}</span> ${currentMood.name}專屬音效庫`;
+      renderSoundMatrix();
+
+      Object.values(MOOD_DATABASE).forEach((m) => {
+        const tab = document.getElementById(`tab-${m.id}`);
+        if (m.id === moodKey) {
+          tab.className = `flex-shrink-0 px-3.5 py-1.5 rounded-full border transition-all active:scale-95 flex items-center gap-1.5 whitespace-nowrap text-white font-black shadow-lg bg-gradient-to-r from-slate-800 to-slate-700`;
+          tab.style.borderColor = currentMood.accentColor;
+        } else {
+          tab.className = 'flex-shrink-0 px-3.5 py-1.5 rounded-full border transition-all active:scale-95 flex items-center gap-1.5 whitespace-nowrap bg-slate-900 border-slate-800 text-slate-400';
+          tab.style.borderColor = '';
+        }
+      });
+    }
+
+    function renderSoundMatrix() {
+      soundMatrixGrid.innerHTML = '';
+      currentMood.sounds.forEach((snd) => {
+        const isSelected = snd.id === selectedSound.id;
+        const btn = document.createElement('button');
+        btn.className = `flex flex-col items-center justify-center p-1.5 rounded-xl text-center border transition-all active:scale-90 ${
+          isSelected 
+            ? 'bg-slate-800 border-white text-white font-black shadow ring-2 ring-white/40' 
+            : 'bg-slate-950 hover:bg-slate-850 border-slate-800 text-slate-400 font-semibold'
+        }`;
+        btn.innerHTML = `
+          <span class="text-xl mb-0.5">${snd.icon}</span>
+          <span class="text-[9px] truncate w-full leading-tight">${snd.name}</span>
+        `;
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          selectedSound = snd;
+          bellCoreIcon.textContent = snd.icon;
+          bellCoreName.textContent = snd.name;
+          renderSoundMatrix();
+          executeSmash(false);
+        };
+        soundMatrixGrid.appendChild(btn);
+      });
+    }
+
+    /* ============================================================
+       7. 操作手感與進階功能綁定
+       ============================================================ */
+    smashBtn.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      isPointerHolding = true;
+      executeSmash(false);
+
+      autoMachineGunTimer = setTimeout(() => {
+        if (isPointerHolding) {
+          actionHint.textContent = '⚡ 機關槍連射啟動！不要放手！';
+          const intervalId = setInterval(() => {
+            if (!isPointerHolding) {
+              clearInterval(intervalId);
+              actionHint.textContent = '按一下解氣，按住不放瘋狂機關槍！';
+              return;
+            }
+            executeSmash(true);
+          }, 110);
+        }
+      }, 280);
+    });
+
+    const stopHolding = () => {
+      isPointerHolding = false;
+      clearTimeout(autoMachineGunTimer);
+    };
+    window.addEventListener('pointerup', stopHolding);
+    window.addEventListener('pointercancel', stopHolding);
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.code === 'Space' || e.code === 'Enter') && !e.repeat) {
+        executeSmash(false);
+      }
+    });
+
+    const pitchSlider = document.getElementById('pitch-slider');
+    const pitchValTxt = document.getElementById('pitch-value-txt');
+    pitchSlider.addEventListener('input', (e) => {
+      globalPitchMultiplier = parseFloat(e.target.value);
+      pitchValTxt.textContent = `${globalPitchMultiplier.toFixed(2)}x`;
+    });
+
+    const toggleMuteBtn = document.getElementById('toggle-mute');
+    toggleMuteBtn.addEventListener('click', () => {
+      isMuted = !isMuted;
+      toggleMuteBtn.textContent = isMuted ? '🔇' : '🔊';
+      toggleMuteBtn.classList.toggle('bg-rose-900', isMuted);
+    });
+
+    const toggleHapticBtn = document.getElementById('toggle-haptic');
+    toggleHapticBtn.addEventListener('click', () => {
+      isHapticEnabled = !isHapticEnabled;
+      toggleHapticBtn.textContent = isHapticEnabled ? '📳' : '🔕';
+      toggleHapticBtn.classList.toggle('opacity-50', !isHapticEnabled);
+    });
+
+    const toggleRandomBtn = document.getElementById('toggle-random');
+    const randomTxt = document.getElementById('random-txt');
+    toggleRandomBtn.addEventListener('click', () => {
+      isRandomBox = !isRandomBox;
+      randomTxt.textContent = `盲盒: ${isRandomBox ? '開 🎉' : '關'}`;
+      toggleRandomBtn.classList.toggle('border-rose-400', isRandomBox);
+      toggleRandomBtn.classList.toggle('text-rose-400', isRandomBox);
+    });
+
+    const toggleAutoClickBtn = document.getElementById('toggle-autoclick');
+    const autoclickTxt = document.getElementById('autoclick-txt');
+    toggleAutoClickBtn.addEventListener('click', () => {
+      if (autoClickInterval) {
+        clearInterval(autoClickInterval);
+        autoClickInterval = null;
+        autoclickTxt.textContent = '自動狂按: 關';
+        toggleAutoClickBtn.classList.remove('bg-rose-600', 'text-white');
+      } else {
+        autoclickTxt.textContent = '狂暴掃射中 🔥';
+        toggleAutoClickBtn.classList.add('bg-rose-600', 'text-white');
+        autoClickInterval = setInterval(() => {
+          executeSmash(true);
+        }, 130);
+      }
+    });
+
+    // 終極核爆
+    btnNuke.addEventListener('click', () => {
+      AudioEngine.playExplosion();
+      AudioEngine.playChickenScream();
+      AudioEngine.speakText('終極核爆！通通毀滅吧！');
+      triggerDramaticFX('heavy');
+      const rect = smashBtn.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      spawnCannonEmojis(rect.left + rect.width / 2 - canvasRect.left, rect.top + rect.height / 2 - canvasRect.top, ['☢️', '💥', '🔥', '💣', '🤯'], true);
+      spawnCannonEmojis(rect.left + rect.width / 2 - canvasRect.left, rect.top + rect.height / 2 - canvasRect.top, ['🎉', '✨', '⚡', '🥳'], true);
+      rageScore = 0;
+      rageProgress.style.width = '0%';
+      rageLabel.textContent = '壓力已徹底歸零 🕊️';
+      btnNuke.classList.add('hidden');
+    });
+
+    // 自訂出氣筒 Modal 邏輯
+    const targetModal = document.getElementById('target-modal');
+    const btnCustomTarget = document.getElementById('btn-custom-target');
+    const btnSaveTarget = document.getElementById('btn-save-target');
+    const btnClearTarget = document.getElementById('btn-clear-target');
+    const inputTargetName = document.getElementById('input-target-name');
+    const targetBadge = document.getElementById('target-badge');
+    const targetNameSpan = document.getElementById('target-name');
+
+    btnCustomTarget.addEventListener('click', () => {
+      targetModal.classList.remove('hidden');
+      inputTargetName.focus();
+    });
+
+    btnSaveTarget.addEventListener('click', () => {
+      const val = inputTargetName.value.trim();
+      if (val) {
+        customTargetName = val;
+        targetNameSpan.textContent = val;
+        targetBadge.classList.remove('hidden');
+      }
+      targetModal.classList.add('hidden');
+    });
+
+    btnClearTarget.addEventListener('click', () => {
+      customTargetName = '';
+      inputTargetName.value = '';
+      targetBadge.classList.add('hidden');
+      targetModal.classList.add('hidden');
+    });
+
+    targetModal.addEventListener('click', (e) => {
+      if (e.target === targetModal) targetModal.classList.add('hidden');
+    });
+
+    // 初始化啟動
+    initMoodTabs();
+    applyMoodTheme('rage');
+  </script>
+</body>
+</html>
