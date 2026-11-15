@@ -1,1073 +1,519 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>台灣大富翁 - 放大頭像與音效互動版</title>
-    <style>
-        :root {
-            --bg-color: #d8f3dc;
-            --board-bg: #e9f5db;
-            --border-color: #2d6a4f;
-            --card-bg: #ffffff;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
-        }
-
-        body {
-            background-color: #f0f4f8;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 10px;
-        }
-
-        header {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        h1 {
-            color: #1b4332;
-            font-size: 1.5rem;
-        }
-
-        .controls {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .controls button {
-            padding: 8px 14px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            color: white;
-            transition: opacity 0.2s, transform 0.1s;
-        }
-
-        .controls button:hover { opacity: 0.85; }
-        .controls button:active { transform: scale(0.96); }
-        .btn-reset { background-color: #e63946; }
-        .btn-rules { background-color: #457b9d; }
-        .btn-sound { background-color: #2a9d8f; }
-        .btn-sound.muted { background-color: #6c757d; }
-
-        /* 主遊戲容器 (RWD) */
-        .game-layout {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            width: 100%;
-            max-width: 1200px;
-            justify-content: center;
-            align-items: flex-start;
-        }
-
-        /* 11x11 大富翁棋盤 */
-        .board {
-            display: grid;
-            grid-template-columns: repeat(11, 1fr);
-            grid-template-rows: repeat(11, 1fr);
-            width: min(94vw, 740px);
-            height: min(94vw, 740px);
-            background-color: var(--board-bg);
-            border: 3px solid var(--border-color);
-            border-radius: 8px;
-            position: relative;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-
-        /* 棋盤格子樣式 */
-        .cell {
-            border: 1px solid #95d5b2;
-            background-color: var(--card-bg);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            font-size: clamp(9px, 1.3vw, 12px);
-            overflow: visible; /* 允許放大頭像稍微超出格線更立體 */
-            user-select: none;
-        }
-
-        .color-bar {
-            width: 100%;
-            height: 18%;
-            min-height: 6px;
-        }
-
-        .cell-name {
-            font-weight: bold;
-            padding: 2px;
-            line-height: 1.1;
-            color: #1d3557;
-            z-index: 1;
-        }
-
-        .cell-price {
-            font-size: 0.85em;
-            color: #555;
-            padding-bottom: 2px;
-            z-index: 1;
-        }
-
-        .corner {
-            background-color: #fff3b0;
-            justify-content: center;
-            font-weight: bold;
-            font-size: clamp(10px, 1.5vw, 14px);
-        }
-
-        /* 🌟 放大玩家頭像與跳動特效 */
-        .tokens {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 2px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 20;
-            pointer-events: none;
-            width: 115%;
-        }
-
-        .player-token {
-            font-size: clamp(22px, 3.4vw, 34px); /* 大幅放大頭像 */
-            line-height: 1;
-            background: rgba(255, 255, 255, 0.92);
-            border-radius: 50%;
-            padding: 2px;
-            border: 2px solid #333;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.45);
-            transition: transform 0.15s ease;
-        }
-
-        /* 當輪到該玩家或正在移動時的跳動動畫 */
-        .player-token.active-token {
-            transform: scale(1.18) translateY(-3px);
-            border-width: 3px;
-            z-index: 30;
-            animation: bounceToken 0.6s infinite alternate;
-        }
-
-        @keyframes bounceToken {
-            from { transform: scale(1.15) translateY(-2px); }
-            to { transform: scale(1.25) translateY(-7px); }
-        }
-
-        .owner-badge {
-            position: absolute;
-            bottom: 1px;
-            right: 1px;
-            font-size: 12px;
-            padding: 1px 4px;
-            border-radius: 4px;
-            color: white;
-            font-weight: bold;
-            z-index: 5;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-        }
-
-        /* 棋盤中央控制區 */
-        .center-area {
-            grid-column: 2 / 11;
-            grid-row: 2 / 11;
-            background-color: var(--bg-color);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .turn-indicator {
-            font-size: clamp(1.15rem, 2.6vw, 1.7rem);
-            font-weight: bold;
-            color: #1b4332;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .turn-avatar {
-            font-size: clamp(1.6rem, 3.5vw, 2.3rem);
-        }
-
-        .dice-container {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .dice {
-            width: clamp(48px, 7.5vw, 68px);
-            height: clamp(48px, 7.5vw, 68px);
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: clamp(1.5rem, 3.2vw, 2.1rem);
-            font-weight: bold;
-            color: #333;
-            transition: transform 0.2s;
-        }
-
-        .dice.rolling {
-            animation: shake 0.25s infinite;
-        }
-
-        @keyframes shake {
-            0% { transform: rotate(0deg) scale(1.05); }
-            25% { transform: rotate(18deg) scale(1.1); }
-            75% { transform: rotate(-18deg) scale(1.1); }
-            100% { transform: rotate(0deg) scale(1.05); }
-        }
-
-        .roll-btn {
-            background-color: #3a86ff;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: clamp(1rem, 2.2vw, 1.25rem);
-            font-weight: bold;
-            border-radius: 25px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(58, 134, 255, 0.4);
-            transition: transform 0.1s, background-color 0.2s;
-        }
-
-        .roll-btn:hover:not(:disabled) {
-            background-color: #2667ff;
-            transform: translateY(-2px);
-        }
-
-        .roll-btn:disabled {
-            background-color: #adb5bd;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .log-box {
-            margin-top: 15px;
-            width: 92%;
-            max-height: 115px;
-            overflow-y: auto;
-            background: rgba(255, 255, 255, 0.88);
-            border-radius: 8px;
-            padding: 8px;
-            font-size: 0.85rem;
-            text-align: left;
-            color: #333;
-            border: 1px solid #b7e4c7;
-        }
-
-        .log-box p { margin-bottom: 4px; border-bottom: 1px dashed #eee; padding-bottom: 2px; }
-
-        /* 右側玩家資訊面板 */
-        .sidebar {
-            flex: 1;
-            min-width: 280px;
-            max-width: 420px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .player-card {
-            background: white;
-            border-radius: 10px;
-            padding: 12px 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border-left: 6px solid #ccc;
-            transition: transform 0.2s, opacity 0.2s;
-        }
-
-        .player-card.active {
-            transform: scale(1.02);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.18);
-            background-color: #f8fffb;
-        }
-
-        .player-card.bankrupt {
-            opacity: 0.5;
-            background-color: #e9ecef;
-        }
-
-        .player-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.15rem;
-            font-weight: bold;
-            margin-bottom: 6px;
-        }
-
-        .card-avatar {
-            font-size: 1.6rem; /* 側邊欄頭像同步放大 */
-            vertical-align: middle;
-            margin-right: 4px;
-        }
-
-        .money {
-            color: #2b9348;
-            font-size: 1.25rem;
-        }
-
-        .assets-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            margin-top: 6px;
-            min-height: 24px;
-        }
-
-        .asset-tag {
-            font-size: 0.78rem;
-            padding: 2px 7px;
-            border-radius: 10px;
-            color: white;
-            font-weight: bold;
-        }
-
-        /* 彈出互動視窗 (Modal) & 開局設定視窗 */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            padding: 15px;
-        }
-
-        .modal {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            max-width: 420px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-        }
-
-        .modal h3 { margin-bottom: 12px; color: #1d3557; font-size: 1.4rem; }
-        .modal p { margin-bottom: 18px; color: #444; line-height: 1.5; }
-
-        .setup-group {
-            text-align: left;
-            margin-bottom: 15px;
-        }
-        .setup-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 6px;
-            color: #1b4332;
-        }
-        .setup-group select, .setup-group input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #b7e4c7;
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-        }
-        .setup-group select:focus, .setup-group input:focus {
-            border-color: #2d6a4f;
-        }
-
-        .modal-buttons { display: flex; justify-content: center; gap: 12px; margin-top: 10px; }
-        .modal-buttons button {
-            padding: 10px 22px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: opacity 0.2s;
-        }
-        .modal-buttons button:hover { opacity: 0.9; }
-        .btn-yes { background-color: #2b9348; color: white; }
-        .btn-no { background-color: #adb5bd; color: white; }
-
-        /* 手機版微調 */
-        @media (max-width: 768px) {
-            .sidebar { width: 100%; max-width: 740px; display: grid; grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 480px) {
-            .sidebar { grid-template-columns: 1fr; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>台灣大富翁</title>
+<style>
+:root{
+  --bg:#0f2a3a; --panel:#173b52; --panel2:#1d4a66; --ink:#f4f8fb; --muted:#9fc0d3;
+  --tile:#fbf6e6; --tileink:#2b2b2b; --accent:#ffb703; --good:#4cd07d; --bad:#ff5d5d;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:radial-gradient(1200px 700px at 20% -10%,#1d5a7a 0,var(--bg) 60%) fixed;color:var(--ink);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif}
+button{font-family:inherit;cursor:pointer}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;flex-wrap:wrap}
+.top h1{margin:0;font-size:clamp(18px,3vw,26px);letter-spacing:2px}
+.top .btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:0;border-radius:10px;padding:9px 14px;font-size:15px;font-weight:700;background:#2b6485;color:#fff;box-shadow:0 3px 0 rgba(0,0,0,.25);transition:transform .08s,filter .15s}
+.btn:hover{filter:brightness(1.12)} .btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.btn.pri{background:linear-gradient(#ffc83d,#ff9f1c);color:#3a2500}
+.btn.danger{background:#c0392b}
+.btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
+.app{display:flex;gap:14px;padding:0 14px 18px;align-items:flex-start;justify-content:center}
+.boardwrap{flex:0 1 auto}
+.board{
+  width:min(100%,760px,calc(100vh - 90px)); width:min(calc(100vw - 460px),760px,calc(100vh - 90px));
+  min-width:560px; aspect-ratio:1; container-type:inline-size;
+  display:grid; grid-template-columns:repeat(11,1fr); grid-template-rows:repeat(11,1fr);
+  gap:2px; padding:3px; background:#0a1c27; border-radius:14px; box-shadow:0 10px 30px rgba(0,0,0,.45);
+}
+.tile{position:relative;background:var(--tile);color:var(--tileink);border-radius:4px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;line-height:1.12;font-size:max(6px,1.45cqw);cursor:pointer;transition:box-shadow .2s,filter .2s;padding-top:14%}
+.tile:hover{filter:brightness(1.06)}
+.tile .bar{position:absolute;left:0;right:0;top:0;height:14%}
+.tile .ic{font-size:max(11px,2.9cqw);line-height:1.05}
+.tile .nm{font-weight:800;padding:0 1px;word-break:break-all}
+.tile .pr{font-size:.9em;opacity:.75}
+.tile .own{position:absolute;right:1px;top:15%;font-size:max(8px,1.9cqw)}
+.tile.owned{box-shadow:inset 0 0 0 max(2px,.45cqw) var(--own)}
+.tile.corner{background:#e9f3d8;padding-top:0;font-size:max(7px,1.6cqw)}
+.tile.corner .ic{font-size:max(14px,4cqw)}
+.tile.cur{outline:3px solid #fff;outline-offset:-3px;z-index:2}
+.tokens{position:absolute;inset:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;align-content:center;pointer-events:none;padding-top:8%}
+.token{
+  width:clamp(22px,4.4cqw,34px);height:clamp(22px,4.4cqw,34px);margin:-3px;border-radius:50%;background:#fff;
+  border:max(2px,.4cqw) solid var(--pc);display:flex;align-items:center;justify-content:center;
+  font-size:clamp(13px,2.9cqw,22px);line-height:1;box-shadow:0 3px 5px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.15);position:relative;z-index:3}
+.token.active{z-index:5;animation:hop .22s ease-out,bob .7s .22s ease-in-out infinite alternate}
+.token.hop{animation:hop .22s ease-out}
+@keyframes hop{0%{transform:translateY(0) scale(1)}45%{transform:translateY(-70%) scale(1.3)}100%{transform:translateY(0) scale(1.15)}}
+@keyframes bob{from{transform:translateY(0) scale(1.15)}to{transform:translateY(-22%) scale(1.3)}}
+.center{grid-area:2/2/11/11;background:linear-gradient(160deg,#1c7a5a,#145a45);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6cqw;padding:2cqw;text-align:center;box-shadow:inset 0 0 0 2px rgba(255,255,255,.15)}
+.center h2{margin:0;font-size:max(14px,4.2cqw);letter-spacing:.4em;text-shadow:0 2px 0 rgba(0,0,0,.3)}
+.turn{font-size:max(11px,2.4cqw);font-weight:700;background:rgba(0,0,0,.25);padding:.6cqw 2cqw;border-radius:99px}
+.dice{display:flex;gap:2.2cqw}
+.die{width:max(40px,9cqw);height:max(40px,9cqw);background:#fff;border-radius:18%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:11%;box-shadow:0 4px 0 #bbb,0 8px 14px rgba(0,0,0,.35)}
+.die i{display:block;border-radius:50%;margin:14%}
+.die i.on{background:#222}
+.die.one i.on{background:#d62828}
+.die.shake{animation:shake .12s linear infinite}
+@keyframes shake{0%{transform:rotate(-10deg) translateY(0)}50%{transform:rotate(10deg) translateY(-6px)}100%{transform:rotate(-10deg) translateY(0)}}
+.roll{font-size:max(13px,2.8cqw);padding:max(8px,1.4cqw) max(18px,4cqw)}
+.cmsg{font-size:max(10px,2.1cqw);min-height:2.6em;max-width:90%;opacity:.95}
+.side{width:380px;display:flex;flex-direction:column;gap:12px;flex:0 0 380px}
+.players{display:grid;gap:10px}
+.pcard{background:var(--panel);border-radius:12px;padding:10px 12px;border-left:6px solid var(--pc);transition:transform .2s,box-shadow .2s,opacity .2s}
+.pcard.cur{transform:scale(1.02);box-shadow:0 0 0 2px var(--pc),0 8px 18px rgba(0,0,0,.35);background:var(--panel2)}
+.pcard.out{opacity:.45;filter:grayscale(.8)}
+.ph{display:flex;align-items:center;gap:10px}
+.pav{width:42px;height:42px;border-radius:50%;background:#fff;border:3px solid var(--pc);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 3px 6px rgba(0,0,0,.35)}
+.pn{font-weight:800}
+.pm{margin-left:auto;font-size:20px;font-weight:900;color:var(--good);font-variant-numeric:tabular-nums}
+.pm.neg{color:var(--bad)}
+.pst{font-size:13px;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;min-height:6px}
+.tag{font-size:11px;font-weight:700;padding:2px 7px;border-radius:99px;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.5)}
+.tag.dk{color:#222;text-shadow:none}
+.logbox{background:var(--panel);border-radius:12px;padding:10px 12px}
+.logbox h3{margin:0 0 6px;font-size:14px;color:var(--muted)}
+.log{height:170px;overflow:auto;font-size:13px;display:flex;flex-direction:column;gap:3px}
+.log div{padding:3px 6px;border-radius:6px;background:rgba(255,255,255,.05)}
+.overlay{position:fixed;inset:0;background:rgba(5,15,22,.72);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:50;padding:14px}
+.overlay.show{display:flex}
+#setup{z-index:60}
+.box{background:#fff;color:#222;border-radius:16px;padding:20px 22px;width:min(460px,100%);max-height:92vh;overflow:auto;box-shadow:0 18px 50px rgba(0,0,0,.5);animation:pop .2s ease-out}
+@keyframes pop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+.box h2{margin:0 0 10px;font-size:22px}
+.box .lbl{font-weight:700;margin:12px 0 6px}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:10px;border-radius:10px;border:2px solid #cfd8dc;background:#f5f8fa;font-size:16px;font-weight:700}
+.seg button.on{border-color:#ff9f1c;background:#fff1d6}
+.mrow{display:flex;align-items:center;gap:10px;margin:6px 0}
+.mrow .av{width:34px;height:34px;border-radius:50%;background:#fff;border:3px solid var(--pc);display:flex;align-items:center;justify-content:center;font-size:20px}
+.mrow input{flex:1;padding:9px 10px;border:2px solid #cfd8dc;border-radius:10px;font-size:16px}
+.mrow input:focus{outline:none;border-color:#ff9f1c}
+.hint{font-size:12px;color:#777;margin-top:4px}
+.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+.box .btn{box-shadow:0 3px 0 rgba(0,0,0,.2)}
+.dbody{font-size:16px;line-height:1.6}
+.dbody .big{font-size:42px;text-align:center}
+.dbody b{color:#c0392b}
+@media (max-width:900px){
+  .app{flex-direction:column;align-items:center;padding:0 8px 18px}
+  .board{width:min(100%,760px);min-width:0}
+  .boardwrap{width:100%;display:flex;justify-content:center}
+  .side{width:100%;flex:1 1 auto;max-width:760px}
+  .players{grid-template-columns:1fr 1fr}
+  .pcard{padding:8px 9px}.pav{width:34px;height:34px;font-size:20px}.pm{font-size:16px}
+}
+@media (max-width:420px){ .players{grid-template-columns:1fr} }
+</style>
 </head>
 <body>
+<div class="top">
+  <h1>🎲 台灣大富翁</h1>
+  <div class="btns">
+    <button class="btn" id="soundBtn">🔊 音效：開</button>
+    <button class="btn" id="setupBtn">⚙️ 開局設定 / 重置</button>
+  </div>
+</div>
 
-    <header>
-        <h1>🇹🇼 台灣大富翁</h1>
-        <div class="controls">
-            <button class="btn-sound" id="sound-btn" onclick="toggleSound()">🔊 音效：開</button>
-            <button class="btn-rules" onclick="showRules()">遊戲規則</button>
-            <button class="btn-reset" onclick="openSetupModal()">開局設定 / 重置</button>
-        </div>
-    </header>
-
-    <div class="game-layout">
-        <!-- 棋盤區 -->
-        <div class="board" id="board">
-            <div class="center-area">
-                <div class="turn-indicator" id="turn-text">請先設定開局參數</div>
-                <div class="dice-container">
-                    <div class="dice" id="dice1">?</div>
-                    <div class="dice" id="dice2">?</div>
-                </div>
-                <button class="roll-btn" id="roll-btn" onclick="playTurn()" disabled>擲骰子</button>
-                <div class="log-box" id="log-box">
-                    <p>歡迎來到台灣大富翁！請設定玩家人數與起始金額。</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 玩家狀態面板 (動態生成) -->
-        <div class="sidebar" id="sidebar"></div>
+<div class="app">
+  <div class="boardwrap"><div class="board" id="board">
+    <div class="center">
+      <h2>台灣大富翁</h2>
+      <div class="turn" id="turnInfo"></div>
+      <div class="dice"><div class="die" id="d1"></div><div class="die" id="d2"></div></div>
+      <button class="btn pri roll" id="rollBtn">🎲 擲骰子</button>
+      <div class="cmsg" id="cmsg"></div>
     </div>
-
-    <!-- 開局設定彈窗 -->
-    <div class="modal-overlay" id="setup-overlay" style="display: flex;">
-        <div class="modal">
-            <h3>⚙️ 遊戲開局設定</h3>
-            <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">請選擇參與人數與每位玩家的初始資金</p>
-            
-            <div class="setup-group">
-                <label for="player-count">👥 玩家人數：</label>
-                <select id="player-count">
-                    <option value="2" selected>2 人對戰 (🐶 🐱)</option>
-                    <option value="3">3 人混戰 (🐶 🐱 🐰)</option>
-                    <option value="4">4 人同樂 (🐶 🐱 🐰 🐻)</option>
-                </select>
-            </div>
-
-            <div class="setup-group">
-                <label for="initial-money">💰 每人分配金額 (元)：</label>
-                <input type="number" id="initial-money" value="15000" min="1000" max="1000000" step="1000">
-            </div>
-
-            <div class="modal-buttons">
-                <button class="btn-yes" onclick="startGameFromSetup()">開始遊戲</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 遊戲事件互動彈窗 -->
-    <div class="modal-overlay" id="modal-overlay">
-        <div class="modal">
-            <h3 id="modal-title">標題</h3>
-            <p id="modal-desc">內容描述</p>
-            <div class="modal-buttons" id="modal-buttons"></div>
-        </div>
-    </div>
-
-    <script>
-        // ==========================================
-        // 🎵 Web Audio API 原生合成音效引擎 (免外部音檔)
-        // ==========================================
-        let soundEnabled = true;
-        let audioCtx = null;
-
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        }
-
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            const btn = document.getElementById('sound-btn');
-            if (soundEnabled) {
-                initAudio();
-                btn.innerText = '🔊 音效：開';
-                btn.classList.remove('muted');
-                playTone(523.25, 'sine', 0.1, 0.15);
-            } else {
-                btn.innerText = '🔇 音效：關';
-                btn.classList.add('muted');
-            }
-        }
-
-        function playTone(freq, type, duration, vol = 0.2, delay = 0) {
-            if (!soundEnabled) return;
-            initAudio();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = type;
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
-
-            gain.gain.setValueAtTime(vol, audioCtx.currentTime + delay);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
-
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            osc.start(audioCtx.currentTime + delay);
-            osc.stop(audioCtx.currentTime + delay + duration);
-        }
-
-        // 各種遊戲情境音效
-        const SFX = {
-            // 棋子前進單步「波！」聲 (音高隨步數微微上揚)
-            step: (stepIndex) => {
-                const baseFreq = 320 + (stepIndex * 22);
-                playTone(baseFreq, 'sine', 0.12, 0.25);
-                playTone(baseFreq * 1.25, 'triangle', 0.08, 0.15, 0.04);
-            },
-            // 擲骰子滾動喀啦聲
-            diceRoll: () => {
-                for (let i = 0; i < 5; i++) {
-                    playTone(180 + Math.random() * 140, 'square', 0.05, 0.08, i * 0.08);
-                }
-            },
-            // 購買地產收銀機「叮！」聲
-            buy: () => {
-                playTone(987.77, 'sine', 0.12, 0.25, 0);      // B5
-                playTone(1318.51, 'sine', 0.35, 0.25, 0.1);   // E6
-            },
-            // 經過起點領薪水歡快音效
-            salary: () => {
-                playTone(523.25, 'triangle', 0.12, 0.25, 0);    // C5
-                playTone(659.25, 'triangle', 0.12, 0.25, 0.1);  // E5
-                playTone(783.99, 'triangle', 0.12, 0.25, 0.2);  // G5
-                playTone(1046.50, 'triangle', 0.35, 0.25, 0.3); // C6
-            },
-            // 付過路費或扣稅低沉音效
-            pay: () => {
-                playTone(300, 'sawtooth', 0.18, 0.15, 0);
-                playTone(210, 'sawtooth', 0.28, 0.15, 0.15);
-            },
-            // 進監獄警笛聲
-            jail: () => {
-                playTone(600, 'square', 0.2, 0.15, 0);
-                playTone(420, 'square', 0.2, 0.15, 0.2);
-                playTone(600, 'square', 0.2, 0.15, 0.4);
-                playTone(420, 'square', 0.3, 0.15, 0.6);
-            },
-            // 機會命運卡片音效
-            card: () => {
-                playTone(440, 'sine', 0.1, 0.2, 0);
-                playTone(554.37, 'sine', 0.1, 0.2, 0.08);
-                playTone(659.25, 'sine', 0.2, 0.2, 0.16);
-            },
-            // 獲勝號角
-            win: () => {
-                const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
-                const times = [0, 0.12, 0.24, 0.36, 0.55, 0.7];
-                notes.forEach((n, idx) => playTone(n, 'triangle', 0.25, 0.25, times[idx]));
-            }
-        };
-
-        // ==========================================
-        // 🗺️ 40格台灣大富翁地圖資料
-        // ==========================================
-        const boardData = [
-            { name: "起點", type: "start", desc: "經過獲得 $2000" },
-            { name: "墾丁大街", type: "prop", price: 600, rent: 150, color: "#8B4513" },
-            { name: "命運", type: "fate" },
-            { name: "鵝鑾鼻公園", type: "prop", price: 600, rent: 150, color: "#8B4513" },
-            { name: "所得稅", type: "tax", amount: 1500 },
-            { name: "高鐵左營站", type: "station", price: 2000, rent: 500, color: "#333333" },
-            { name: "安平古堡", type: "prop", price: 1000, rent: 250, color: "#87CEEB" },
-            { name: "機會", type: "chance" },
-            { name: "赤崁樓", type: "prop", price: 1000, rent: 250, color: "#87CEEB" },
-            { name: "七股鹽山", type: "prop", price: 1200, rent: 300, color: "#87CEEB" },
-            { name: "監獄 / 探監", type: "jail" },
-            { name: "日月潭", type: "prop", price: 1400, rent: 350, color: "#FF69B4" },
-            { name: "台積電", type: "company", price: 1500, rent: 400, color: "#2b9348" },
-            { name: "清境農場", type: "prop", price: 1400, rent: 350, color: "#FF69B4" },
-            { name: "逢甲夜市", type: "prop", price: 1600, rent: 400, color: "#FF69B4" },
-            { name: "高鐵台中站", type: "station", price: 2000, rent: 500, color: "#333333" },
-            { name: "大溪老街", type: "prop", price: 1800, rent: 450, color: "#FFA500" },
-            { name: "命運", type: "fate" },
-            { name: "石門水庫", type: "prop", price: 1800, rent: 450, color: "#FFA500" },
-            { name: "小人國", type: "prop", price: 2000, rent: 500, color: "#FFA500" },
-            { name: "免費停車", type: "parking" },
-            { name: "故宮博物院", type: "prop", price: 2200, rent: 550, color: "#E63946" },
-            { name: "機會", type: "chance" },
-            { name: "中正紀念堂", type: "prop", price: 2200, rent: 550, color: "#E63946" },
-            { name: "士林夜市", type: "prop", price: 2400, rent: 600, color: "#E63946" },
-            { name: "高鐵台北站", type: "station", price: 2000, rent: 500, color: "#333333" },
-            { name: "淡水老街", type: "prop", price: 2600, rent: 650, color: "#FFD166" },
-            { name: "九份", type: "prop", price: 2600, rent: 650, color: "#FFD166" },
-            { name: "長榮海運", type: "company", price: 1500, rent: 400, color: "#2b9348" },
-            { name: "野柳女王頭", type: "prop", price: 2800, rent: 700, color: "#FFD166" },
-            { name: "前往監獄", type: "gotojail" },
-            { name: "太魯閣", type: "prop", price: 3000, rent: 750, color: "#2A9D8F" },
-            { name: "清水斷崖", type: "prop", price: 3000, rent: 750, color: "#2A9D8F" },
-            { name: "命運", type: "fate" },
-            { name: "七星潭", type: "prop", price: 3200, rent: 800, color: "#2A9D8F" },
-            { name: "高鐵花蓮站", type: "station", price: 2000, rent: 500, color: "#333333" },
-            { name: "機會", type: "chance" },
-            { name: "陽明山", type: "prop", price: 3500, rent: 900, color: "#1D3557" },
-            { name: "奢侈稅", type: "tax", amount: 2000 },
-            { name: "台北101", type: "prop", price: 4000, rent: 1200, color: "#1D3557" }
-        ];
-
-        const chanceCards = [
-            { text: "中了統一發票頭獎！獲得 $2000", money: 2000 },
-            { text: "參加台灣燈會獲得補助，獲得 $1000", money: 1000 },
-            { text: "超速被拍罰單，支付 $800", money: -800 },
-            { text: "台積電配發股息！獲得 $1500", money: 1500 },
-            { text: "請全公司喝珍奶，花費 $500", money: -500 }
-        ];
-
-        const fateCards = [
-            { text: "颱風天在家防颱，獲得政府補助 $1000", money: 1000 },
-            { text: "遺失悠遊卡，損失 $600", money: -600 },
-            { text: "在夜市套圈圈贏得大獎，變賣獲得 $1200", money: 1200 },
-            { text: "臨時需要修車，花費 $1200", money: -1200 },
-            { text: "前進到起點！獲得 $2000", moveTo: 0 }
-        ];
-
-        const playerPresets = [
-            { name: "玩家 1", icon: "🐶", color: "#e63946" },
-            { name: "玩家 2", icon: "🐱", color: "#1d3557" },
-            { name: "玩家 3", icon: "🐰", color: "#f4a261" },
-            { name: "玩家 4", icon: "🐻", color: "#2a9d8f" }
-        ];
-
-        let players = [];
-        let currentPlayerIdx = 0;
-        let isRolling = false;
-
-        // 初始化棋盤 DOM
-        function initBoard() {
-            const boardEl = document.getElementById('board');
-            const centerArea = boardEl.querySelector('.center-area');
-            boardEl.innerHTML = '';
-            boardEl.appendChild(centerArea);
-
-            boardData.forEach((cell, idx) => {
-                const cellEl = document.createElement('div');
-                cellEl.className = 'cell';
-                cellEl.id = `cell-${idx}`;
-
-                let row, col;
-                if (idx >= 0 && idx <= 10) {
-                    row = 11; col = 11 - idx;
-                } else if (idx > 10 && idx <= 20) {
-                    row = 11 - (idx - 10); col = 1;
-                } else if (idx > 20 && idx <= 30) {
-                    row = 1; col = 1 + (idx - 20);
-                } else {
-                    row = 1 + (idx - 30); col = 11;
-                }
-                cellEl.style.gridRow = row;
-                cellEl.style.gridColumn = col;
-
-                if (idx % 10 === 0) {
-                    cellEl.classList.add('corner');
-                    cellEl.innerHTML = `<div class="cell-name">${cell.name}</div>`;
-                } else {
-                    const colorBar = cell.color ? `<div class="color-bar" style="background:${cell.color}"></div>` : `<div class="color-bar" style="background:transparent"></div>`;
-                    const priceText = cell.price ? `<div class="cell-price">$${cell.price}</div>` : (cell.amount ? `<div class="cell-price">-$${cell.amount}</div>` : '');
-                    cellEl.innerHTML = `
-                        ${colorBar}
-                        <div class="cell-name">${cell.name}</div>
-                        ${priceText}
-                    `;
-                }
-
-                const tokensEl = document.createElement('div');
-                tokensEl.className = 'tokens';
-                tokensEl.id = `tokens-${idx}`;
-                cellEl.appendChild(tokensEl);
-
-                boardEl.appendChild(cellEl);
-            });
-        }
-
-        function openSetupModal() {
-            document.getElementById('setup-overlay').style.display = 'flex';
-        }
-
-        function startGameFromSetup() {
-            initAudio(); // 喚醒瀏覽器音效引擎
-            const count = parseInt(document.getElementById('player-count').value, 10);
-            let startMoney = parseInt(document.getElementById('initial-money').value, 10);
-
-            if (isNaN(startMoney) || startMoney < 1000) {
-                alert("起始分配金額最低為 $1,000 元！");
-                return;
-            }
-
-            document.getElementById('setup-overlay').style.display = 'none';
-            SFX.salary();
-            resetGame(count, startMoney);
-        }
-
-        function resetGame(playerCount = 2, initialMoney = 15000) {
-            boardData.forEach(c => delete c.owner);
-            players = [];
-
-            const sidebarEl = document.getElementById('sidebar');
-            sidebarEl.innerHTML = '';
-
-            for (let i = 0; i < playerCount; i++) {
-                const preset = playerPresets[i];
-                players.push({
-                    id: i,
-                    name: preset.name,
-                    icon: preset.icon,
-                    color: preset.color,
-                    money: initialMoney,
-                    pos: 0,
-                    jailTurns: 0,
-                    isBankrupt: false
-                });
-
-                const cardHTML = `
-                    <div class="player-card" id="p${i}-card" style="border-left-color: ${preset.color};">
-                        <div class="player-header">
-                            <span><span class="card-avatar">${preset.icon}</span>${preset.name}</span>
-                            <span class="money" id="p${i}-money">$${initialMoney}</span>
-                        </div>
-                        <div>狀態：<span id="p${i}-status">正常</span></div>
-                        <div style="margin-top:6px; font-size:0.85rem; color:#666;">持有資產：</div>
-                        <div class="assets-list" id="p${i}-assets"><span style="color:#aaa; font-size:0.8rem;">無</span></div>
-                    </div>
-                `;
-                sidebarEl.insertAdjacentHTML('beforeend', cardHTML);
-            }
-
-            currentPlayerIdx = 0;
-            isRolling = false;
-            document.getElementById('dice1').innerText = '?';
-            document.getElementById('dice2').innerText = '?';
-            document.getElementById('log-box').innerHTML = `<p>🎮 遊戲開始！共 ${playerCount} 位玩家，每人初始資金 <strong>$${initialMoney}</strong>。請玩家 1 🐶 擲骰子！</p>`;
-            document.getElementById('roll-btn').disabled = false;
-            initBoard();
-            updateUI();
-        }
-
-        function addLog(msg) {
-            const logBox = document.getElementById('log-box');
-            const p = document.createElement('p');
-            p.innerHTML = msg;
-            logBox.prepend(p);
-        }
-
-        function updateUI() {
-            document.querySelectorAll('.tokens').forEach(el => el.innerHTML = '');
-            document.querySelectorAll('.owner-badge').forEach(el => el.remove());
-
-            // 繪製放大後的玩家頭像棋子
-            players.forEach((p, idx) => {
-                if (!p.isBankrupt) {
-                    const tokenContainer = document.getElementById(`tokens-${p.pos}`);
-                    if (tokenContainer) {
-                        const span = document.createElement('span');
-                        span.className = 'player-token';
-                        span.style.borderColor = p.color;
-                        if (idx === currentPlayerIdx) {
-                            span.classList.add('active-token');
-                        }
-                        span.innerText = p.icon;
-                        tokenContainer.appendChild(span);
-                    }
-                }
-            });
-
-            // 繪製地產擁有者標記
-            boardData.forEach((cell, idx) => {
-                if (cell.owner !== undefined && !players[cell.owner].isBankrupt) {
-                    const owner = players[cell.owner];
-                    const cellEl = document.getElementById(`cell-${idx}`);
-                    const badge = document.createElement('div');
-                    badge.className = 'owner-badge';
-                    badge.style.backgroundColor = owner.color;
-                    badge.innerText = owner.icon;
-                    cellEl.appendChild(badge);
-                }
-            });
-
-            // 更新側邊欄
-            players.forEach((p, idx) => {
-                const cardEl = document.getElementById(`p${idx}-card`);
-                const moneyEl = document.getElementById(`p${idx}-money`);
-                const statusEl = document.getElementById(`p${idx}-status`);
-                const assetsEl = document.getElementById(`p${idx}-assets`);
-
-                if (p.isBankrupt) {
-                    cardEl.classList.remove('active');
-                    cardEl.classList.add('bankrupt');
-                    moneyEl.innerText = '$0 (已破產)';
-                    moneyEl.style.color = '#888';
-                    statusEl.innerText = '淘汰出局';
-                    assetsEl.innerHTML = '<span style="color:#aaa; font-size:0.8rem;">資產已充公</span>';
-                    return;
-                }
-
-                moneyEl.innerText = `$${p.money}`;
-                statusEl.innerText = p.jailTurns > 0 ? `坐牢中 (剩 ${p.jailTurns} 回合)` : '正常';
-                
-                if (idx === currentPlayerIdx) cardEl.classList.add('active');
-                else cardEl.classList.remove('active');
-
-                const ownedProps = boardData.filter(c => c.owner === idx);
-                if (ownedProps.length === 0) {
-                    assetsEl.innerHTML = '<span style="color:#aaa; font-size:0.8rem;">無</span>';
-                } else {
-                    assetsEl.innerHTML = ownedProps.map(c => 
-                        `<span class="asset-tag" style="background:${c.color || '#555'}">${c.name}</span>`
-                    ).join('');
-                }
-            });
-
-            const currP = players[currentPlayerIdx];
-            if (currP && !currP.isBankrupt) {
-                document.getElementById('turn-text').innerHTML = `輪到 ${currP.name} <span class="turn-avatar">${currP.icon}</span>`;
-            }
-        }
-
-        // 擲骰子回合邏輯
-        function playTurn() {
-            if (isRolling) return;
-            initAudio();
-            const player = players[currentPlayerIdx];
-
-            if (player.jailTurns > 0) {
-                player.jailTurns--;
-                SFX.pay();
-                addLog(`🔒 <strong>${player.name}</strong> 正在坐牢，本回合暫停一次（剩餘 ${player.jailTurns} 回合）。`);
-                endTurn();
-                return;
-            }
-
-            isRolling = true;
-            document.getElementById('roll-btn').disabled = true;
-            const d1El = document.getElementById('dice1');
-            const d2El = document.getElementById('dice2');
-            d1El.classList.add('rolling');
-            d2El.classList.add('rolling');
-            SFX.diceRoll();
-
-            setTimeout(() => {
-                d1El.classList.remove('rolling');
-                d2El.classList.remove('rolling');
-
-                const d1 = Math.floor(Math.random() * 6) + 1;
-                const d2 = Math.floor(Math.random() * 6) + 1;
-                const steps = d1 + d2;
-
-                d1El.innerText = d1;
-                d2El.innerText = d2;
-
-                addLog(`🎲 <strong>${player.name}</strong> 擲出了 ${d1} + ${d2} = <strong>${steps}</strong> 點！`);
-                movePlayerStepByStep(player, steps);
-            }, 480);
-        }
-
-        // 🌟 逐格移動玩家並播放腳步聲響
-        function movePlayerStepByStep(player, totalSteps) {
-            let currentStep = 0;
-
-            const stepInterval = setInterval(() => {
-                currentStep++;
-                player.pos = (player.pos + 1) % 40;
-                
-                // 播放單步腳步音效
-                SFX.step(currentStep);
-
-                // 經過起點領取薪水
-                if (player.pos === 0) {
-                    player.money += 2000;
-                    setTimeout(() => SFX.salary(), 120);
-                    addLog(`🎉 <strong>${player.name}</strong> 經過起點，領取薪水 <strong>$2000</strong>！`);
-                }
-
-                updateUI();
-
-                // 走完全部步數後觸發格子事件
-                if (currentStep >= totalSteps) {
-                    clearInterval(stepInterval);
-                    setTimeout(() => {
-                        handleLanding(player, boardData[player.pos]);
-                    }, 220);
-                }
-            }, 220); // 每 0.22 秒前進一格並發聲
-        }
-
-        // 處理停留格子事件
-        function handleLanding(player, cell) {
-            addLog(`📍 <strong>${player.name}</strong> 來到了【${cell.name}】。`);
-
-            if (cell.type === 'prop' || cell.type === 'station' || cell.type === 'company') {
-                if (cell.owner === undefined) {
-                    if (player.money >= cell.price) {
-                        showModal(
-                            `購買地產：${cell.name}`,
-                            `價格：$${cell.price}（過路費 $${cell.rent}）<br>您目前有 $${player.money}，是否要購買？`,
-                            [
-                                { text: '購買', class: 'btn-yes', action: () => {
-                                    player.money -= cell.price;
-                                    cell.owner = player.id;
-                                    SFX.buy();
-                                    addLog(`🏠 <strong>${player.name}</strong> 花費 $${cell.price} 買下了【${cell.name}】！`);
-                                    closeModal();
-                                    endTurn();
-                                }},
-                                { text: '放棄', class: 'btn-no', action: () => {
-                                    closeModal();
-                                    endTurn();
-                                }}
-                            ]
-                        );
-                        return;
-                    } else {
-                        addLog(`💸 <strong>${player.name}</strong> 資金不足，無法購買【${cell.name}】。`);
-                    }
-                } else if (cell.owner !== player.id) {
-                    const owner = players[cell.owner];
-                    const rent = cell.rent;
-                    player.money -= rent;
-                    owner.money += rent;
-                    SFX.pay();
-                    addLog(`💰 <strong>${player.name}</strong> 踩到 ${owner.name} 的地盤，支付過路費 <strong>$${rent}</strong>！`);
-                } else {
-                    addLog(`😊 這是 <strong>${player.name}</strong> 自己的地產，安心休息。`);
-                }
-            } else if (cell.type === 'tax') {
-                player.money -= cell.amount;
-                SFX.pay();
-                addLog(`🏛️ <strong>${player.name}</strong> 繳納【${cell.name}】 <strong>$${cell.amount}</strong>！`);
-            } else if (cell.type === 'gotojail') {
-                player.pos = 10;
-                player.jailTurns = 1;
-                SFX.jail();
-                addLog(`🚓 <strong>${player.name}</strong> 被抓進監獄！下回合暫停一次。`);
-                updateUI();
-            } else if (cell.type === 'chance' || cell.type === 'fate') {
-                SFX.card();
-                const deck = cell.type === 'chance' ? chanceCards : fateCards;
-                const card = deck[Math.floor(Math.random() * deck.length)];
-                showModal(
-                    cell.type === 'chance' ? '❓ 機會卡片' : '⚡ 命運卡片',
-                    card.text,
-                    [{ text: '確定', class: 'btn-yes', action: () => {
-                        if (card.money) {
-                            player.money += card.money;
-                            if (card.money > 0) SFX.buy();
-                            else SFX.pay();
-                            addLog(`🃏 【${cell.name}】${card.text}`);
-                        }
-                        if (card.moveTo !== undefined) {
-                            player.pos = card.moveTo;
-                            player.money += 2000;
-                            SFX.salary();
-                            addLog(`🃏 【${cell.name}】${card.text}`);
-                        }
-                        closeModal();
-                        endTurn();
-                    }}]
-                );
-                return;
-            }
-
-            endTurn();
-        }
-
-        // 結束回合、淘汰破產者與勝利判定
-        function endTurn() {
-            const player = players[currentPlayerIdx];
-
-            if (player.money < 0) {
-                player.isBankrupt = true;
-                SFX.pay();
-                boardData.forEach(c => {
-                    if (c.owner === player.id) delete c.owner;
-                });
-                addLog(`💀 <strong>${player.name} ${player.icon}</strong> 資金耗盡宣告破產，所有地產已充公！`);
-            }
-
-            updateUI();
-
-            const activePlayers = players.filter(p => !p.isBankrupt);
-            if (activePlayers.length === 1) {
-                const winner = activePlayers[0];
-                SFX.win();
-                document.getElementById('turn-text').innerHTML = `🏆 獲勝者：${winner.name} <span class="turn-avatar">${winner.icon}</span>`;
-                showModal(
-                    '🏆 遊戲結束！',
-                    `其他玩家皆已破產！<br>恭喜 <strong>${winner.name} ${winner.icon}</strong> 成為最後的台灣大富翁！`,
-                    [{ text: '重新設定開局', class: 'btn-yes', action: () => { closeModal(); openSetupModal(); } }]
-                );
-                return;
-            }
-
-            do {
-                currentPlayerIdx = (currentPlayerIdx + 1) % players.length;
-            } while (players[currentPlayerIdx].isBankrupt);
-
-            isRolling = false;
-            document.getElementById('roll-btn').disabled = false;
-            updateUI();
-        }
-
-        function showModal(title, desc, buttons) {
-            document.getElementById('modal-title').innerHTML = title;
-            document.getElementById('modal-desc').innerHTML = desc;
-            const btnContainer = document.getElementById('modal-buttons');
-            btnContainer.innerHTML = '';
-            buttons.forEach(b => {
-                const btn = document.createElement('button');
-                btn.innerText = b.text;
-                btn.className = b.class;
-                btn.onclick = b.action;
-                btnContainer.appendChild(btn);
-            });
-            document.getElementById('modal-overlay').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('modal-overlay').style.display = 'none';
-        }
-
-        function showRules() {
-            showModal(
-                '📖 遊戲規則說明',
-                '1. 支援 2～4 人同樂，開局可自訂每人起始資金（預設 $15000）。<br>' +
-                '2. 經過「起點」可獲得 $2000 薪水。<br>' +
-                '3. 停留在無主地產、高鐵站或企業時可選擇購買；踩到對手地產需支付過路費。<br>' +
-                '4. 踩到「前往監獄」會立刻移送監獄並暫停一回合。<br>' +
-                '5. 資金低於 $0 即宣告破產淘汰（地產自動充公），最後存活的玩家獲勝！',
-                [{ text: '我知道了', class: 'btn-yes', action: closeModal }]
-            );
-        }
-
-        initBoard();
-    </script>
+  </div></div>
+  <div class="side">
+    <div class="players" id="players"></div>
+    <div class="logbox"><h3>📜 遊戲紀錄</h3><div class="log" id="log"></div></div>
+  </div>
+</div>
+
+<div class="overlay" id="dlg"><div class="box"><h2 id="dTitle"></h2><div class="dbody" id="dBody"></div><div class="actions" id="dBtns"></div></div></div>
+
+<div class="overlay show" id="setup"><div class="box">
+  <h2>🎲 開局設定</h2>
+  <div class="lbl">玩家人數</div>
+  <div class="seg" id="cntSeg">
+    <button data-n="2" class="on">2 人</button><button data-n="3">3 人</button><button data-n="4">4 人</button>
+  </div>
+  <div class="lbl">每位玩家起始金額（最低 1,000）</div>
+  <div id="moneyRows"></div>
+  <div class="hint">經過起點可領 $2,000；資金低於 $0 即破產淘汰，最後存活者獲勝。</div>
+  <div class="actions">
+    <button class="btn" id="cancelBtn" style="display:none">取消</button>
+    <button class="btn pri" id="startBtn">🚀 開始遊戲</button>
+  </div>
+</div></div>
+
+<script>
+(()=>{
+'use strict';
+/* ========== 資料 ========== */
+const GC={brown:'#8d6e63',lb:'#4fc3f7',pink:'#f06292',orange:'#ffa726',red:'#e53935',yellow:'#fdd835',green:'#43a047',blue:'#1e56c8',rail:'#455a64',util:'#7e57c2'};
+const P=(n,g,p,ic)=>({n,t:'prop',g,p,ic});
+const TILES=[
+ {n:'起點',t:'start',ic:'🏁'},P('艋舺夜市','brown',1000,'🍢'),{n:'命運',t:'fate',ic:'🎴'},P('士林夜市','brown',1200,'🥟'),
+ {n:'所得稅',t:'tax',a:1500,ic:'🧾'},{n:'高鐵台北站',t:'rail',p:2000,g:'rail',ic:'🚄'},P('九份老街','lb',1400,'🏮'),
+ {n:'機會',t:'chance',ic:'❓'},P('淡水老街','lb',1400,'🌅'),P('野柳地質公園','lb',1600,'🪨'),
+ {n:'監獄（參觀）',t:'jail',ic:'⛓️'},
+ P('墾丁大街','pink',1800,'🏖️'),{n:'台積電',t:'util',p:1500,g:'util',ic:'💾'},P('阿里山','pink',1800,'🌲'),P('日月潭','pink',2000,'🛶'),
+ {n:'高鐵台中站',t:'rail',p:2000,g:'rail',ic:'🚄'},P('清境農場','orange',2200,'🐑'),{n:'命運',t:'fate',ic:'🎴'},
+ P('逢甲夜市','orange',2200,'🍗'),P('鹿港老街','orange',2400,'🏘️'),
+ {n:'免費停車',t:'park',ic:'🅿️'},
+ P('太魯閣','red',2600,'⛰️'),{n:'機會',t:'chance',ic:'❓'},P('七星潭','red',2600,'🌊'),P('台東熱氣球','red',2800,'🎈'),
+ {n:'高鐵台南站',t:'rail',p:2000,g:'rail',ic:'🚄'},P('赤崁樓','yellow',3000,'🏯'),P('安平古堡','yellow',3000,'🏰'),
+ {n:'長榮海運',t:'util',p:1500,g:'util',ic:'🚢'},P('駁二特區','yellow',3200,'🎨'),
+ {n:'前往監獄',t:'gojail',ic:'👮'},
+ P('高雄85大樓','green',3400,'🏙️'),P('西子灣','green',3400,'🌇'),{n:'命運',t:'fate',ic:'🎴'},P('澎湖花火節','green',3600,'🎆'),
+ {n:'高鐵左營站',t:'rail',p:2000,g:'rail',ic:'🚄'},{n:'機會',t:'chance',ic:'❓'},P('台北101','blue',4000,'🏢'),
+ {n:'奢侈稅',t:'tax',a:1000,ic:'💎'},P('總統府','blue',5000,'🏛️')
+];
+TILES.forEach((t,i)=>{t.i=i;if(t.t==='prop')t.rent=Math.round(t.p*0.1/10)*10;});
+const GROUPS={};TILES.forEach(t=>{if(t.g&&t.t==='prop')(GROUPS[t.g]??=[]).push(t.i);});
+const PLAYERS=[{e:'🐶',c:'#e53935',n:'玩家 1'},{e:'🐱',c:'#1e88e5',n:'玩家 2'},{e:'🐰',c:'#43a047',n:'玩家 3'},{e:'🐻',c:'#fb8c00',n:'玩家 4'}];
+const SALARY=2000;
+
+const CHANCE=[
+ {t:'中了統一發票特獎！獲得 $2,000',f:async(p)=>gain(p,2000)},
+ {t:'前進到起點，領取 $2,000',f:async(p,d)=>moveTo(p,0,d)},
+ {t:'搭乘高鐵前往「高鐵台中站」',f:async(p,d)=>moveTo(p,15,d)},
+ {t:'前往「台北101」跨年看煙火',f:async(p,d)=>moveTo(p,37,d)},
+ {t:'騎車闖紅燈，罰款 $500',f:async(p)=>pay(p,500,null,'闖紅燈罰款')},
+ {t:'順風推一把，前進 3 格',f:async(p,d)=>moveBy(p,3,d)},
+ {t:'走錯路了，後退 3 格',f:async(p,d)=>moveBy(p,-3,d)},
+ {t:'被查到逃漏稅，直接前往監獄！',f:async(p)=>goJail(p)},
+ {t:'發票對中小獎，獲得 $800',f:async(p)=>gain(p,800)},
+ {t:'前往「墾丁大街」度假',f:async(p,d)=>moveTo(p,11,d)},
+];
+const FATE=[
+ {t:'生日快樂！每位對手各送你 $300',f:async(p)=>{for(const o of alive()) if(o!==p){await pay(o,300,p,'生日紅包');}}},
+ {t:'繳交健保費 $600',f:async(p)=>pay(p,600,null,'健保費')},
+ {t:'股票大賺，獲得 $1,500',f:async(p)=>gain(p,1500)},
+ {t:'房屋修繕，每塊地產付 $200',f:async(p)=>{const n=p.props.length;if(!n){msg('你沒有地產，免修繕費');return;}await pay(p,200*n,null,`修繕費（${n}塊地）`);}},
+ {t:'領取年終獎金 $1,200',f:async(p)=>gain(p,1200)},
+ {t:'颱風天停班，損失 $700',f:async(p)=>pay(p,700,null,'颱風損失')},
+ {t:'請大家吃滷肉飯，付給每位對手 $200',f:async(p)=>{for(const o of alive()) if(o!==p&&!p.bankrupt){await pay(p,200,o,'請客');}}},
+ {t:'抽中免費停車券，直接前往「免費停車」',f:async(p,d)=>moveTo(p,20,d)},
+ {t:'違規停車被拖吊，直接前往監獄！',f:async(p)=>goJail(p)},
+ {t:'公益彩券中獎，獲得 $1,000',f:async(p)=>gain(p,1000)},
+];
+
+/* ========== 音效 (Web Audio 合成) ========== */
+let AC=null,soundOn=true;
+function ensureAudio(){
+  try{ if(!AC){const C=window.AudioContext||window.webkitAudioContext; if(C)AC=new C();} if(AC&&AC.state==='suspended')AC.resume(); }catch(e){}
+}
+function tone(f,dur=.15,type='sine',vol=.18,when=0,slide=null){
+  if(!soundOn||!AC)return;
+  const t=AC.currentTime+when,o=AC.createOscillator(),g=AC.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,t);
+  if(slide)o.frequency.exponentialRampToValueAtTime(slide,t+dur);
+  g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.01);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g).connect(AC.destination);o.start(t);o.stop(t+dur+.03);
+}
+function noise(dur=.05,vol=.12,when=0,hp=1500){
+  if(!soundOn||!AC)return;
+  const t=AC.currentTime+when,n=Math.floor(AC.sampleRate*dur),b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0);
+  for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);
+  const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();
+  s.buffer=b;f.type='highpass';f.frequency.value=hp;g.gain.value=vol;s.connect(f).connect(g).connect(AC.destination);s.start(t);
+}
+const SFX={
+  roll(){for(let i=0;i<9;i++){noise(.05,.16,i*.08,800+Math.random()*1500);tone(180+Math.random()*200,.05,'square',.05,i*.08);}},
+  step(k){tone(420+k*38,.09,'triangle',.2);tone(840+k*76,.05,'sine',.06,.01);},
+  buy(){tone(1318,.5,'sine',.2);tone(1760,.6,'sine',.16,.09);noise(.04,.1,0,5000);},
+  salary(){[523,659,784,1047].forEach((f,i)=>tone(f,.2,'triangle',.2,i*.09));tone(1568,.35,'sine',.12,.38);},
+  pay(){tone(330,.3,'sawtooth',.12,0,140);noise(.12,.1,.02,400);},
+  tax(){tone(260,.25,'square',.1,0,120);tone(180,.3,'square',.1,.15,90);},
+  card(){tone(500,.25,'sine',.15,0,1000);tone(1000,.2,'triangle',.12,.2);tone(1250,.25,'triangle',.1,.32);},
+  jail(){for(let i=0;i<6;i++)tone(i%2?620:880,.17,'square',.1,i*.17);},
+  bad(){[400,320,250,180].forEach((f,i)=>tone(f,.25,'sawtooth',.12,i*.17));},
+  win(){const n=[523,523,523,659,784,659,784,1047];const d=[.14,.14,.14,.2,.3,.2,.2,.7];let t=0;n.forEach((f,i)=>{tone(f,d[i]+.1,'square',.12,t);tone(f/2,d[i]+.1,'triangle',.14,t);t+=d[i]+.04;});},
+};
+const sfx=(k,...a)=>{ensureAudio();try{SFX[k](...a);}catch(e){}};
+
+/* ========== 狀態 ========== */
+let players=[],owner=[],turn=0,lastRoll=0,busy=false,over=false,gameId=0,started=false,pending=null;
+const RESET={};
+const $=s=>document.querySelector(s);
+const fmt=n=>'$'+Math.round(n).toLocaleString('en-US');
+const alive=()=>players.filter(p=>!p.bankrupt);
+const cur=()=>players[turn];
+const sleep=ms=>{const g=gameId;return new Promise((r,j)=>setTimeout(()=>g===gameId?r():j(RESET),ms));};
+
+/* ========== 棋盤 ========== */
+function cellPos(i){
+  if(i<=10)return[11,11-i];
+  if(i<=20)return[11-(i-10),1];
+  if(i<=30)return[1,1+(i-20)];
+  return[1+(i-30),11];
+}
+function buildBoard(){
+  const b=$('#board');b.querySelectorAll('.tile').forEach(e=>e.remove());
+  TILES.forEach(t=>{
+    const e=document.createElement('div');e.className='tile';e.id='tile-'+t.i;
+    const [r,c]=cellPos(t.i);e.style.gridRow=r;e.style.gridColumn=c;
+    if([0,10,20,30].includes(t.i))e.classList.add('corner');
+    const col=t.g?GC[t.g]:(t.t==='chance'?'#ff7043':t.t==='fate'?'#ab47bc':t.t==='tax'?'#78909c':null);
+    e.innerHTML=(col?`<i class="bar" style="background:${col}"></i>`:'')+
+      `<span class="ic">${t.ic}</span><span class="nm">${t.n}</span>`+(t.p?`<span class="pr">${fmt(t.p)}</span>`:t.a?`<span class="pr">-${fmt(t.a)}</span>`:'')+
+      `<span class="own"></span><div class="tokens"></div>`;
+    e.onclick=()=>showTileInfo(t.i);
+    b.appendChild(e);
+  });
+}
+function renderTokens(){
+  document.querySelectorAll('.tokens').forEach(e=>e.innerHTML='');
+  document.querySelectorAll('.tile.cur').forEach(e=>e.classList.remove('cur'));
+  players.forEach((p,idx)=>{
+    if(p.bankrupt)return;
+    const el=document.createElement('div');
+    el.className='token'+(idx===turn&&!over?' active':'');
+    el.style.setProperty('--pc',p.c);el.textContent=p.e;el.title=p.n;
+    $('#tile-'+p.pos+' .tokens').appendChild(el);
+  });
+  if(players[turn]&&!over)$('#tile-'+players[turn].pos).classList.add('cur');
+}
+function renderOwners(){
+  TILES.forEach(t=>{
+    const e=$('#tile-'+t.i),o=owner[t.i];
+    if(o==null){e.classList.remove('owned');e.querySelector('.own').textContent='';}
+    else{e.classList.add('owned');e.style.setProperty('--own',players[o].c);e.querySelector('.own').textContent=players[o].e;}
+  });
+}
+const DARK=new Set(['yellow','lb','orange','pink']);
+function renderPanel(){
+  const box=$('#players');box.innerHTML='';
+  players.forEach((p,i)=>{
+    const d=document.createElement('div');
+    d.className='pcard'+(i===turn&&!over?' cur':'')+(p.bankrupt?' out':'');d.style.setProperty('--pc',p.c);
+    const st=p.bankrupt?'💀 破產淘汰':p.jail>0?`⛓️ 坐牢（剩餘 ${p.jail} 回合）`:'✅ 正常';
+    d.innerHTML=`<div class="ph"><div class="pav">${p.e}</div><div><div class="pn">${p.n}</div><div class="pst">${st}</div></div><div class="pm ${p.money<0?'neg':''}">${fmt(p.money)}</div></div>`+
+      `<div class="tags">${p.props.slice().sort((a,b)=>a-b).map(i=>{const t=TILES[i];return `<span class="tag ${DARK.has(t.g)?'dk':''}" style="background:${GC[t.g]}">${t.n}</span>`;}).join('')}</div>`;
+    box.appendChild(d);
+  });
+}
+function renderInfo(){
+  const p=cur();
+  $('#turnInfo').innerHTML=over?'🏆 遊戲結束':`${p.e} 輪到 ${p.n}`;
+  const rb=$('#rollBtn');rb.disabled=busy||over;
+  rb.textContent=p&&p.jail>0&&!busy?'⛓️ 坐牢中，點擊跳過':'🎲 擲骰子';
+}
+function updateUI(){renderPanel();renderInfo();renderTokens();renderOwners();}
+function msg(t,logOnly){
+  if(!logOnly)$('#cmsg').textContent=t;
+  const l=$('#log'),d=document.createElement('div');d.textContent=t;l.appendChild(d);
+  while(l.children.length>60)l.removeChild(l.firstChild);l.scrollTop=l.scrollHeight;
+}
+function dieHTML(v){
+  const on={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]}[v];
+  return Array.from({length:9},(_,i)=>`<i class="${on.includes(i)?'on':''}"></i>`).join('');
+}
+function setDice(a,b){const x=$('#d1'),y=$('#d2');x.innerHTML=dieHTML(a);y.innerHTML=dieHTML(b);x.classList.toggle('one',a===1);y.classList.toggle('one',b===1);}
+
+/* ========== 對話框 ========== */
+function ask(title,html,btns=[{t:'確定',v:true,c:'pri'}]){
+  const g=gameId;
+  return new Promise((res,rej)=>{
+    $('#dTitle').textContent=title;$('#dBody').innerHTML=html;const bx=$('#dBtns');bx.innerHTML='';
+    pending=()=>rej(RESET);
+    btns.forEach(b=>{const e=document.createElement('button');e.className='btn '+(b.c||'');e.textContent=b.t;
+      e.onclick=()=>{$('#dlg').classList.remove('show');pending=null;g===gameId?res(b.v):rej(RESET);};bx.appendChild(e);});
+    $('#dlg').classList.add('show');
+  });
+}
+function showTileInfo(i){
+  if(busy&&pending)return;
+  const t=TILES[i];let h=`<div class="big">${t.ic}</div>`;
+  if(t.t==='prop'){h+=`價格：${fmt(t.p)}<br>過路費：${fmt(t.rent)}（同色全收集 ×2）`;}
+  else if(t.t==='rail'){h+=`價格：${fmt(t.p)}<br>過路費：每擁有 1 站 $250 ×站數`;}
+  else if(t.t==='util'){h+=`價格：${fmt(t.p)}<br>過路費：骰子點數 × $80（擁有兩家 ×$150）`;}
+  else if(t.t==='tax')h+=`踩到需繳納 ${fmt(t.a)}`;
+  else if(t.t==='start')h+=`經過或停在起點可領 ${fmt(SALARY)}`;
+  else if(t.t==='gojail')h+='踩到會被移送監獄並暫停一回合';
+  else if(t.t==='jail')h+='單純參觀，沒事！';
+  else if(t.t==='park')h+='在這裡休息一下，什麼事也不會發生';
+  else h+='抽一張卡片，看看是幸運還是倒楣！';
+  if(owner[i]!=null)h+=`<br><br>擁有者：${players[owner[i]].e} ${players[owner[i]].n}`;
+  const g=gameId;$('#dTitle').textContent=t.n;$('#dBody').innerHTML=h;$('#dBtns').innerHTML='';
+  const b=document.createElement('button');b.className='btn pri';b.textContent='關閉';b.onclick=()=>$('#dlg').classList.remove('show');$('#dBtns').appendChild(b);
+  $('#dlg').classList.add('show');
+}
+
+/* ========== 遊戲動作 ========== */
+async function walk(p,steps,dir=1){
+  for(let k=1;k<=steps;k++){
+    p.pos=(p.pos+dir+40)%40;
+    if(dir>0&&p.pos===0){p.money+=SALARY;sfx('salary');msg(`${p.e} ${p.n} 經過起點，領取 ${fmt(SALARY)}！`);renderPanel();}
+    else sfx('step',k);
+    renderTokens();
+    await sleep(220);
+  }
+}
+async function moveTo(p,target,d){
+  const steps=(target-p.pos+40)%40;
+  msg(`${p.e} ${p.n} 前進到「${TILES[target].n}」`);
+  await walk(p,steps);
+  if(d<3)await land(p,d+1);
+}
+async function moveBy(p,n,d){
+  await walk(p,Math.abs(n),n>0?1:-1);
+  if(d<3)await land(p,d+1);
+}
+function gain(p,n){p.money+=n;sfx('buy');msg(`${p.e} ${p.n} 獲得 ${fmt(n)}`);renderPanel();return sleep(400);}
+async function goJail(p){
+  sfx('jail');p.pos=10;p.jail=1;renderTokens();renderPanel();
+  msg(`🚨 ${p.e} ${p.n} 被送進監獄，暫停一回合！`);
+  await sleep(900);
+}
+async function pay(p,n,to,reason){
+  sfx(reason&&reason.includes('稅')?'tax':'pay');
+  const before=p.money;p.money-=n;
+  if(to)to.money+=Math.min(n,Math.max(0,before));
+  msg(`${p.e} ${p.n} 支付 ${fmt(n)}${to?`給 ${to.e} ${to.n}`:''}（${reason}）`);
+  renderPanel();await sleep(450);
+  await checkBankrupt(p);
+}
+async function checkBankrupt(p){
+  if(p.money>=0||p.bankrupt)return;
+  p.bankrupt=true;
+  p.props.forEach(i=>owner[i]=null);const n=p.props.length;p.props=[];
+  sfx('bad');updateUI();
+  msg(`💥 ${p.e} ${p.n} 破產淘汰！${n?`名下 ${n} 塊地產已充公。`:''}`);
+  const left=alive();
+  if(left.length===1){await ask(`💥 ${p.n} 破產`,`<div class="big">${p.e}💥</div>${p.n} 資金低於 $0，宣告破產淘汰！`);await win(left[0]);return;}
+  await ask(`💥 ${p.n} 破產`,`<div class="big">${p.e}💥</div>${p.n} 資金低於 $0，宣告破產淘汰！<br>名下 ${n} 塊地產已充公，恢復無主狀態。`);
+}
+async function win(p){
+  over=true;busy=true;sfx('win');updateUI();
+  msg(`🏆 ${p.e} ${p.n} 成為最後的大富翁！`);
+  const r=await ask('🏆 遊戲結束',`<div class="big">${p.e}🏆</div><b style="color:#1b7a3d">${p.n}</b> 擊敗所有對手，成為台灣大富翁！<br>最終資產：${fmt(p.money)}，地產 ${p.props.length} 塊。`,
+    [{t:'關閉',v:false},{t:'再玩一局',v:true,c:'pri'}]);
+  if(r)openSetup(false);
+}
+function rentOf(t,o){
+  if(t.t==='prop'){
+    let r=t.rent;const g=GROUPS[t.g];
+    if(g.every(i=>owner[i]===o.id))r*=2;return r;
+  }
+  if(t.t==='rail'){return 250*TILES.filter(x=>x.t==='rail'&&owner[x.i]===o.id).length;}
+  const c=TILES.filter(x=>x.t==='util'&&owner[x.i]===o.id).length;
+  return lastRoll*(c>=2?150:80);
+}
+async function land(p,d=0){
+  if(p.bankrupt||over)return;
+  const t=TILES[p.pos];
+  switch(t.t){
+    case 'prop':case 'rail':case 'util':{
+      const o=owner[t.i];
+      if(o==null){
+        if(p.money<t.p){msg(`${p.e} ${p.n} 資金不足，買不起「${t.n}」（${fmt(t.p)}）`);await sleep(600);break;}
+        const ok=await ask(`${t.ic} ${t.n}`,`<div class="big">${t.ic}</div>這塊地目前無主！<br>價格：<b>${fmt(t.p)}</b>　你的資金：${fmt(p.money)}`,
+          [{t:'不買',v:false},{t:`購買 ${fmt(t.p)}`,v:true,c:'pri'}]);
+        if(ok){p.money-=t.p;owner[t.i]=p.id;p.props.push(t.i);sfx('buy');msg(`🏷️ ${p.e} ${p.n} 買下「${t.n}」（${fmt(t.p)}）`);updateUI();await sleep(500);}
+        else msg(`${p.e} ${p.n} 選擇不購買「${t.n}」`);
+      }else if(o!==p.id){
+        const ow=players[o],r=rentOf(t,ow);
+        await pay(p,r,ow,`「${t.n}」過路費`);
+      }else msg(`${p.e} ${p.n} 來到自己的地產「${t.n}」`);
+      break;}
+    case 'tax':await pay(p,t.a,null,t.n);break;
+    case 'chance':case 'fate':{
+      sfx('card');const deck=t.t==='chance'?CHANCE:FATE,c=deck[Math.floor(Math.random()*deck.length)];
+      msg(`${p.e} ${p.n} 抽到${t.n}卡：${c.t}`);
+      await ask(t.t==='chance'?'❓ 機會':'🎴 命運',`<div class="big">${t.t==='chance'?'❓':'🎴'}</div>${c.t}`);
+      await c.f(p,d);break;}
+    case 'gojail':await goJail(p);break;
+    case 'park':msg(`${p.e} ${p.n} 在免費停車場休息一下 ☕`);await sleep(500);break;
+    case 'jail':msg(`${p.e} ${p.n} 只是來監獄參觀 👀`);await sleep(400);break;
+    case 'start':msg(`${p.e} ${p.n} 回到起點`);await sleep(300);break;
+  }
+}
+async function rollAnim(a,b){
+  sfx('roll');const x=$('#d1'),y=$('#d2');x.classList.add('shake');y.classList.add('shake');
+  const iv=setInterval(()=>setDice(1+Math.random()*6|0,1+Math.random()*6|0),75);
+  try{await sleep(720);}finally{clearInterval(iv);x.classList.remove('shake');y.classList.remove('shake');}
+  setDice(a,b);
+}
+function nextTurn(){
+  if(over)return;
+  let k=0;do{turn=(turn+1)%players.length;k++;}while(players[turn].bankrupt&&k<=players.length);
+  busy=false;updateUI();
+  msg(`輪到 ${cur().e} ${cur().n}`,true);
+  $('#cmsg').textContent=`${cur().e} ${cur().n}，請擲骰子`;
+}
+async function takeTurn(){
+  if(busy||over||!started)return;
+  busy=true;ensureAudio();renderInfo();
+  try{
+    const p=cur();
+    if(p.jail>0){
+      p.jail--;msg(`⛓️ ${p.e} ${p.n} 在監獄中，本回合暫停`);renderPanel();await sleep(900);nextTurn();return;
+    }
+    const a=1+Math.random()*6|0,b=1+Math.random()*6|0;
+    await rollAnim(a,b);lastRoll=a+b;
+    msg(`${p.e} ${p.n} 擲出 ${a} + ${b} = ${a+b}`);
+    await walk(p,a+b);
+    await land(p,0);
+    if(!over)nextTurn();
+  }catch(e){if(e!==RESET)throw e;}
+}
+
+/* ========== 開局設定 ========== */
+let setupCount=2;
+function buildMoneyRows(){
+  const box=$('#moneyRows'),old=[...box.querySelectorAll('input')].map(i=>i.value);
+  box.innerHTML='';
+  PLAYERS.forEach((pl,i)=>{
+    const r=document.createElement('div');r.className='mrow';r.style.setProperty('--pc',pl.c);r.style.display=i<setupCount?'flex':'none';
+    r.innerHTML=`<div class="av">${pl.e}</div><b style="min-width:54px">${pl.n}</b><input type="number" min="1000" step="500" inputmode="numeric" value="${old[i]||15000}">`;
+    box.appendChild(r);
+  });
+}
+function openSetup(canCancel){
+  $('#cancelBtn').style.display=canCancel?'':'none';
+  $('#setup').classList.add('show');
+}
+function startGame(){
+  const inputs=[...$('#moneyRows').querySelectorAll('input')];
+  const money=inputs.slice(0,setupCount).map(i=>{let v=parseInt(i.value,10);if(!(v>=1000))v=1000;i.value=v;return v;});
+  gameId++;if(pending){const f=pending;pending=null;try{f();}catch(e){}}
+  $('#dlg').classList.remove('show');$('#setup').classList.remove('show');
+  players=money.map((m,i)=>({id:i,...PLAYERS[i],money:m,pos:0,jail:0,bankrupt:false,props:[]}));
+  owner=Array(40).fill(null);turn=0;lastRoll=0;busy=false;over=false;started=true;
+  $('#log').innerHTML='';setDice(1,1);
+  msg(`🎮 遊戲開始！${players.map(p=>p.e).join(' ')} 起始資金 ${money.map(fmt).join(' / ')}`);
+  $('#cmsg').textContent=`${cur().e} ${cur().n}，請擲骰子`;
+  updateUI();
+}
+
+/* ========== 事件 ========== */
+document.querySelectorAll('#cntSeg button').forEach(b=>b.onclick=()=>{
+  setupCount=+b.dataset.n;document.querySelectorAll('#cntSeg button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('#moneyRows .mrow').forEach((r,i)=>r.style.display=i<setupCount?'flex':'none');
+});
+$('#startBtn').onclick=()=>{ensureAudio();startGame();};
+$('#cancelBtn').onclick=()=>$('#setup').classList.remove('show');
+$('#setupBtn').onclick=()=>openSetup(started);
+$('#rollBtn').onclick=takeTurn;
+$('#soundBtn').onclick=()=>{soundOn=!soundOn;$('#soundBtn').textContent=soundOn?'🔊 音效：開':'🔇 音效：關';if(soundOn){ensureAudio();tone(880,.1,'sine',.15);}};
+document.addEventListener('keydown',e=>{
+  if((e.code==='Space'||e.code==='Enter')&&!$('#setup').classList.contains('show')&&!$('#dlg').classList.contains('show')&&document.activeElement.tagName!=='INPUT'){
+    e.preventDefault();takeTurn();
+  }
+});
+
+buildBoard();buildMoneyRows();setDice(1,1);
+$('#turnInfo').textContent='請先完成開局設定';$('#rollBtn').disabled=true;
+})();
+</script>
 </body>
 </html>
