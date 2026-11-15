@@ -221,7 +221,9 @@ const TILES=[
  {n:'高鐵左營站',t:'rail',p:2000,g:'rail',ic:'🚄'},{n:'機會',t:'chance',ic:'❓'},P('台北101','blue',4000,'🏢'),
  {n:'奢侈稅',t:'tax',a:1000,ic:'💎'},P('總統府','blue',5000,'🏛️')
 ];
-TILES.forEach((t,i)=>{t.i=i;if(t.t==='prop')t.rent=Math.round(t.p*0.1/10)*10;});
+/* 每塊地獨立設定過路費：有人是高報酬熱點、有人是低報酬長線，需要自己計算 */
+const RENT={1:140,3:90,6:200,8:70,9:160,11:330,13:100,14:240,16:130,18:400,19:190,21:220,23:520,24:170,26:300,27:150,29:640,31:250,32:480,34:800,37:400,39:450};
+TILES.forEach((t,i)=>{t.i=i;if(t.t==='prop')t.rent=RENT[i];});
 const GROUPS={};TILES.forEach(t=>{if(t.g&&t.t==='prop')(GROUPS[t.g]??=[]).push(t.i);});
 const PLAYERS=[{e:'🐶',c:'#e53935',n:'玩家 1'},{e:'🐱',c:'#1e88e5',n:'玩家 2'},{e:'🐰',c:'#43a047',n:'玩家 3'},{e:'🐻',c:'#fb8c00',n:'玩家 4'}];
 const SALARY=2000;
@@ -464,7 +466,7 @@ async function win(p){
 function rentAvg(t,o,hyp){
   if(t.t==='prop'){const g=GROUPS[t.g],n=g.filter(i=>owner[i]===o.id).length+(hyp?1:0);return t.rent*(n===g.length?2:1);}
   if(t.t==='rail'){return 250*(TILES.filter(x=>x.t==='rail'&&owner[x.i]===o.id).length+(hyp?1:0));}
-  const c=TILES.filter(x=>x.t==='util'&&owner[x.i]===o.id).length+(hyp?1:0);return 7*(c>=2?150:80);
+  const c=TILES.filter(x=>x.t==='util'&&owner[x.i]===o.id).length+(hyp?1:0);return 7*(c>=2?100:40);
 }
 function benefitHTML(t,p,hyp=true){
   const opp=Math.max(1,alive().length-1),r=rentAvg(t,p,hyp),lap=r*opp/7,rows=[];
@@ -479,10 +481,12 @@ function benefitHTML(t,p,hyp=true){
     rows.push(['四站全擁有','每站 $1,000']);
   }else{
     const c=TILES.filter(x=>x.t==='util'&&owner[x.i]===p.id).length+(hyp?1:0);
-    rows.push(['別人到此過路費',`<b>約 ${fmt(r)}</b>（骰子點數 × $${c>=2?150:80}）`]);
-    rows.push(['兩家企業都擁有','骰子點數 × $150（約 $1,050）']);
+    rows.push(['別人到此過路費',`<b>約 ${fmt(r)}</b>（骰子點數 × $${c>=2?100:40}）`]);
+    rows.push(['兩家企業都擁有','骰子點數 × $100（約 $700）']);
   }
-  rows.push(['過路費佔地價',Math.round(r/t.p*100)+'%']);
+  const pct=r/t.p*100;
+  rows.push(['過路費佔地價',`<b>${pct.toFixed(1)}%</b>`]);
+  rows.push(['投資評等',pct>=16?'🔥 高報酬・回本快':pct>=9?'⚖️ 中等報酬':'🐢 低報酬・靠集滿翻倍']);
   rows.push(['預估每圈收益',`約 ${fmt(lap)}${opp>1?`（${opp} 位對手）`:''}`]);
   rows.push(['預估回本',`約 ${(t.p/lap).toFixed(1)} 圈`]);
   return `<table class="bt">${rows.map(([a,b])=>`<tr><td>${a}</td><td>${b}</td></tr>`).join('')}</table><div class="hint">預估以每位對手每圈約 1/7 機率踩到此格計算，僅供參考。</div>`;
@@ -494,7 +498,7 @@ function rentOf(t,o){
   }
   if(t.t==='rail'){return 250*TILES.filter(x=>x.t==='rail'&&owner[x.i]===o.id).length;}
   const c=TILES.filter(x=>x.t==='util'&&owner[x.i]===o.id).length;
-  return lastRoll*(c>=2?150:80);
+  return lastRoll*(c>=2?100:40);
 }
 async function land(p,d=0){
   if(p.bankrupt||over)return;
