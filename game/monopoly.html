@@ -148,6 +148,10 @@ button{font-family:inherit;cursor:pointer}
 .face.one i.on{background:radial-gradient(circle at 35% 30%,#ff7b7b,#a80000)}
 .center h2{text-shadow:0 1px 0 #0d4a37,0 2px 0 #0b3f30,0 3px 0 #093526,0 7px 7px rgba(0,0,0,.45)}
 .dbody .big{filter:drop-shadow(0 3px 0 rgba(0,0,0,.25)) drop-shadow(0 8px 6px rgba(0,0,0,.25));animation:floaty 2.4s ease-in-out infinite}
+.bt{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px;text-align:left}
+.bt td{padding:5px 6px;border-bottom:1px solid #eee}
+.bt td:first-child{color:#666;white-space:nowrap}
+.bt td:last-child{text-align:right}
 @keyframes floaty{0%,100%{transform:translateY(0) rotateY(-12deg)}50%{transform:translateY(-6px) rotateY(12deg)}}
 </style>
 </head>
@@ -326,8 +330,9 @@ function renderTokens(){
 function renderOwners(){
   TILES.forEach(t=>{
     const e=$('#tile-'+t.i),o=owner[t.i];
-    if(o==null){e.classList.remove('owned');e.querySelector('.own').textContent='';}
-    else{e.classList.add('owned');e.style.setProperty('--own',players[o].c);e.querySelector('.own').textContent=players[o].e;}
+    const pr=e.querySelector('.pr');
+    if(o==null){e.classList.remove('owned');e.querySelector('.own').textContent='';if(pr&&t.p)pr.textContent=fmt(t.p);}
+    else{e.classList.add('owned');e.style.setProperty('--own',players[o].c);e.querySelector('.own').textContent=players[o].e;if(pr&&t.p)pr.textContent='收'+fmt(rentAvg(t,players[o]));}
   });
 }
 const DARK=new Set(['yellow','lb','orange','pink']);
@@ -338,7 +343,7 @@ function renderPanel(){
     d.className='pcard'+(i===turn&&!over?' cur':'')+(p.bankrupt?' out':'');d.style.setProperty('--pc',p.c);
     const st=p.bankrupt?'💀 破產淘汰':p.jail>0?`⛓️ 坐牢（剩餘 ${p.jail} 回合）`:'✅ 正常';
     d.innerHTML=`<div class="ph"><div class="pav">${p.e}</div><div><div class="pn">${p.n}</div><div class="pst">${st}</div></div><div class="pm ${p.money<0?'neg':''}">${fmt(p.money)}</div></div>`+
-      `<div class="tags">${p.props.slice().sort((a,b)=>a-b).map(i=>{const t=TILES[i];return `<span class="tag ${DARK.has(t.g)?'dk':''}" style="background:${GC[t.g]}">${t.n}</span>`;}).join('')}</div>`;
+      `<div class="tags">${p.props.slice().sort((a,b)=>a-b).map(i=>{const t=TILES[i];return `<span class="tag ${DARK.has(t.g)?'dk':''}" style="background:${GC[t.g]}" title="別人到此需付過路費">${t.n} 💰${fmt(rentAvg(t,p))}</span>`;}).join('')}</div>`;
     box.appendChild(d);
   });
 }
@@ -388,16 +393,17 @@ function ask(title,html,btns=[{t:'確定',v:true,c:'pri'}]){
 function showTileInfo(i){
   if(busy&&pending)return;
   const t=TILES[i];let h=`<div class="big">${t.ic}</div>`;
-  if(t.t==='prop'){h+=`價格：${fmt(t.p)}<br>過路費：${fmt(t.rent)}（同色全收集 ×2）`;}
-  else if(t.t==='rail'){h+=`價格：${fmt(t.p)}<br>過路費：每擁有 1 站 $250 ×站數`;}
-  else if(t.t==='util'){h+=`價格：${fmt(t.p)}<br>過路費：骰子點數 × $80（擁有兩家 ×$150）`;}
+  if(t.p){
+    if(owner[i]!=null)h+=`<b>${players[owner[i]].e} ${players[owner[i]].n}</b> 的地產` + benefitHTML(t,players[owner[i]],false);
+    else if(started&&players.length)h+=`尚無主，以 ${cur().e} ${cur().n} 買下為例` + benefitHTML(t,cur(),true);
+    else h+=`價格：${fmt(t.p)}`;
+  }
   else if(t.t==='tax')h+=`踩到需繳納 ${fmt(t.a)}`;
   else if(t.t==='start')h+=`經過或停在起點可領 ${fmt(SALARY)}`;
   else if(t.t==='gojail')h+='踩到會被移送監獄並暫停一回合';
   else if(t.t==='jail')h+='單純參觀，沒事！';
   else if(t.t==='park')h+='在這裡休息一下，什麼事也不會發生';
   else h+='抽一張卡片，看看是幸運還是倒楣！';
-  if(owner[i]!=null)h+=`<br><br>擁有者：${players[owner[i]].e} ${players[owner[i]].n}`;
   const g=gameId;$('#dTitle').textContent=t.n;$('#dBody').innerHTML=h;$('#dBtns').innerHTML='';
   const b=document.createElement('button');b.className='btn pri';b.textContent='關閉';b.onclick=()=>$('#dlg').classList.remove('show');$('#dBtns').appendChild(b);
   $('#dlg').classList.add('show');
@@ -454,6 +460,33 @@ async function win(p){
     [{t:'關閉',v:false},{t:'再玩一局',v:true,c:'pri'}]);
   if(r)openSetup(false);
 }
+/* 地產效益評估：過路費、集滿加成、預估回本 */
+function rentAvg(t,o,hyp){
+  if(t.t==='prop'){const g=GROUPS[t.g],n=g.filter(i=>owner[i]===o.id).length+(hyp?1:0);return t.rent*(n===g.length?2:1);}
+  if(t.t==='rail'){return 250*(TILES.filter(x=>x.t==='rail'&&owner[x.i]===o.id).length+(hyp?1:0));}
+  const c=TILES.filter(x=>x.t==='util'&&owner[x.i]===o.id).length+(hyp?1:0);return 7*(c>=2?150:80);
+}
+function benefitHTML(t,p,hyp=true){
+  const opp=Math.max(1,alive().length-1),r=rentAvg(t,p,hyp),lap=r*opp/7,rows=[];
+  rows.push(['價格',fmt(t.p)]);
+  if(t.t==='prop'){
+    const g=GROUPS[t.g],n=g.filter(i=>owner[i]===p.id).length+(hyp?1:0);
+    rows.push(['別人到此過路費',`<b>${fmt(r)}</b>`]);
+    rows.push([`同色集滿（${n}/${g.length}）`,n===g.length?'✅ 已集滿，過路費 ×2':`集滿後 ${fmt(t.rent*2)}`]);
+  }else if(t.t==='rail'){
+    const n=TILES.filter(x=>x.t==='rail'&&owner[x.i]===p.id).length+(hyp?1:0);
+    rows.push(['別人到此過路費',`<b>${fmt(r)}</b>（${n} 站）`]);
+    rows.push(['四站全擁有','每站 $1,000']);
+  }else{
+    const c=TILES.filter(x=>x.t==='util'&&owner[x.i]===p.id).length+(hyp?1:0);
+    rows.push(['別人到此過路費',`<b>約 ${fmt(r)}</b>（骰子點數 × $${c>=2?150:80}）`]);
+    rows.push(['兩家企業都擁有','骰子點數 × $150（約 $1,050）']);
+  }
+  rows.push(['過路費佔地價',Math.round(r/t.p*100)+'%']);
+  rows.push(['預估每圈收益',`約 ${fmt(lap)}${opp>1?`（${opp} 位對手）`:''}`]);
+  rows.push(['預估回本',`約 ${(t.p/lap).toFixed(1)} 圈`]);
+  return `<table class="bt">${rows.map(([a,b])=>`<tr><td>${a}</td><td>${b}</td></tr>`).join('')}</table><div class="hint">預估以每位對手每圈約 1/7 機率踩到此格計算，僅供參考。</div>`;
+}
 function rentOf(t,o){
   if(t.t==='prop'){
     let r=t.rent;const g=GROUPS[t.g];
@@ -471,7 +504,7 @@ async function land(p,d=0){
       const o=owner[t.i];
       if(o==null){
         if(p.money<t.p){msg(`${p.e} ${p.n} 資金不足，買不起「${t.n}」（${fmt(t.p)}）`);await sleep(600);break;}
-        const ok=await ask(`${t.ic} ${t.n}`,`<div class="big">${t.ic}</div>這塊地目前無主！<br>價格：<b>${fmt(t.p)}</b>　你的資金：${fmt(p.money)}`,
+        const ok=await ask(`${t.ic} ${t.n}`,`<div class="big">${t.ic}</div>這塊地目前無主！你的資金：<b>${fmt(p.money)}</b>（買後剩 ${fmt(p.money-t.p)}）${benefitHTML(t,p)}`,
           [{t:'不買',v:false},{t:`購買 ${fmt(t.p)}`,v:true,c:'pri'}]);
         if(ok){p.money-=t.p;owner[t.i]=p.id;p.props.push(t.i);sfx('buy');msg(`🏷️ ${p.e} ${p.n} 買下「${t.n}」（${fmt(t.p)}）`);updateUI();await sleep(500);}
         else msg(`${p.e} ${p.n} 選擇不購買「${t.n}」`);
