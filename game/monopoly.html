@@ -109,23 +109,64 @@ button{font-family:inherit;cursor:pointer}
   .pcard{padding:8px 9px}.pav{width:34px;height:34px;font-size:20px}.pm{font-size:16px}
 }
 @media (max-width:420px){ .players{grid-template-columns:1fr} }
+
+/* ===== 3D 強化層 ===== */
+.boardwrap{perspective:1500px;padding:6px 0 26px}
+.board{transition:transform .6s ease,box-shadow .6s;transform-origin:50% 72%}
+.board.tilt{transform:rotateX(26deg) scale(.97);box-shadow:0 34px 40px rgba(0,0,0,.5),0 0 0 6px #0f2f44}
+@media (max-width:900px){.board.tilt{transform:rotateX(18deg)}}
+.tile{perspective:220px;background:linear-gradient(160deg,#fffdf2,#f1e9cc);
+  --th:0 1px 0 #d9d0ae,0 2px 0 #cdc39d,0 3px 0 #bfb48c,0 4px 0 #b1a67e,0 7px 7px rgba(0,0,0,.45);
+  box-shadow:var(--th);transition:transform .25s,box-shadow .25s,filter .2s}
+.tile.corner{background:linear-gradient(160deg,#f3fbe4,#d7e8bb)}
+.tile.owned{box-shadow:inset 0 0 0 max(2px,.45cqw) var(--own),var(--th)}
+.tile:hover{transform:translateY(-3px)}
+.tile .ic{display:inline-block;transition:transform .55s;
+  filter:drop-shadow(0 1px 0 rgba(0,0,0,.45)) drop-shadow(0 2px 0 rgba(0,0,0,.3)) drop-shadow(0 4px 3px rgba(0,0,0,.35))}
+.tile:hover .ic{transform:translateY(-3px) scale(1.2) rotateY(360deg)}
+.tile .own{width:max(12px,2.6cqw);height:max(12px,2.6cqw);border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 30% 25%,#fff,#d9d9d9);box-shadow:0 2px 3px rgba(0,0,0,.45);font-size:max(8px,1.7cqw);top:17%;right:2px}
+.tile .own:empty{display:none}
+/* 3D 棋子：立體球體 + 落地陰影 + 旋轉 */
+.token{background:radial-gradient(circle at 32% 26%,#fff 0,#f6f6f6 38%,#c4c4c4 100%);perspective:90px;
+  box-shadow:inset -3px -4px 6px rgba(0,0,0,.28),inset 2px 2px 4px rgba(255,255,255,.9),0 4px 0 color-mix(in srgb,var(--pc) 70%,#000),0 8px 10px rgba(0,0,0,.45)}
+.token .em{display:block;transform-style:preserve-3d;text-shadow:0 1px 0 rgba(0,0,0,.25),0 2px 2px rgba(0,0,0,.3)}
+.token.active .em{animation:spin3d 2.6s linear infinite}
+@keyframes spin3d{to{transform:rotateY(360deg)}}
+.token::after{content:'';position:absolute;left:12%;right:12%;bottom:-36%;height:24%;background:rgba(0,0,0,.38);border-radius:50%;filter:blur(2px);z-index:-1}
+/* 3D 骰子：真正的立方體 */
+.dice{display:flex;gap:3.6cqw;perspective:700px;--ds:max(44px,8.5cqw);padding:1cqw}
+.die3{width:var(--ds);height:var(--ds);position:relative}
+.die3::after{content:'';position:absolute;left:8%;right:8%;bottom:-14%;height:14%;background:rgba(0,0,0,.4);border-radius:50%;filter:blur(3px)}
+.die3.toss{animation:toss .95s ease-out}
+@keyframes toss{0%{transform:translateY(0) scale(1)}35%{transform:translateY(-45%) scale(1.25)}65%{transform:translateY(0) scale(1)}78%{transform:translateY(-10%)}100%{transform:translateY(0)}}
+.cube{position:absolute;inset:0;transform-style:preserve-3d}
+.face{position:absolute;inset:0;background:linear-gradient(145deg,#fff,#dedede);border-radius:16%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);
+  padding:12%;box-shadow:inset 0 0 9px rgba(0,0,0,.28);backface-visibility:hidden}
+.face i{display:block;border-radius:50%;margin:16%}
+.face i.on{background:radial-gradient(circle at 35% 30%,#666,#0e0e0e);box-shadow:inset 0 -1px 2px rgba(255,255,255,.3)}
+.face.one i.on{background:radial-gradient(circle at 35% 30%,#ff7b7b,#a80000)}
+.center h2{text-shadow:0 1px 0 #0d4a37,0 2px 0 #0b3f30,0 3px 0 #093526,0 7px 7px rgba(0,0,0,.45)}
+.dbody .big{filter:drop-shadow(0 3px 0 rgba(0,0,0,.25)) drop-shadow(0 8px 6px rgba(0,0,0,.25));animation:floaty 2.4s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0) rotateY(-12deg)}50%{transform:translateY(-6px) rotateY(12deg)}}
 </style>
 </head>
 <body>
 <div class="top">
   <h1>🎲 台灣大富翁</h1>
   <div class="btns">
+    <button class="btn" id="tiltBtn">🎥 3D 視角：開</button>
     <button class="btn" id="soundBtn">🔊 音效：開</button>
     <button class="btn" id="setupBtn">⚙️ 開局設定 / 重置</button>
   </div>
 </div>
 
 <div class="app">
-  <div class="boardwrap"><div class="board" id="board">
+  <div class="boardwrap"><div class="board tilt" id="board">
     <div class="center">
       <h2>台灣大富翁</h2>
       <div class="turn" id="turnInfo"></div>
-      <div class="dice"><div class="die" id="d1"></div><div class="die" id="d2"></div></div>
+      <div class="dice"><div class="die3"><div class="cube" id="d1"></div></div><div class="die3"><div class="cube" id="d2"></div></div></div>
       <button class="btn pri roll" id="rollBtn">🎲 擲骰子</button>
       <div class="cmsg" id="cmsg"></div>
     </div>
@@ -277,7 +318,7 @@ function renderTokens(){
     if(p.bankrupt)return;
     const el=document.createElement('div');
     el.className='token'+(idx===turn&&!over?' active':'');
-    el.style.setProperty('--pc',p.c);el.textContent=p.e;el.title=p.n;
+    el.style.setProperty('--pc',p.c);el.innerHTML=`<span class="em">${p.e}</span>`;el.title=p.n;
     $('#tile-'+p.pos+' .tokens').appendChild(el);
   });
   if(players[turn]&&!over)$('#tile-'+players[turn].pos).classList.add('cur');
@@ -317,7 +358,21 @@ function dieHTML(v){
   const on={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]}[v];
   return Array.from({length:9},(_,i)=>`<i class="${on.includes(i)?'on':''}"></i>`).join('');
 }
-function setDice(a,b){const x=$('#d1'),y=$('#d2');x.innerHTML=dieHTML(a);y.innerHTML=dieHTML(b);x.classList.toggle('one',a===1);y.classList.toggle('one',b===1);}
+const FACE_ROT={1:[0,0],6:[0,180],3:[0,-90],4:[0,90],2:[-90,0],5:[90,0]};
+const TILT='rotateX(-24deg) rotateY(-30deg)';
+const cubeAng=[[0,0],[0,0]];
+function buildCubes(){
+  const faces=[[1,'rotateY(0deg)'],[6,'rotateY(180deg)'],[3,'rotateY(90deg)'],[4,'rotateY(-90deg)'],[2,'rotateX(90deg)'],[5,'rotateX(-90deg)']];
+  [$('#d1'),$('#d2')].forEach(c=>{
+    c.innerHTML=faces.map(([v,r])=>`<div class="face ${v===1?'one':''}" style="transform:${r} translateZ(calc(var(--ds)/2))">${dieHTML(v)}</div>`).join('');
+  });
+}
+function setDice(a,b){
+  [a,b].forEach((v,i)=>{
+    const el=i?$('#d2'):$('#d1'),[x,y]=FACE_ROT[v];
+    cubeAng[i]=[x,y];el.style.transition='none';el.style.transform=`${TILT} rotateX(${x}deg) rotateY(${y}deg)`;
+  });
+}
 
 /* ========== 對話框 ========== */
 function ask(title,html,btns=[{t:'確定',v:true,c:'pri'}]){
@@ -438,10 +493,17 @@ async function land(p,d=0){
   }
 }
 async function rollAnim(a,b){
-  sfx('roll');const x=$('#d1'),y=$('#d2');x.classList.add('shake');y.classList.add('shake');
-  const iv=setInterval(()=>setDice(1+Math.random()*6|0,1+Math.random()*6|0),75);
-  try{await sleep(720);}finally{clearInterval(iv);x.classList.remove('shake');y.classList.remove('shake');}
-  setDice(a,b);
+  sfx('roll');
+  const cs=[$('#d1'),$('#d2')];
+  cs.forEach((c,i)=>{
+    const [bx,by]=FACE_ROT[i?b:a];let [cx,cy]=cubeAng[i];
+    cx=Math.ceil(cx/360)*360+720+bx+(i?360:0);cy=Math.ceil(cy/360)*360+1080+by+(i?0:360);
+    cubeAng[i]=[cx,cy];
+    const w=c.parentElement;w.classList.remove('toss');void w.offsetWidth;w.classList.add('toss');
+    c.style.transition='transform .95s cubic-bezier(.2,.7,.25,1)';
+    c.style.transform=`${TILT} rotateX(${cx}deg) rotateY(${cy}deg)`;
+  });
+  try{await sleep(1000);}finally{cs.forEach(c=>c.parentElement.classList.remove('toss'));}
 }
 function nextTurn(){
   if(over)return;
@@ -511,7 +573,8 @@ document.addEventListener('keydown',e=>{
   }
 });
 
-buildBoard();buildMoneyRows();setDice(1,1);
+buildBoard();buildMoneyRows();buildCubes();setDice(1,1);
+$('#tiltBtn').onclick=()=>{const on=$('#board').classList.toggle('tilt');$('#tiltBtn').textContent=on?'🎥 3D 視角：開':'🎥 3D 視角：關';};
 $('#turnInfo').textContent='請先完成開局設定';$('#rollBtn').disabled=true;
 })();
 </script>
