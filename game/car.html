@@ -88,6 +88,37 @@
         .touch-btn:active { background: rgba(255,165,0,0.7); transform: scale(0.95); }
         .footer-info { margin-top: 10px; font-size: 0.85rem; color: #bdc3c7; text-align: center; padding: 0 10px; line-height: 1.6; }
         @media (max-width: 768px), (pointer: coarse) { #mobile-controls { display: flex; } }
+
+        /* 小螢幕 / 手機：精簡開始畫面，確保按鈕一定看得到 */
+        .overlay { overflow: hidden; }
+        .kbd-only { display: inline; }
+        .touch-only { display: none; }
+        .is-touch .kbd-only { display: none; }
+        .is-touch .touch-only { display: inline; }
+        @media (max-width: 768px), (max-height: 520px), (pointer: coarse) {
+            .overlay { justify-content: center; gap: 6px; padding: 6px; }
+            .title-box { margin-bottom: 4px; }
+            .title-main { font-size: clamp(1.6rem, 9vw, 3rem); text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff, 0 4px 0 #d35400; }
+            .title-sub { font-size: clamp(0.9rem, 4.5vw, 1.6rem); margin-top: 2px;
+                text-shadow: -1px -1px 0 #0044cc, 1px -1px 0 #0044cc, -1px 1px 0 #0044cc, 1px 1px 0 #0044cc, 0 2px 0 #002266; }
+            .tips { display: none; }
+            .stats { margin-bottom: 4px; font-size: 0.8rem; line-height: 1.4; }
+            .record { font-size: 0.95rem; }
+            .start-btn {
+                font-size: clamp(1rem, 4.4vw, 1.3rem); padding: 10px 22px; border-width: 2px;
+                box-shadow: 0 4px 0 #c0392b, 0 6px 12px rgba(0,0,0,0.4); max-width: 92%;
+            }
+            #restartBtn { margin-top: 4px !important; }
+            #hud { top: 6px; left: 6px; right: 6px; }
+            #hud-bottom { bottom: 6px; left: 6px; right: 6px; }
+            .hud-badge { padding: 3px 8px; font-size: 0.72rem; }
+            .nitro-wrap { height: 18px; }
+            .nitro-label { font-size: 0.62rem; line-height: 14px; }
+        }
+        @media (max-height: 380px) {
+            .stats { display: none; }
+            .title-box { transform: none; }
+        }
     </style>
 </head>
 <body>
@@ -124,7 +155,7 @@
             ⚠ 避開紅白路障、油漬與藍色會變換車道的對手
         </div>
         <div class="stats" id="bestText"></div>
-        <button class="start-btn" id="startBtn">按 ENTER 或點擊開始遊戲</button>
+        <button class="start-btn" id="startBtn"><span class="kbd-only">按 ENTER 或點擊開始遊戲</span><span class="touch-only">👆 點擊開始遊戲</span></button>
     </div>
 
     <div id="game-over-screen" class="overlay hidden">
@@ -134,7 +165,7 @@
         </div>
         <div class="stats" id="statsText"></div>
         <div class="record hidden" id="recordText">🏆 新紀錄！</div>
-        <button class="start-btn" id="restartBtn" style="margin-top:12px;">再玩一次 (ENTER)</button>
+        <button class="start-btn" id="restartBtn" style="margin-top:12px;"><span class="kbd-only">再玩一次 (ENTER)</span><span class="touch-only">🔁 再玩一次</span></button>
     </div>
 </div>
 
@@ -1202,8 +1233,16 @@ window.addEventListener('keyup', e => { if (e.key === ' ') boostHeld = false; })
 window.addEventListener('blur', () => { boostHeld = false; if (gameState === 'PLAYING') togglePause(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && gameState === 'PLAYING') togglePause(); });
 
+// 偵測觸控裝置：改顯示「點擊開始」而非 ENTER
+if (('ontouchstart' in window) || navigator.maxTouchPoints > 0 || (window.matchMedia && matchMedia('(pointer: coarse)').matches)) {
+    document.body.classList.add('is-touch');
+}
 document.getElementById('startBtn').addEventListener('click', startGame);
 document.getElementById('restartBtn').addEventListener('click', startGame);
+// 點擊（輕觸）開始/結束畫面任何位置也能開始，避免按鈕太小按不到
+['start-screen', 'game-over-screen'].forEach(id => {
+    document.getElementById(id).addEventListener('pointerup', () => startGame());
+});
 document.getElementById('mute-btn').addEventListener('click', e => { sound.toggleMute(); e.target.blur(); });
 document.getElementById('pause-btn').addEventListener('click', e => { togglePause(); e.target.blur(); });
 
