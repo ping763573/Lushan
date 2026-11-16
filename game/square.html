@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>糖果俄羅斯方塊 - Candy Tetris</title>
+    <!-- 引入 Google Fonts 圓體字型，增加可愛糖果感 -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 自訂糖果主題樣式與動畫 */
+        body {
+            font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #a1c4fd 100%);
+            background-size: 200% 200%;
+            animation: gradientBG 15s ease infinite;
+            touch-action: manipulation; /* 防止雙擊縮放 */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 遊戲主機外殼：奶油糖霜質感 */
+        .candy-machine {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 6px solid #ffffff;
+            box-shadow: 
+                0 20px 40px rgba(255, 105, 135, 0.25),
+                inset 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        /* 遊戲畫布外框 */
+        .canvas-wrapper {
+            background: linear-gradient(180deg, #2b1e38 0%, #1a1124 100%);
+            border: 4px solid #ff758c;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
+        }
+
+        /* 3D 糖果按鈕效果 */
+        .candy-btn {
+            transition: all 0.1s ease;
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2), 0 8px 15px rgba(0, 0, 0, 0.15);
+            position: relative;
+            top: 0;
+        }
+
+        .candy-btn:active {
+            top: 4px;
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 資訊面板卡片 */
+        .info-card {
+            background: linear-gradient(145deg, #fff5f7, #ffe3e8);
+            border: 3px solid #ffb3c1;
+            box-shadow: 0 4px 10px rgba(255, 117, 140, 0.15);
+        }
+
+        /* 漂浮糖果背景裝飾 */
+        .bg-candy {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.35;
+            animation: floatCandy 8s ease-in-out infinite;
+        }
+
+        @keyframes floatCandy {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(15deg); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 overflow-hidden relative">
+
+    <!-- 背景裝飾糖果 Emoji -->
+    <div class="bg-candy text-5xl top-10 left-10" style="animation-delay: 0s;">🍬</div>
+    <div class="bg-candy text-6xl bottom-16 left-12" style="animation-delay: 2s;">🍭</div>
+    <div class="bg-candy text-5xl top-20 right-12" style="animation-delay: 4s;">🍩</div>
+    <div class="bg-candy text-6xl bottom-10 right-16" style="animation-delay: 1s;">🧁</div>
+
+    <!-- 主遊戲容器 -->
+    <div class="candy-machine rounded-3xl p-4 sm:p-6 max-w-2xl w-full z-10 flex flex-col items-center">
+        
+        <!-- 標題列 -->
+        <div class="w-full flex items-center justify-between mb-3 sm:mb-4 px-2">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl sm:text-3xl">🍭</span>
+                <h1 class="text-xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 tracking-wider">
+                    糖果俄羅斯方塊
+                </h1>
+            </div>
+            <!-- 音效與暫停控制 -->
+            <div class="flex gap-2">
+                <button id="soundToggleBtn" class="candy-btn bg-amber-400 hover:bg-amber-300 text-white font-bold p-2 sm:px-3 sm:py-2 rounded-xl text-sm sm:text-base" title="切換音效">
+                    🔊
+                </button>
+                <button id="pauseBtn" class="candy-btn bg-sky-400 hover:bg-sky-300 text-white font-bold px-3 py-2 rounded-xl text-sm sm:text-base">
+                    暫停
+                </button>
+            </div>
+        </div>
+
+        <!-- 遊戲核心區域：左側畫布 + 右側資訊欄 -->
+        <div class="flex flex-row items-start justify-center gap-3 sm:gap-6 w-full">
+            
+            <!-- 主遊戲畫布容器 -->
+            <div class="relative canvas-wrapper rounded-2xl overflow-hidden flex-shrink-0">
+                <canvas id="gameCanvas" width="260" height="520" class="block w-[210px] h-[420px] sm:w-[260px] sm:h-[520px]"></canvas>
+                
+                <!-- 遊戲覆蓋層 (開始 / 暫停 / 結束畫面) -->
+                <div id="overlay" class="absolute inset-0 bg-purple-950/85 backdrop-blur-sm flex flex-col items-center justify-center p-4 text-center transition-opacity duration-300">
+                    <div id="overlayIcon" class="text-5xl mb-2 animate-bounce">🍬</div>
+                    <h2 id="overlayTitle" class="text-2xl sm:text-3xl font-black text-pink-300 mb-2 drop-shadow">準備好了嗎？</h2>
+                    <p id="overlaySubtitle" class="text-white/90 text-xs sm:text-sm mb-6 leading-relaxed">
+                        堆疊美味糖果並消除整排！<br>消除越多分數越高喔！
+                    </p>
+                    <button id="startBtn" class="candy-btn bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-400 hover:to-rose-400 text-white font-black text-lg px-8 py-3 rounded-full tracking-wider">
+                        開始遊戲
+                    </button>
+                </div>
+            </div>
+
+            <!-- 右側資訊與預覽欄 -->
+            <div class="flex flex-col gap-3 sm:gap-4 w-28 sm:w-36">
+                
+                <!-- 下一個糖果預覽 -->
+                <div class="info-card rounded-2xl p-2 sm:p-3 flex flex-col items-center">
+                    <span class="text-xs sm:text-sm font-bold text-pink-600 mb-1">下一個糖果</span>
+                    <div class="bg-purple-950/90 rounded-xl p-1 border-2 border-pink-300">
+                        <canvas id="nextCanvas" width="80" height="80" class="w-16 h-16 sm:w-20 sm:h-20 block"></canvas>
+                    </div>
+                </div>
+
+                <!-- 分數板 -->
+                <div class="info-card rounded-2xl p-2 sm:p-3 text-center">
+                    <span class="text-xs sm:text-sm font-bold text-pink-600 block">甜蜜分數</span>
+                    <span id="scoreDisplay" class="text-xl sm:text-2xl font-black text-purple-700">0</span>
+                </div>
+
+                <!-- 消除行數 -->
+                <div class="info-card rounded-2xl p-2 sm:p-3 text-center">
+                    <span class="text-xs sm:text-sm font-bold text-pink-600 block">消除排數</span>
+                    <span id="linesDisplay" class="text-lg sm:text-xl font-black text-rose-500">0</span>
+                </div>
+
+                <!-- 等級 -->
+                <div class="info-card rounded-2xl p-2 sm:p-3 text-center">
+                    <span class="text-xs sm:text-sm font-bold text-pink-600 block">糖果等級</span>
+                    <span id="levelDisplay" class="text-lg sm:text-xl font-black text-amber-500">1</span>
+                </div>
+
+                <!-- 電腦操作提示 (僅在較大螢幕顯示) -->
+                <div class="hidden sm:block bg-white/70 rounded-2xl p-3 text-xs text-gray-600 border border-pink-200">
+                    <p class="font-bold text-pink-600 mb-1">⌨️ 鍵盤操作：</p>
+                    <ul class="space-y-1">
+                        <li>⬅️ ➡️ 左右移動</li>
+                        <li>⬆️ 旋轉糖果</li>
+                        <li>⬇️ 加速下落</li>
+                        <li>空白鍵 瞬間落下</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 手機與觸控操作按鈕區 (所有裝置皆可使用，方便觸控點擊) -->
+        <div class="mt-4 w-full max-w-md grid grid-cols-4 gap-2 sm:hidden px-2">
+            <button id="btnLeft" class="candy-btn bg-pink-400 text-white font-black py-3 rounded-2xl text-xl flex items-center justify-center">⬅️</button>
+            <button id="btnDown" class="candy-btn bg-pink-400 text-white font-black py-3 rounded-2xl text-xl flex items-center justify-center">⬇️</button>
+            <button id="btnRight" class="candy-btn bg-pink-400 text-white font-black py-3 rounded-2xl text-xl flex items-center justify-center">➡️</button>
+            <button id="btnRotate" class="candy-btn bg-purple-500 text-white font-black py-3 rounded-2xl text-xl flex items-center justify-center">🔄</button>
+            <button id="btnDrop" class="col-span-4 candy-btn bg-gradient-to-r from-amber-400 to-orange-400 text-white font-black py-2.5 rounded-2xl text-base mt-1">
+                ⚡ 瞬間落下 (Drop)
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        /**
+         * 糖果俄羅斯方塊 - 核心遊戲邏輯與糖果渲染引擎
+         */
+
+        // 1. 畫布與環境設定
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const nextCanvas = document.getElementById('nextCanvas');
+        const nextCtx = nextCanvas.getContext('2d');
+
+        // 網格規格：10 欄 x 20 列
+        const COLS = 10;
+        const ROWS = 20;
+        const BLOCK_SIZE = canvas.width / COLS; // 26px
+        const NEXT_BLOCK_SIZE = 20;
+
+        // 2. 糖果造型與顏色定義 (對應 7 種經典俄羅斯方塊)
+        // 每種方塊都有專屬的糖果主題、漸層色彩與內部花紋類型
+        const CANDY_TYPES = {
+            1: { // I 型：薄荷拐杖糖 / 藍莓長條軟糖
+                name: '藍莓薄荷糖',
+                base: '#00d2ff',
+                light: '#9be7ff',
+                dark: '#0077b6',
+                pattern: 'stripe' // 斜條紋拐杖糖
+            },
+            2: { // J 型：葡萄果凍方塊
+                name: '巨峰葡萄軟糖',
+                base: '#9d4edd',
+                light: '#e0aaff',
+                dark: '#5a189a',
+                pattern: 'jelly' // 晶瑩果凍中心
+            },
+            3: { // L 型：香橙維他命軟糖
+                name: '甜橙柑橘糖',
+                base: '#ff9e00',
+                light: '#ffd166',
+                dark: '#cc5803',
+                pattern: 'citrus' // 糖粒結晶
+            },
+            4: { // O 型：檸檬奶油太妃糖
+                name: '蜂蜜檸檬糖',
+                base: '#ffea00',
+                light: '#ffffb3',
+                dark: '#d4a300',
+                pattern: 'swirl' // 漩渦棒棒糖紋路
+            },
+            5: { // S 型：青蘋果酸甜軟糖
+                name: '青蘋果QQ糖',
+                base: '#38b000',
+                light: '#9ef01a',
+                dark: '#007200',
+                pattern: 'jelly'
+            },
+            6: { // T 型：草莓牛奶糖
+                name: '草莓夾心糖',
+                base: '#ff4d6d',
+                light: '#ffb3c1',
+                dark: '#a4133c',
+                pattern: 'heart' // 愛心糖果印記
+            },
+            7: { // Z 型：水蜜桃泡泡糖
+                name: '水蜜桃硬糖',
+                base: '#ff70a6',
+                light: '#ffc2d1',
+                dark: '#c9184a',
+                pattern: 'swirl'
+            }
+        };
+
+        // 7 種方塊形狀矩陣
+        const SHAPES = [
+            [], // 索引 0 留空
+            [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]], // I
+            [[2, 0, 0], [2, 2, 2], [0, 0, 0]],                         // J
+            [[0, 0, 3], [3, 3, 3], [0, 0, 0]],                         // L
+            [[4, 4], [4, 4]],                                          // O
+            [[0, 5, 5], [5, 5, 0], [0, 0, 0]],                         // S
+            [[0, 6, 0], [6, 6, 6], [0, 0, 0]],                         // T
+            [[7, 7, 0], [0, 7, 7], [0, 0, 0]]                          // Z
+        ];
+
+        // 3. 遊戲狀態變數
+        let board = [];
+        let score = 0;
+        let lines = 0;
+        let level = 1;
+        let gameOver = false;
+        let isPaused = false;
+        let isPlaying = false;
+        let dropCounter = 0;
+        let dropInterval = 1000;
+        let lastTime = 0;
+        let animationFrameId = null;
+
+        // 當前與下一個方塊
+        let player = {
+            pos: { x: 0, y: 0 },
+            matrix: null,
+            type: 1
+        };
+        let nextPieceType = 1;
+
+        // 消除特效粒子陣列
+        let particles = [];
+
+        // 4. Web Audio API 音效合成器 (無需外部音檔)
+        let soundEnabled = true;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'move') {
+                // 輕快的泡泡移動音
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(320, now);
+                osc.frequency.exponentialRampToValueAtTime(450, now + 0.05);
+                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            } else if (type === 'rotate') {
+                // 清脆糖果旋轉音
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(680, now + 0.08);
+                gainNode.gain.setValueAtTime(0.15, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } else if (type === 'drop') {
+                // 軟糖落地 Q 彈音
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.exponentialRampToValueAtTime(110, now + 0.12);
+                gainNode.gain.setValueAtTime(0.2, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                osc.start(now);
+                osc.stop(now + 0.12);
+            } else if (type === 'clear') {
+                // 甜蜜消除和弦音效
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, idx) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.type = 'sine';
+                    o.connect(g);
+                    g.connect(audioCtx.destination);
+                    o.frequency.setValueAtTime(freq, now + idx * 0.06);
+                    g.gain.setValueAtTime(0.15, now + idx * 0.06);
+                    g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.06 + 0.25);
+                    o.start(now + idx * 0.06);
+                    o.stop(now + idx * 0.06 + 0.25);
+                });
+            } else if (type === 'gameover') {
+                // 遊戲結束下行音
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.linearRampToValueAtTime(100, now + 0.6);
+                gainNode.gain.setValueAtTime(0.15, now);
+                gainNode.gain.linearRampToValueAtTime(0.01, now + 0.6);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            }
+        }
+
+        // 5. 糖果繪製核心函式 (讓每個方塊看起來都像美味糖果！)
+        function drawCandyBlock(context, x, y, size, typeId, isGhost = false) {
+            const candy = CANDY_TYPES[typeId];
+            if (!candy) return;
+
+            const px = x * size;
+            const py = y * size;
+            const padding = 1.5;
+            const drawSize = size - padding * 2;
+            const radius = size * 0.28; // 圓潤糖果邊角
+
+            context.save();
+
+            // 如果是落點預測幽靈方塊，設定半透明虛線糖果框
+            if (isGhost) {
+                context.globalAlpha = 0.28;
+            }
+
+            // 繪製圓角矩形路徑
+            context.beginPath();
+            context.roundRect(px + padding, py + padding, drawSize, drawSize, radius);
+            context.closePath();
+
+            // 糖果立體徑向漸層
+            const grad = context.createRadialGradient(
+                px + size * 0.35, py + size * 0.35, size * 0.05,
+                px + size * 0.5, py + size * 0.5, size * 0.65
+            );
+            grad.addColorStop(0, candy.light);
+            grad.addColorStop(0.55, candy.base);
+            grad.addColorStop(1, candy.dark);
+
+            context.fillStyle = grad;
+            context.fill();
+
+            // 糖果外框糖霜描邊
+            context.lineWidth = 1.2;
+            context.strokeStyle = 'rgba(255, 255, 255, 0.65)';
+            context.stroke();
+
+            if (!isGhost) {
+                // 根據不同糖果類型繪製專屬可愛花紋
+                context.clip(); // 限制花紋在糖果圓角內
+
+                if (candy.pattern === 'stripe') {
+                    // 拐杖糖白色斜條紋
+                    context.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+                    context.lineWidth = 3;
+                    context.beginPath();
+                    context.moveTo(px - 5, py + size * 0.5);
+                    context.lineTo(px + size * 0.5, py - 5);
+                    context.moveTo(px + size * 0.3, py + size + 5);
+                    context.lineTo(px + size + 5, py + size * 0.3);
+                    context.stroke();
+                } else if (candy.pattern === 'jelly') {
+                    // 果凍軟糖內部晶瑩小方塊
+                    context.fillStyle = 'rgba(255, 255, 255, 0.28)';
+                    context.beginPath();
+                    context.roundRect(px + size * 0.25, py + size * 0.25, size * 0.5, size * 0.5, radius * 0.6);
+                    context.fill();
+                } else if (candy.pattern === 'swirl') {
+                    // 棒棒糖漩渦圓圈
+                    context.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                    context.lineWidth = 2;
+                    context.beginPath();
+                    context.arc(px + size * 0.5, py + size * 0.5, size * 0.24, 0, Math.PI * 1.5);
+                    context.stroke();
+                } else if (candy.pattern === 'heart') {
+                    // 草莓糖果小圓點裝飾
+                    context.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                    context.beginPath();
+                    context.arc(px + size * 0.5, py + size * 0.55, size * 0.16, 0, Math.PI * 2);
+                    context.fill();
+                } else if (candy.pattern === 'citrus') {
+                    // 砂糖結晶顆粒感
+                    context.fillStyle = 'rgba(255, 255, 255, 0.55)';
+                    context.fillRect(px + size * 0.3, py + size * 0.35, 2, 2);
+                    context.fillRect(px + size * 0.65, py + size * 0.45, 2, 2);
+                    context.fillRect(px + size * 0.45, py + size * 0.68, 2, 2);
+                }
+
+                // 繪製糖果左上角「高光反光點」(營造光滑硬糖/果凍質感)
+                context.fillStyle = 'rgba(255, 255, 255, 0.75)';
+                context.beginPath();
+                context.ellipse(
+                    px + size * 0.32,
+                    py + size * 0.26,
+                    size * 0.16,
+                    size * 0.08,
+                    -Math.PI / 5,
+                    0,
+                    Math.PI * 2
+                );
+                context.fill();
+            }
+
+            context.restore();
+        }
+
+        // 6. 消除糖果時的碎屑粒子特效
+        function spawnCandyParticles(rowY, rowData) {
+            for (let x = 0; x < COLS; x++) {
+                const typeId = rowData[x] || 1;
+                const candy = CANDY_TYPES[typeId];
+                for (let i = 0; i < 6; i++) {
+                    particles.push({
+                        x: (x + 0.5) * BLOCK_SIZE,
+                        y: (rowY + 0.5) * BLOCK_SIZE,
+                        vx: (Math.random() - 0.5) * 7,
+                        vy: (Math.random() - 0.8) * 7,
+                        size: Math.random() * 5 + 3,
+                        color: Math.random() > 0.5 ? candy.light : candy.base,
+                        alpha: 1
+                    });
+                }
+            }
+        }
+
+        function updateAndDrawParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.25; // 重力
+                p.alpha -= 0.03;
+
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // 7. 遊戲版面與碰撞邏輯
+        function createMatrix(w, h) {
+            const matrix = [];
+            while (h--) {
+                matrix.push(new Array(w).fill(0));
+            }
+            return matrix;
+        }
+
+        function collide(board, player) {
+            const m = player.matrix;
+            const o = player.pos;
+            for (let y = 0; y < m.length; ++y) {
+                for (let x = 0; x < m[y].length; ++x) {
+                    if (m[y][x] !== 0 &&
+                       (board[y + o.y] && board[y + o.y][x + o.x]) !== 0) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function merge(board, player) {
+            player.matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        board[y + player.pos.y][x + player.pos.x] = value;
+                    }
+                });
+            });
+        }
+
+        function rotateMatrix(matrix, dir) {
+            for (let y = 0; y < matrix.length; ++y) {
+                for (let x = 0; x < y; ++x) {
+                    [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+                }
+            }
+            if (dir > 0) {
+                matrix.forEach(row => row.reverse());
+            } else {
+                matrix.reverse();
+            }
+        }
+
+        // 8. 玩家控制動作
+        function playerDrop() {
+            if (!isPlaying || isPaused || gameOver) return;
+            player.pos.y++;
+            if (collide(board, player)) {
+                player.pos.y--;
+                merge(board, player);
+                playSound('drop');
+                sweepLines();
+                playerReset();
+            }
+            dropCounter = 0;
+        }
+
+        function playerHardDrop() {
+            if (!isPlaying || isPaused || gameOver) return;
+            while (!collide(board, player)) {
+                player.pos.y++;
+                score += 1; // 瞬間落下額外小獎勵
+            }
+            player.pos.y--;
+            merge(board, player);
+            playSound('drop');
+            sweepLines();
+            playerReset();
+            updateScoreUI();
+            dropCounter = 0;
+        }
+
+        function playerMove(dir) {
+            if (!isPlaying || isPaused || gameOver) return;
+            player.pos.x += dir;
+            if (collide(board, player)) {
+                player.pos.x -= dir;
+            } else {
+                playSound('move');
+            }
+        }
+
+        function playerRotate(dir) {
+            if (!isPlaying || isPaused || gameOver) return;
+            const pos = player.pos.x;
+            let offset = 1;
+            rotateMatrix(player.matrix, dir);
+            // 踢牆機制 (Wall Kick)：靠牆旋轉時自動微調位置
+            while (collide(board, player)) {
+                player.pos.x += offset;
+                offset = -(offset + (offset > 0 ? 1 : -1));
+                if (offset > player.matrix[0].length) {
+                    rotateMatrix(player.matrix, -dir);
+                    player.pos.x = pos;
+                    return;
+                }
+            }
+            playSound('rotate');
+        }
+
+        // 產生新糖果方塊
+        function randomCandyType() {
+            return Math.floor(Math.random() * 7) + 1;
+        }
+
+        function playerReset() {
+            player.type = nextPieceType;
+            player.matrix = SHAPES[player.type].map(row => [...row]);
+            nextPieceType = randomCandyType();
+            drawNextPiece();
+
+            player.pos.y = 0;
+            player.pos.x = Math.floor(COLS / 2) - Math.floor(player.matrix[0].length / 2);
+
+            // 若剛生成就碰撞，代表糖果堆滿到頂端 -> 遊戲結束
+            if (collide(board, player)) {
+                gameOver = true;
+                isPlaying = false;
+                playSound('gameover');
+                showOverlay('🍭', '糖果罐裝滿啦！', `最終甜蜜分數：${score} 分`, '再玩一次');
+            }
+        }
+
+        // 檢查並消除滿排糖果
+        function sweepLines() {
+            let rowCount = 0;
+            outer: for (let y = board.length - 1; y >= 0; --y) {
+                for (let x = 0; x < board[y].length; ++x) {
+                    if (board[y][x] === 0) {
+                        continue outer;
+                    }
+                }
+                // 觸發該排糖果碎屑特效
+                spawnCandyParticles(y, board[y]);
+
+                const row = board.splice(y, 1)[0].fill(0);
+                board.unshift(row);
+                ++y;
+                rowCount++;
+            }
+
+            if (rowCount > 0) {
+                playSound('clear');
+                // 經典俄羅斯方塊計分倍率
+                const lineScores = [0, 100, 300, 500, 800];
+                score += lineScores[rowCount] * level;
+                lines += rowCount;
+                level = Math.floor(lines / 10) + 1;
+                // 隨等級提升加快下落速度
+                dropInterval = Math.max(120, 1000 - (level - 1) * 90);
+                updateScoreUI();
+            }
+        }
+
+        // 9. 畫面繪製迴圈
+        function drawGridBackground() {
+            ctx.fillStyle = '#1e132b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 繪製柔和的格子輔助線
+            ctx.strokeStyle = 'rgba(255, 182, 193, 0.08)';
+            ctx.lineWidth = 1;
+            for (let x = 1; x < COLS; x++) {
+                ctx.beginPath();
+                ctx.moveTo(x * BLOCK_SIZE, 0);
+                ctx.lineTo(x * BLOCK_SIZE, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = 1; y < ROWS; y++) {
+                ctx.beginPath();
+                ctx.moveTo(0, y * BLOCK_SIZE);
+                ctx.lineTo(canvas.width, y * BLOCK_SIZE);
+                ctx.stroke();
+            }
+        }
+
+        function drawMatrix(matrix, offset, context = ctx, blockSize = BLOCK_SIZE, isGhost = false) {
+            matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        drawCandyBlock(context, x + offset.x, y + offset.y, blockSize, value, isGhost);
+                    }
+                });
+            });
+        }
+
+        // 計算並繪製落點幽靈預覽 (Ghost Piece)
+        function drawGhostPiece() {
+            const ghost = {
+                pos: { x: player.pos.x, y: player.pos.y },
+                matrix: player.matrix
+            };
+            while (!collide(board, ghost)) {
+                ghost.pos.y++;
+            }
+            ghost.pos.y--;
+            drawMatrix(ghost.matrix, ghost.pos, ctx, BLOCK_SIZE, true);
+        }
+
+        // 繪製右側「下一個糖果」預覽窗
+        function drawNextPiece() {
+            nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+            const matrix = SHAPES[nextPieceType];
+            // 置中計算
+            const offsetX = (4 - matrix[0].length) / 2;
+            const offsetY = (4 - matrix.length) / 2;
+            drawMatrix(matrix, { x: offsetX, y: offsetY }, nextCtx, NEXT_BLOCK_SIZE, false);
+        }
+
+        function draw() {
+            drawGridBackground();
+            drawMatrix(board, { x: 0, y: 0 });
+            if (isPlaying && !gameOver) {
+                drawGhostPiece();
+                drawMatrix(player.matrix, player.pos);
+            }
+            updateAndDrawParticles();
+        }
+
+        function update(time = 0) {
+            if (!isPlaying || isPaused) return;
+
+            const deltaTime = time - lastTime;
+            lastTime = time;
+
+            dropCounter += deltaTime;
+            if (dropCounter > dropInterval) {
+                playerDrop();
+            }
+
+            draw();
+            animationFrameId = requestAnimationFrame(update);
+        }
+
+        // 10. UI 更新與控制事件綁定
+        function updateScoreUI() {
+            document.getElementById('scoreDisplay').innerText = score;
+            document.getElementById('linesDisplay').innerText = lines;
+            document.getElementById('levelDisplay').innerText = level;
+        }
+
+        const overlay = document.getElementById('overlay');
+        const overlayIcon = document.getElementById('overlayIcon');
+        const overlayTitle = document.getElementById('overlayTitle');
+        const overlaySubtitle = document.getElementById('overlaySubtitle');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const soundToggleBtn = document.getElementById('soundToggleBtn');
+
+        function showOverlay(icon, title, subtitle, btnText) {
+            overlayIcon.innerText = icon;
+            overlayTitle.innerText = title;
+            overlaySubtitle.innerHTML = subtitle;
+            startBtn.innerText = btnText;
+            overlay.classList.remove('hidden');
+        }
+
+        function hideOverlay() {
+            overlay.classList.add('hidden');
+        }
+
+        function startGame() {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            board = createMatrix(COLS, ROWS);
+            score = 0;
+            lines = 0;
+            level = 1;
+            dropInterval = 1000;
+            gameOver = false;
+            isPaused = false;
+            isPlaying = true;
+            particles = [];
+            pauseBtn.innerText = '暫停';
+
+            nextPieceType = randomCandyType();
+            playerReset();
+            updateScoreUI();
+            hideOverlay();
+
+            lastTime = performance.now();
+            update(lastTime);
+        }
+
+        function togglePause() {
+            if (!isPlaying || gameOver) return;
+            isPaused = !isPaused;
+            if (isPaused) {
+                pauseBtn.innerText = '繼續';
+                showOverlay('⏸️', '遊戲暫停中', '休息一下，吃顆糖果吧！', '繼續遊戲');
+            } else {
+                pauseBtn.innerText = '暫停';
+                hideOverlay();
+                lastTime = performance.now();
+                update(lastTime);
+            }
+        }
+
+        // 按鈕事件監聽
+        startBtn.addEventListener('click', () => {
+            if (isPaused) {
+                togglePause();
+            } else {
+                startGame();
+            }
+        });
+
+        pauseBtn.addEventListener('click', togglePause);
+
+        soundToggleBtn.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            soundToggleBtn.innerText = soundEnabled ? '🔊' : '🔇';
+        });
+
+        // 鍵盤控制監聽
+        document.addEventListener('keydown', event => {
+            if (!isPlaying || isPaused || gameOver) return;
+
+            switch (event.key) {
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    event.preventDefault();
+                    playerMove(-1);
+                    draw();
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    event.preventDefault();
+                    playerMove(1);
+                    draw();
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    event.preventDefault();
+                    playerDrop();
+                    draw();
+                    break;
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    event.preventDefault();
+                    playerRotate(1);
+                    draw();
+                    break;
+                case ' ':
+                    event.preventDefault();
+                    playerHardDrop();
+                    draw();
+                    break;
+            }
+        });
+
+        // 手機螢幕觸控按鈕監聽
+        const bindTouchBtn = (id, action) => {
+            const btn = document.getElementById(id);
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                action();
+                draw();
+            });
+        };
+
+        bindTouchBtn('btnLeft', () => playerMove(-1));
+        bindTouchBtn('btnRight', () => playerMove(1));
+        bindTouchBtn('btnDown', () => playerDrop());
+        bindTouchBtn('btnRotate', () => playerRotate(1));
+        bindTouchBtn('btnDrop', () => playerHardDrop());
+
+        // 畫布滑動手勢支援 (左右滑動移動、點擊旋轉、下滑加速)
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        canvas.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        canvas.addEventListener('touchend', e => {
+            if (!isPlaying || isPaused || gameOver) return;
+            const touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
+            const dx = touchEndX - touchStartX;
+            const dy = touchEndY - touchStartY;
+
+            if (Math.abs(dx) < 15 && Math.abs(dy) < 15) {
+                // 輕點畫布：旋轉糖果
+                playerRotate(1);
+            } else if (Math.abs(dx) > Math.abs(dy)) {
+                // 水平滑動：左右移動
+                playerMove(dx > 0 ? 1 : -1);
+            } else if (dy > 30) {
+                // 向下快速滑動：瞬間落下
+                playerHardDrop();
+            }
+            draw();
+        }, { passive: true });
+
+        // 頁面載入完成後初始化背景畫面
+        window.onload = function () {
+            board = createMatrix(COLS, ROWS);
+            drawGridBackground();
+        };
+    </script>
+</body>
+</html>
