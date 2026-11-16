@@ -1,0 +1,3307 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>福岡六天五夜自由行｜2026.11.16 - 11.21 日系旅遊手帳</title>
+  <!-- 引入 Google Fonts 思源黑體 Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       一、設計系統與色票變數（嚴格純色無漸層）
+       ========================================================================== */
+    :root {
+      --bg-mint: #EEF4F3;         /* 淡水綠背景 */
+      --card-white: #FFFFFF;      /* 純白卡片底色 */
+      --hakata-blue: #23406B;     /* 博多藍（主色、邊框、選中底色） */
+      --mentaiko-red: #D9482F;    /* 明太子紅（必去、緊急、強調） */
+      --lantern-yellow: #F2B441;  /* 燈籠黃（美食餐廳） */
+      --plum-pink: #E58FA6;       /* 梅花粉（購物行程） */
+      --pine-green: #2F7D6B;      /* 松葉綠（住宿、進度條、交通） */
+      --aqua-blue: #7FB9D6;       /* 淺水藍（觀光景點） */
+      --neutral-gray: #D5E0DE;    /* 中性灰綠（機場/飯店輔助色） */
+      --text-main: #1C2E4A;       /* 深藍黑內文 */
+      --text-muted: #526680;      /* 次要說明文字 */
+      --border-main: 1.5px solid #23406B;
+      --radius-card: 16px;
+      --radius-pill: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--bg-mint);
+      color: var(--text-main);
+      font-size: 16px;
+      line-height: 1.6;
+      padding-bottom: 48px;
+      overflow-x: hidden;
+    }
+
+    /* 手機優先主容器，桌面端置中維持手帳比例 */
+    .app-container {
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 16px 14px 32px;
+    }
+
+    /* 通用純白手帳卡片 */
+    .card {
+      background-color: var(--card-white);
+      border: var(--border-main);
+      border-radius: var(--radius-card);
+      padding: 18px 16px;
+      margin-bottom: 16px;
+    }
+
+    /* 範例標籤 */
+    .sample-tag {
+      display: inline-block;
+      background-color: var(--bg-mint);
+      color: var(--hakata-blue);
+      border: 1px solid var(--hakata-blue);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 6px;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+
+    /* 按鈕基礎樣式（觸控友善 >= 44px） */
+    button, .btn-link {
+      font-family: inherit;
+      font-size: 16px;
+      cursor: pointer;
+      border: var(--border-main);
+      border-radius: 12px;
+      background-color: var(--card-white);
+      color: var(--hakata-blue);
+      font-weight: 700;
+      min-height: 44px;
+      padding: 8px 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: transform 0.12s ease, background-color 0.15s ease, color 0.15s ease;
+    }
+
+    button:active, .btn-link:active {
+      transform: scale(0.97);
+    }
+
+    /* ==========================================================================
+       二、首頁主視覺（原創福岡 SVG 插畫與動態）
+       ========================================================================== */
+    .hero-header {
+      background-color: var(--card-white);
+      border: var(--border-main);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .hero-svg-wrap {
+      width: 100%;
+      background-color: #DCECE9;
+      border-bottom: var(--border-main);
+      display: block;
+      line-height: 0;
+    }
+
+    .hero-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* SVG 柔和動態：屋台紅燈籠微擺 */
+    .lantern-swing {
+      transform-origin: 50% 0%;
+      animation: lanternSway 3.4s ease-in-out infinite alternate;
+    }
+    .lantern-swing-delay {
+      transform-origin: 50% 0%;
+      animation: lanternSway 3.8s ease-in-out 0.8s infinite alternate-reverse;
+    }
+    @keyframes lanternSway {
+      0% { transform: rotate(-4deg); }
+      100% { transform: rotate(4deg); }
+    }
+
+    /* SVG 柔和動態：屋台熱食蒸氣飄動 */
+    .steam-rise-1 {
+      animation: steamFloat 3s ease-in-out infinite;
+    }
+    .steam-rise-2 {
+      animation: steamFloat 3s ease-in-out 1.2s infinite;
+    }
+    @keyframes steamFloat {
+      0% { transform: translateY(4px); opacity: 0.2; }
+      50% { opacity: 0.85; }
+      100% { transform: translateY(-10px); opacity: 0; }
+    }
+
+    /* SVG 柔和動態：那珂川河面波紋 */
+    .river-wave-1 {
+      animation: waveDrift 4.5s ease-in-out infinite alternate;
+    }
+    .river-wave-2 {
+      animation: waveDrift 5.2s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes waveDrift {
+      0% { transform: translateX(-6px); }
+      100% { transform: translateX(6px); }
+    }
+
+    .hero-title-box {
+      padding: 16px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background-color: var(--mentaiko-red);
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: var(--radius-pill);
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--hakata-blue);
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .hero-subtitle {
+      font-size: 16px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* ==========================================================================
+       三、四大主分類導覽選單（非固定、高度 >= 64px）
+       ========================================================================== */
+    .main-nav {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .nav-btn {
+      min-height: 68px;
+      border-radius: var(--radius-card);
+      border: var(--border-main);
+      background-color: var(--card-white);
+      color: var(--hakata-blue);
+      font-size: 17px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 10px;
+    }
+
+    .nav-btn.active {
+      background-color: var(--hakata-blue);
+      color: #FFFFFF;
+    }
+
+    .nav-btn svg {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    /* 頁面區塊顯示控制 */
+    .tab-section {
+      display: none;
+    }
+    .tab-section.active {
+      display: block;
+    }
+
+    /* 分頁底部返回主選單快捷按鈕 */
+    .back-to-nav-wrap {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .btn-back-top {
+      width: 100%;
+      min-height: 52px;
+      background-color: var(--card-white);
+      color: var(--hakata-blue);
+      border: var(--border-main);
+      border-radius: var(--radius-card);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       四、總覽分頁：智慧倒數看板 & 登機證風格卡片
+       ========================================================================== */
+    .status-banner {
+      background-color: var(--hakata-blue);
+      color: #FFFFFF;
+      border: var(--border-main);
+      border-radius: var(--radius-card);
+      padding: 18px 16px;
+      margin-bottom: 16px;
+    }
+
+    .status-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill {
+      background-color: var(--lantern-yellow);
+      color: var(--hakata-blue);
+      font-size: 13px;
+      font-weight: 900;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+    }
+
+    .sim-toggle-btn {
+      background-color: transparent;
+      color: #FFFFFF;
+      border: 1.5px solid #FFFFFF;
+      font-size: 13px;
+      min-height: 34px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+    }
+
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .countdown-box {
+      background-color: #FFFFFF;
+      color: var(--hakata-blue);
+      border-radius: 12px;
+      padding: 10px 6px;
+      text-align: center;
+    }
+
+    .countdown-num {
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1.2;
+      color: var(--mentaiko-red);
+    }
+
+    .countdown-label {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .live-next-event {
+      background-color: #FFFFFF;
+      color: var(--hakata-blue);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 10px;
+    }
+
+    /* 登機證卡片設計（純色＋左右半圓缺口＋虛線） */
+    .boarding-pass {
+      background-color: var(--card-white);
+      border: var(--border-main);
+      border-radius: var(--radius-card);
+      margin-bottom: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bp-header {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #FFFFFF;
+      font-weight: 700;
+      border-bottom: var(--border-main);
+    }
+
+    .bp-header.outbound {
+      background-color: var(--pine-green);
+    }
+
+    .bp-header.inbound {
+      background-color: var(--hakata-blue);
+    }
+
+    .bp-body {
+      padding: 16px;
+    }
+
+    .bp-route {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .bp-airport {
+      flex: 1;
+    }
+
+    .bp-airport.right {
+      text-align: right;
+    }
+
+    .bp-code {
+      font-size: 30px;
+      font-weight: 900;
+      color: var(--hakata-blue);
+      line-height: 1.1;
+    }
+
+    .bp-city {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .bp-time {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--mentaiko-red);
+      margin-top: 4px;
+    }
+
+    .bp-tz {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .bp-plane-mid {
+      text-align: center;
+      padding: 0 6px;
+    }
+
+    .bp-duration {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--hakata-blue);
+      background-color: var(--bg-mint);
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--hakata-blue);
+      white-space: nowrap;
+    }
+
+    /* 登機證虛線撕裂分隔線 */
+    .bp-divider {
+      position: relative;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      margin: 0 -16px;
+    }
+
+    .bp-divider::before,
+    .bp-divider::after {
+      content: "";
+      width: 20px;
+      height: 20px;
+      background-color: var(--bg-mint);
+      border: var(--border-main);
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+    }
+
+    .bp-divider::before {
+      left: -11px;
+    }
+
+    .bp-divider::after {
+      right: -11px;
+    }
+
+    .bp-dashed-line {
+      width: 100%;
+      border-top: 2px dashed var(--hakata-blue);
+      margin: 0 14px;
+    }
+
+    .bp-footer {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding-top: 10px;
+      font-size: 14px;
+    }
+
+    .bp-meta-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .bp-meta-val {
+      font-weight: 700;
+      color: var(--hakata-blue);
+    }
+
+    /* ==========================================================================
+       五、每日行程分頁：日期列、黏性摘要、晴雨切換、時間軸與記帳
+       ========================================================================== */
+    .day-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    @media (min-width: 520px) {
+      .day-selector {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+
+    .day-btn {
+      min-height: 62px;
+      padding: 8px 4px;
+      flex-direction: column;
+      gap: 2px;
+      border-radius: 14px;
+      background-color: var(--card-white);
+      color: var(--hakata-blue);
+    }
+
+    .day-btn.active {
+      background-color: var(--hakata-blue);
+      color: #FFFFFF;
+    }
+
+    .day-btn-num {
+      font-size: 13px;
+      font-weight: 900;
+      opacity: 0.9;
+    }
+
+    .day-btn-date {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    /* 黏性每日資訊摘要區（隨捲動保持在視窗頂部可見） */
+    .sticky-day-summary {
+      position: sticky;
+      top: 8px;
+      z-index: 30;
+      background-color: var(--card-white);
+      border: 2px solid var(--hakata-blue);
+      border-radius: var(--radius-card);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+
+    .sticky-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #B5C7C4;
+      margin-bottom: 8px;
+    }
+
+    .weather-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      color: var(--hakata-blue);
+      font-size: 15px;
+    }
+
+    .rain-prob {
+      background-color: var(--aqua-blue);
+      color: var(--hakata-blue);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+    }
+
+    .outfit-tip {
+      font-size: 14px;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .sticky-hotel-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--bg-mint);
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .sticky-hotel-info {
+      font-weight: 700;
+      color: var(--pine-green);
+      line-height: 1.4;
+    }
+
+    .btn-mini-map {
+      min-height: 36px;
+      padding: 4px 10px;
+      font-size: 13px;
+      background-color: var(--card-white);
+      flex-shrink: 0;
+    }
+
+    /* 晴天 / 雨天備案切換開關 */
+    .weather-mode-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background-color: var(--card-white);
+      border: var(--border-main);
+      border-radius: var(--radius-card);
+      padding: 6px;
+      margin-bottom: 16px;
+    }
+
+    .mode-btn {
+      border: none;
+      border-radius: 11px;
+      min-height: 46px;
+      font-size: 15px;
+      background-color: transparent;
+      color: var(--hakata-blue);
+    }
+
+    .mode-btn.active-sunny {
+      background-color: var(--lantern-yellow);
+      color: var(--hakata-blue);
+      border: 1.5px solid var(--hakata-blue);
+    }
+
+    .mode-btn.active-rainy {
+      background-color: var(--aqua-blue);
+      color: var(--hakata-blue);
+      border: 1.5px solid var(--hakata-blue);
+    }
+
+    /* 行程卡片彈性進入動畫 */
+    .timeline-item-anim {
+      animation: cardPopIn 0.35s cubic-bezier(0.22, 1.15, 0.36, 1) both;
+    }
+
+    @keyframes cardPopIn {
+      0% {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* 行程時間軸卡片 */
+    .event-card {
+      background-color: var(--card-white);
+      border: var(--border-main);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      transition: opacity 0.2s ease;
+    }
+
+    .event-card.completed {
+      opacity: 0.68;
+    }
+
+    .event-card.completed .event-title {
+      text-decoration: line-through;
+    }
+
+    /* 類別頂部色條 */
+    .event-cat-bar {
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: var(--border-main);
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--hakata-blue);
+    }
+
+    .cat-sightseeing { background-color: var(--aqua-blue); }
+    .cat-food { background-color: var(--lantern-yellow); }
+    .cat-shopping { background-color: var(--plum-pink); }
+    .cat-logistics { background-color: var(--neutral-gray); }
+
+    .event-time-badge {
+      background-color: var(--card-white);
+      color: var(--hakata-blue);
+      border: 1px solid var(--hakata-blue);
+      padding: 2px 10px;
+      border-radius: var(--radius-pill);
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .must-go-badge {
+      background-color: var(--mentaiko-red);
+      color: #FFFFFF;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 900;
+      margin-left: 6px;
+    }
+
+    .event-body {
+      padding: 14px 16px;
+    }
+
+    .event-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .event-title {
+      font-size: 19px;
+      font-weight: 900;
+      color: var(--hakata-blue);
+      line-height: 1.35;
+    }
+
+    .check-toggle-btn {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 6px 10px;
+      border-radius: 12px;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .check-toggle-btn.checked {
+      background-color: var(--pine-green);
+      color: #FFFFFF;
+    }
+
+    .event-desc {
+      font-size: 16px;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+
+    .event-meta-list {
+      background-color: var(--bg-mint);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .event-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* 相鄰景點之間交通指引連接器 */
+    .transit-connector {
+      position: relative;
+      margin: 0 0 0 22px;
+      padding: 12px 0 12px 20px;
+      border-left: 3px dashed var(--pine-green);
+    }
+
+    .transit-box {
+      background-color: #FFFFFF;
+      border: 1.5px solid var(--pine-green);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+
+    .transit-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-weight: 900;
+      color: var(--pine-green);
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+
+    .transit-badge {
+      background-color: var(--pine-green);
+      color: #FFFFFF;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .transit-detail {
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    .transit-sub {
+      color: var(--mentaiko-red);
+      font-weight: 700;
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    /* 每日花費記帳區塊 */
+    .expense-card {
+      margin-top: 20px;
+    }
+
+    .rate-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background-color: var(--bg-mint);
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .rate-input {
+      width: 90px;
+      min-height: 40px;
+      border: var(--border-main);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 16px;
+      font-weight: 700;
+      text-align: center;
+      color: var(--hakata-blue);
+    }
+
+    .expense-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .expense-form input,
+    .expense-form select {
+      min-height: 46px;
+      border: var(--border-main);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 16px;
+      font-family: inherit;
+      background-color: #FFFFFF;
+      color: var(--text-main);
+      width: 100%;
+    }
+
+    .expense-form .full-span {
+      grid-column: 1 / -1;
+    }
+
+    .btn-add-expense {
+      grid-column: 1 / -1;
+      background-color: var(--hakata-blue);
+      color: #FFFFFF;
+      min-height: 48px;
+    }
+
+    .expense-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .expense-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background-color: var(--bg-mint);
+      border-radius: 10px;
+      border: 1px solid #C6D6D3;
+    }
+
+    .expense-del-btn {
+      min-height: 36px;
+      min-width: 36px;
+      padding: 4px 8px;
+      font-size: 14px;
+      color: var(--mentaiko-red);
+      border-color: var(--mentaiko-red);
+    }
+
+    /* ==========================================================================
+       六、行前清單分頁
+       ========================================================================== */
+    .progress-track {
+      width: 100%;
+      height: 18px;
+      background-color: var(--bg-mint);
+      border: var(--border-main);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      margin: 10px 0 6px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--pine-green);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .checklist-add-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .checklist-add-row input {
+      flex: 1;
+      min-height: 46px;
+      border: var(--border-main);
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-size: 16px;
+      font-family: inherit;
+    }
+
+    .checklist-ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .checklist-li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1.5px solid #C4D4D1;
+      border-radius: 12px;
+      background-color: #FFFFFF;
+    }
+
+    .checklist-li.done {
+      background-color: var(--bg-mint);
+    }
+
+    .checklist-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      cursor: pointer;
+      min-height: 32px;
+    }
+
+    .checklist-li.done .checklist-text {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .custom-checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--hakata-blue);
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background-color: #FFFFFF;
+      color: #FFFFFF;
+      font-weight: 900;
+    }
+
+    .checklist-li.done .custom-checkbox {
+      background-color: var(--pine-green);
+      border-color: var(--pine-green);
+    }
+
+    /* ==========================================================================
+       七、住宿速查與實用資訊分頁
+       ========================================================================== */
+    .section-title {
+      font-size: 19px;
+      font-weight: 900;
+      color: var(--hakata-blue);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px dashed #D3E0DE;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-key {
+      color: var(--text-muted);
+      font-weight: 700;
+      flex-shrink: 0;
+      min-width: 92px;
+    }
+
+    .info-val {
+      font-weight: 700;
+      color: var(--text-main);
+      text-align: right;
+      word-break: break-all;
+    }
+
+    .emergency-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .emergency-btn {
+      background-color: var(--mentaiko-red);
+      color: #FFFFFF;
+      border: var(--border-main);
+      border-radius: 14px;
+      padding: 12px 10px;
+      flex-direction: column;
+      min-height: 76px;
+      text-align: center;
+    }
+
+    .emergency-num {
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .shop-zone-box {
+      background-color: var(--bg-mint);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-left: 5px solid var(--plum-pink);
+    }
+
+    .budget-bar-row {
+      margin-bottom: 10px;
+    }
+
+    .budget-bar-track {
+      height: 12px;
+      background-color: var(--bg-mint);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      border: 1px solid var(--hakata-blue);
+      margin-top: 4px;
+    }
+
+    .budget-bar-fill {
+      height: 100%;
+      background-color: var(--lantern-yellow);
+    }
+
+    /* 提示訊息 Toast（取代 alert） */
+    .toast-msg {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background-color: var(--hakata-blue);
+      color: #FFFFFF;
+      border: 1.5px solid #FFFFFF;
+      padding: 10px 20px;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: 15px;
+      z-index: 999;
+      opacity: 0;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .toast-msg.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* 確認重設對話框（取代 confirm） */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(35, 64, 107, 0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background-color: #FFFFFF;
+      border: 2px solid var(--hakata-blue);
+      border-radius: var(--radius-card);
+      padding: 20px;
+      max-width: 380px;
+      width: 100%;
+    }
+
+    /* ==========================================================================
+       八、無障礙動態減量設定（遵循系統 prefers-reduced-motion）
+       ========================================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .lantern-swing, .lantern-swing-delay, .steam-rise-1, .steam-rise-2, .river-wave-1, .river-wave-2 {
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container" id="topAnchor">
+
+  <!-- ========================================================================
+       首頁主視覺區：原創福岡 SVG 插畫 + 標題
+       ======================================================================== -->
+  <header class="hero-header">
+    <div class="hero-svg-wrap" aria-label="福岡特色手繪向量插畫：包含福岡塔、中洲屋台、那珂川與太宰府梅花">
+      <!-- 原創福岡幾何手繪風 SVG 插畫（純色無漸層） -->
+      <svg class="hero-svg" viewBox="0 0 680 230" xmlns="http://www.w3.org/2000/svg">
+        <!-- 天空純色背景 -->
+        <rect width="680" height="168" fill="#DCECE9" />
+        <!-- 遠景圓日 -->
+        <circle cx="545" cy="54" r="26" fill="#F2B441" stroke="#23406B" stroke-width="2" />
+        <!-- 雲朵 -->
+        <rect x="65" y="34" width="66" height="16" rx="8" fill="#FFFFFF" stroke="#23406B" stroke-width="1.8" />
+        <rect x="85" y="26" width="38" height="14" rx="7" fill="#FFFFFF" stroke="#23406B" stroke-width="1.8" />
+
+        <!-- 1. 福岡塔（左側幾何塔身與觀景台） -->
+        <g id="fukuoka-tower">
+          <!-- 塔尖天線 -->
+          <line x1="115" y1="14" x2="115" y2="38" stroke="#23406B" stroke-width="2.5" stroke-linecap="round" />
+          <circle cx="115" cy="14" r="3.5" fill="#D9482F" stroke="#23406B" stroke-width="1.5" />
+          <!-- 塔身三角錐體 -->
+          <polygon points="115,36 86,168 144,168" fill="#7FB9D6" stroke="#23406B" stroke-width="2.2" stroke-linejoin="round" />
+          <!-- 塔身幾何交叉線條 -->
+          <line x1="108" y1="68" x2="122" y2="68" stroke="#23406B" stroke-width="1.8" />
+          <line x1="101" y1="100" x2="129" y2="100" stroke="#23406B" stroke-width="1.8" />
+          <line x1="94" y1="134" x2="136" y2="134" stroke="#23406B" stroke-width="1.8" />
+          <line x1="115" y1="36" x2="115" y2="168" stroke="#23406B" stroke-width="1.5" />
+          <!-- 展望台方艙 -->
+          <rect x="92" y="62" width="46" height="14" rx="4" fill="#FFFFFF" stroke="#23406B" stroke-width="2" />
+          <rect x="98" y="66" width="34" height="6" fill="#23406B" />
+        </g>
+
+        <!-- 2. 太宰府梅花與枝枒（右上角裝飾） -->
+        <g id="dazaifu-plum">
+          <!-- 梅枝 -->
+          <path d="M680,22 Q625,36 588,78 M635,38 Q615,24 596,26 M614,54 Q632,68 648,66" fill="none" stroke="#23406B" stroke-width="2.5" stroke-linecap="round" />
+          <!-- 五瓣梅花 A -->
+          <g transform="translate(588, 78)">
+            <circle cx="0" cy="-9" r="6" fill="#E58FA6" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="8.5" cy="-2.8" r="6" fill="#E58FA6" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="5.3" cy="7.3" r="6" fill="#E58FA6" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="-5.3" cy="7.3" r="6" fill="#E58FA6" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="-8.5" cy="-2.8" r="6" fill="#E58FA6" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="0" cy="0" r="4" fill="#F2B441" stroke="#23406B" stroke-width="1.2" />
+          </g>
+          <!-- 五瓣梅花 B -->
+          <g transform="translate(646, 65) scale(0.82)">
+            <circle cx="0" cy="-9" r="6" fill="#FFFFFF" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="8.5" cy="-2.8" r="6" fill="#FFFFFF" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="5.3" cy="7.3" r="6" fill="#FFFFFF" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="-5.3" cy="7.3" r="6" fill="#FFFFFF" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="-8.5" cy="-2.8" r="6" fill="#FFFFFF" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="0" cy="0" r="4" fill="#D9482F" />
+          </g>
+          <!-- 五瓣梅花 C -->
+          <g transform="translate(596, 26) scale(0.75)">
+            <circle cx="0" cy="-9" r="6" fill="#E58FA6" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="8.5" cy="-2.8" r="6" fill="#E58FA6" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="5.3" cy="7.3" r="6" fill="#E58FA6" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="-5.3" cy="7.3" r="6" fill="#E58FA6" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="-8.5" cy="-2.8" r="6" fill="#E58FA6" stroke="#23406B" stroke-width="1.5" />
+            <circle cx="0" cy="0" r="3.5" fill="#F2B441" />
+          </g>
+        </g>
+
+        <!-- 3. 中洲屋台攤車（中央主體＋熱氣＋搖曳紅燈籠） -->
+        <g id="nakasu-yatai">
+          <!-- 熱食蒸氣飄動 -->
+          <path class="steam-rise-1" d="M292,72 Q286,62 293,52 Q300,42 292,32" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+          <path class="steam-rise-2" d="M312,75 Q318,64 311,54 Q304,44 312,34" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+
+          <!-- 屋台斜屋頂 -->
+          <polygon points="242,88 458,88 470,104 230,104" fill="#23406B" stroke="#23406B" stroke-width="2" stroke-linejoin="round" />
+          <!-- 屋台木柱 -->
+          <rect x="248" y="104" width="8" height="64" fill="#F2B441" stroke="#23406B" stroke-width="1.8" />
+          <rect x="444" y="104" width="8" height="64" fill="#F2B441" stroke="#23406B" stroke-width="1.8" />
+          <!-- 屋台暖簾（三片布簾） -->
+          <rect x="262" y="104" width="54" height="28" rx="3" fill="#FFFFFF" stroke="#23406B" stroke-width="1.8" />
+          <text x="289" y="123" font-size="13" font-weight="900" fill="#23406B" text-anchor="middle">博多</text>
+          <rect x="323" y="104" width="54" height="28" rx="3" fill="#FFFFFF" stroke="#23406B" stroke-width="1.8" />
+          <text x="350" y="123" font-size="13" font-weight="900" fill="#D9482F" text-anchor="middle">屋台</text>
+          <rect x="384" y="104" width="54" height="28" rx="3" fill="#FFFFFF" stroke="#23406B" stroke-width="1.8" />
+          <text x="411" y="123" font-size="13" font-weight="900" fill="#23406B" text-anchor="middle">拉麵</text>
+
+          <!-- 屋台吧台與車輪 -->
+          <rect x="236" y="142" width="228" height="26" rx="4" fill="#2F7D6B" stroke="#23406B" stroke-width="2" />
+          <circle cx="274" cy="164" r="12" fill="#F2B441" stroke="#23406B" stroke-width="2" />
+          <circle cx="274" cy="164" r="4" fill="#23406B" />
+          <circle cx="426" cy="164" r="12" fill="#F2B441" stroke="#23406B" stroke-width="2" />
+          <circle cx="426" cy="164" r="4" fill="#23406B" />
+
+          <!-- 左側紅燈籠（帶擺動動畫） -->
+          <g class="lantern-swing">
+            <line x1="224" y1="104" x2="224" y2="112" stroke="#23406B" stroke-width="2" />
+            <rect x="213" y="112" width="22" height="30" rx="10" fill="#D9482F" stroke="#23406B" stroke-width="1.8" />
+            <line x1="214" y1="122" x2="234" y2="122" stroke="#23406B" stroke-width="1.2" />
+            <line x1="214" y1="132" x2="234" y2="132" stroke="#23406B" stroke-width="1.2" />
+          </g>
+
+          <!-- 右側紅燈籠（帶反向擺動動畫） -->
+          <g class="lantern-swing-delay">
+            <line x1="476" y1="104" x2="476" y2="112" stroke="#23406B" stroke-width="2" />
+            <rect x="465" y="112" width="22" height="30" rx="10" fill="#D9482F" stroke="#23406B" stroke-width="1.8" />
+            <line x1="466" y1="122" x2="486" y2="122" stroke="#23406B" stroke-width="1.2" />
+            <line x1="466" y1="132" x2="486" y2="132" stroke="#23406B" stroke-width="1.2" />
+          </g>
+        </g>
+
+        <!-- 4. 那珂川河岸與動態波紋（底部前景） -->
+        <g id="naka-river">
+          <!-- 河岸堤防線 -->
+          <rect x="0" y="168" width="680" height="8" fill="#2F7D6B" stroke="#23406B" stroke-width="1.8" />
+          <!-- 那珂川水面 -->
+          <rect x="0" y="176" width="680" height="54" fill="#7FB9D6" />
+          <line x1="0" y1="176" x2="680" y2="176" stroke="#23406B" stroke-width="2" />
+          <!-- 動態水波紋 -->
+          <g class="river-wave-1">
+            <path d="M40,192 Q60,187 80,192 T120,192" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M260,196 Q285,190 310,196 T360,196" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M510,191 Q535,186 560,191 T610,191" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+          </g>
+          <g class="river-wave-2">
+            <path d="M145,212 Q170,206 195,212 T245,212" fill="none" stroke="#23406B" stroke-width="2" stroke-linecap="round" />
+            <path d="M395,214 Q420,208 445,214 T495,214" fill="none" stroke="#23406B" stroke-width="2" stroke-linecap="round" />
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="hero-title-box">
+      <span class="hero-badge">FUKUOKA TRAVEL JOURNAL</span>
+      <h1 class="hero-title">福岡六天五夜自由行</h1>
+      <p class="hero-subtitle">2026 年 11 月 16 日（一）至 11 月 21 日（六）</p>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       四大主分類導覽選單（隨頁面正常捲動，高度 >= 68px）
+       ======================================================================== -->
+  <nav class="main-nav" aria-label="主要功能選單">
+    <button type="button" class="nav-btn active" data-tab="overview" onclick="switchTab('overview')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
+      </svg>
+      <span>總覽</span>
+    </button>
+
+    <button type="button" class="nav-btn" data-tab="itinerary" onclick="switchTab('itinerary')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="3"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+        <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
+      </svg>
+      <span>每日行程</span>
+    </button>
+
+    <button type="button" class="nav-btn" data-tab="checklist" onclick="switchTab('checklist')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 11l3 3L22 4"/>
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+      </svg>
+      <span>行前清單</span>
+    </button>
+
+    <button type="button" class="nav-btn" data-tab="hotel" onclick="switchTab('hotel')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 21h18"/>
+        <path d="M5 21V7l8-4v18"/>
+        <path d="M19 21V11l-6-4"/>
+        <path d="M9 9h.01M9 13h.01M9 17h.01"/>
+      </svg>
+      <span>住宿速查</span>
+    </button>
+  </nav>
+
+  <!-- ========================================================================
+       分頁一：【總覽】
+       ======================================================================== -->
+  <section id="tab-overview" class="tab-section active">
+    <!-- 智慧時間狀態看板 -->
+    <div class="status-banner" id="tripStatusBanner">
+      <!-- 由 JavaScript 動態渲染倒數計時或旅程進行中狀態 -->
+    </div>
+
+    <!-- 航班資訊（登機證風格卡片） -->
+    <div id="flightsContainer"></div>
+
+    <!-- 快捷重點摘要卡 -->
+    <div class="card">
+      <h2 class="section-title">📌 六天五夜行程亮點總覽</h2>
+      <div id="overviewDaysSummary" style="display:flex; flex-direction:column; gap:10px;"></div>
+    </div>
+
+    <div class="back-to-nav-wrap">
+      <button type="button" class="btn-back-top" onclick="scrollToNav()">↑ 返回主選單</button>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       分頁二：【每日行程】
+       ======================================================================== -->
+  <section id="tab-itinerary" class="tab-section">
+    <!-- 六天日期選擇按鈕 -->
+    <div class="day-selector" id="daySelectorBar" role="tablist" aria-label="選擇旅行日期"></div>
+
+    <!-- 黏性每日資訊摘要區（隨捲動保持在視窗上方可見） -->
+    <div class="sticky-day-summary" id="stickyDaySummary"></div>
+
+    <!-- 晴天 / 雨天替代方案切換開關 -->
+    <div class="weather-mode-bar" role="group" aria-label="晴雨行程模式切換">
+      <button type="button" id="btnSunnyMode" class="mode-btn active-sunny" onclick="setWeatherMode('sunny')">☀️ 晴天標準行程</button>
+      <button type="button" id="btnRainyMode" class="mode-btn" onclick="setWeatherMode('rainy')">☔ 雨天替代方案</button>
+    </div>
+
+    <!-- 行程時間軸卡片與交通連接器 -->
+    <div id="timelineContainer"></div>
+
+    <!-- 每日花費記帳模組 -->
+    <div class="card expense-card">
+      <h2 class="section-title">💴 當日花費紀錄（自動換算台幣）</h2>
+      <div class="rate-bar">
+        <label for="jpyRateInput" style="font-weight:700; color:var(--hakata-blue);">目前匯率 1 JPY =</label>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <input type="number" id="jpyRateInput" class="rate-input" step="0.001" min="0.01" onchange="updateExchangeRate(this.value)" />
+          <span style="font-weight:700;">TWD</span>
+        </div>
+      </div>
+
+      <form class="expense-form" onsubmit="addDailyExpense(event)">
+        <input type="text" id="expName" class="full-span" placeholder="項目名稱（例如：一蘭拉麵、地鐵一日券）" required />
+        <select id="expCategory" aria-label="花費分類">
+          <option value="餐飲">🍜 餐飲美食</option>
+          <option value="交通">🚇 交通移動</option>
+          <option value="購物">🛍️ 購物伴手禮</option>
+          <option value="門票">🎫 景點門票</option>
+          <option value="其他">📦 其他支出</option>
+        </select>
+        <input type="number" id="expAmountJpy" placeholder="日圓金額 (¥)" min="1" step="1" required />
+        <button type="submit" class="btn-add-expense">＋ 新增此筆花費</button>
+      </form>
+
+      <div id="dailyExpenseSummary" style="font-weight:900; color:var(--pine-green); margin-bottom:10px; font-size:17px;"></div>
+      <ul class="expense-list" id="dailyExpenseList"></ul>
+    </div>
+
+    <div class="back-to-nav-wrap">
+      <button type="button" class="btn-back-top" onclick="scrollToNav()">↑ 返回主選單</button>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       分頁三：【行前清單】
+       ======================================================================== -->
+  <section id="tab-checklist" class="tab-section">
+    <!-- 整體準備進度卡 -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 class="section-title" style="margin-bottom:0;">🎒 整體準備進度</h2>
+        <span id="checklistProgressText" style="font-weight:900; font-size:18px; color:var(--pine-green);">0 / 0 (0%)</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="checklistProgressFill"></div>
+      </div>
+      <p style="font-size:14px; color:var(--text-muted);">勾選項目將自動儲存在您的手機瀏覽器中。</p>
+    </div>
+
+    <!-- 行前待辦區塊 -->
+    <div class="card">
+      <h2 class="section-title">📋 行前待辦事項</h2>
+      <div class="checklist-add-row">
+        <input type="text" id="newTodoInput" placeholder="新增行前待辦（例如：開通漫遊）" onkeydown="if(event.key==='Enter') addChecklistItem('todo')" />
+        <button type="button" style="background-color:var(--hakata-blue); color:#FFFFFF;" onclick="addChecklistItem('todo')">新增</button>
+      </div>
+      <ul class="checklist-ul" id="todoListUl"></ul>
+    </div>
+
+    <!-- 行李準備區塊 -->
+    <div class="card">
+      <h2 class="section-title">🧳 行李打包清單</h2>
+      <div class="checklist-add-row">
+        <input type="text" id="newLuggageInput" placeholder="新增行李物品（例如：摺疊傘）" onkeydown="if(event.key==='Enter') addChecklistItem('luggage')" />
+        <button type="button" style="background-color:var(--hakata-blue); color:#FFFFFF;" onclick="addChecklistItem('luggage')">新增</button>
+      </div>
+      <ul class="checklist-ul" id="luggageListUl"></ul>
+    </div>
+
+    <div class="back-to-nav-wrap">
+      <button type="button" class="btn-back-top" onclick="scrollToNav()">↑ 返回主選單</button>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       分頁四：【住宿速查】
+       ======================================================================== -->
+  <section id="tab-hotel" class="tab-section">
+    <!-- 住宿詳細資訊 -->
+    <div id="hotelsContainer"></div>
+
+    <!-- 六天總花費統計面板 -->
+    <div class="card">
+      <h2 class="section-title">💰 六天旅程總支出彙整</h2>
+      <div id="totalBudgetContainer"></div>
+    </div>
+
+    <!-- 福岡分區購物與退稅指南 -->
+    <div class="card">
+      <h2 class="section-title">🛍️ 福岡購物分區與退稅速查</h2>
+      <div id="shoppingGuideContainer"></div>
+    </div>
+
+    <!-- 緊急聯絡電話與重要憑證速查 -->
+    <div class="card">
+      <h2 class="section-title">🚨 重要憑證與緊急聯絡速查</h2>
+      <div id="emergencyContainer"></div>
+    </div>
+
+    <!-- 資料管理區（安全重設按鈕） -->
+    <div class="card" style="text-align:center;">
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:10px;">若需清除本機勾選與記帳紀錄並還原為初始範例資料，可點擊下方按鈕：</p>
+      <button type="button" style="color:var(--mentaiko-red); border-color:var(--mentaiko-red);" onclick="openResetModal()">↺ 重設為預設範例資料</button>
+    </div>
+
+    <div class="back-to-nav-wrap">
+      <button type="button" class="btn-back-top" onclick="scrollToNav()">↑ 返回主選單</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- 輕量提示氣泡 Toast -->
+<div id="toastMsg" class="toast-msg" role="status" aria-live="polite"></div>
+
+<!-- 重設資料確認彈窗 -->
+<div id="resetModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="resetModalTitle">
+  <div class="modal-box">
+    <h3 id="resetModalTitle" style="font-size:19px; font-weight:900; color:var(--hakata-blue); margin-bottom:8px;">確定要重設所有資料嗎？</h3>
+    <p style="font-size:15px; color:var(--text-main); margin-bottom:16px;">這將會清除您自訂的行程打勾狀態、行前清單與所有記帳花費，並還原為原始範例內容。</p>
+    <div style="display:flex; gap:10px; justify-content:flex-end;">
+      <button type="button" onclick="closeResetModal()">取消</button>
+      <button type="button" style="background-color:var(--mentaiko-red); color:#FFFFFF;" onclick="confirmResetAllData()">確定重設</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   【集中資料設定區 TRIP_DATA】
+   說明：未來若要更新航班、住宿、每日行程或緊急電話，只需直接修改下方物件內容，
+   無需更動任何網頁結構或程式邏輯。所有預設內容均已標示【範例】。
+   ============================================================================ */
+const TRIP_DATA = {
+  // 1. 旅行基本設定
+  tripInfo: {
+    title: "福岡六天五夜自由行",
+    startDate: "2026-11-16",
+    endDate: "2026-11-21",
+    defaultJpyToTwdRate: 0.215
+  },
+
+  // 2. 航班資訊（【範例】含台灣 UTC+8 與日本 UTC+9 時差計算）
+  flights: [
+    {
+      type: "outbound",
+      label: "去程航班・OUTBOUND",
+      airline: "【範例】長榮航空 EVA Air",
+      flightNo: "BR106",
+      fromCode: "TPE",
+      fromCity: "台北桃園",
+      fromTerminal: "第 2 航廈 (T2)",
+      depDate: "2026/11/16 (一)",
+      depTime: "08:10",
+      depTz: "UTC+8 台灣時間",
+      toCode: "FUK",
+      toCity: "日本福岡",
+      toTerminal: "國際線航廈",
+      arrDate: "2026/11/16 (一)",
+      arrTime: "11:15",
+      arrTz: "UTC+9 日本時間（快 1 小時）",
+      duration: "2 小時 05 分",
+      seatInfo: "【範例】經濟艙 / 23kg×1",
+      bookingRef: "【範例】EVA9K2"
+    },
+    {
+      type: "inbound",
+      label: "回程航班・INBOUND",
+      airline: "【範例】長榮航空 EVA Air",
+      flightNo: "BR105",
+      fromCode: "FUK",
+      fromCity: "日本福岡",
+      fromTerminal: "國際線航廈",
+      depDate: "2026/11/21 (六)",
+      depTime: "12:20",
+      depTz: "UTC+9 日本時間",
+      toCode: "TPE",
+      toCity: "台北桃園",
+      toTerminal: "第 2 航廈 (T2)",
+      arrDate: "2026/11/21 (六)",
+      arrTime: "13:50",
+      arrTz: "UTC+8 台灣時間",
+      duration: "2 小時 30 分",
+      seatInfo: "【範例】經濟艙 / 23kg×1",
+      bookingRef: "【範例】EVA9K2"
+    }
+  ],
+
+  // 3. 住宿資訊（【範例】五晚連住博多站周邊，方便放射狀移動）
+  hotels: [
+    {
+      id: "hotel-hakata",
+      name: "【範例】JR九州Blossom博多中央飯店",
+      jpName: "JR九州ホテル ブラッサム博多中央",
+      nights: "11/16 (一) ～ 11/21 (六) 共 5 晚",
+      addressZh: "福岡縣福岡市博多區博多站前 2-2-11",
+      addressJp: "〒812-0011 福岡県福岡市博多区博多駅前2-2-11",
+      nearestStation: "JR / 地鐵「博多站」博多口步行 2 分鐘",
+      checkIn: "14:00 後",
+      checkOut: "11:00 前",
+      bookingCode: "【範例】BK-20261116-8842",
+      phone: "+81-92-477-8739",
+      mapUrl: "https://www.google.com/maps/search/?api=1&query=JR+Kyushu+Hotel+Blossom+Hakata+Central"
+    }
+  ],
+
+  // 4. 六天每日行程（含天氣預報、當晚住宿ID、晴天標準版與雨天備案版）
+  days: [
+    {
+      dayNum: 1,
+      date: "2026-11-16",
+      shortDate: "11/16",
+      weekday: "週一",
+      title: "抵達福岡・博多拉麵與中洲屋台夜色",
+      hotelId: "hotel-hakata",
+      weather: {
+        icon: "🌤️",
+        condition: "晴時多雲",
+        highTemp: 18,
+        lowTemp: 10,
+        rainProb: "10%",
+        outfit: "長袖薄針織＋防風風衣，夜晚那珂川河畔較涼建議帶圍巾。"
+      },
+      sunnyEvents: [
+        {
+          id: "d1-s1",
+          time: "11:15",
+          category: "logistics",
+          categoryLabel: "機場入境",
+          title: "【範例】抵達福岡機場國際線航廈",
+          desc: "辦理入境審查與領取行李，準備搭乘機場接駁車前往國內線航廈轉乘地鐵。",
+          meta: ["預計耗時：約 45-60 分鐘", "提醒：事先截圖 Visit Japan Web QR Code"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Fukuoka+Airport+International+Terminal",
+          transitToNext: {
+            mode: "免費接駁巴士＋福岡地鐵機場線",
+            direction: "往姪濱・唐津方向",
+            from: "福岡機場國際線",
+            to: "博多站（博多口）",
+            rideMins: "巴士 12 分 ＋ 地鐵 5 分",
+            walkMins: "站內轉乘步行約 6 分鐘"
+          }
+        },
+        {
+          id: "d1-s2",
+          time: "12:30",
+          category: "logistics",
+          categoryLabel: "飯店寄放",
+          title: "【範例】JR九州Blossom博多中央 寄放行李",
+          desc: "先至飯店櫃台辦理預先登記並寄放大型行李，輕鬆展開第一天市區散步。",
+          meta: ["預計停留：20 分鐘", "入住時間：14:00 後可領取房卡"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=JR+Kyushu+Hotel+Blossom+Hakata+Central",
+          transitToNext: {
+            mode: "全程步行",
+            direction: "博多站筑紫口側步行",
+            from: "飯店大廳",
+            to: "博多一雙 博多站東本店",
+            rideMins: "步行約 7 分鐘",
+            walkMins: "距離約 550 公尺"
+          }
+        },
+        {
+          id: "d1-s3",
+          time: "13:15",
+          category: "food",
+          categoryLabel: "美食餐廳",
+          title: "【範例】博多一雙 豚骨拉麵",
+          desc: "福岡超人氣「豚骨卡布奇諾」濃郁泡沫湯頭拉麵，麵條可選硬麵搭配明太子飯。",
+          meta: ["料理類型：博多豚骨拉麵", "招牌菜色：味玉拉麵、半熟蛋", "人均預算：¥1,000 - ¥1,300", "訂位建議：無訂位制，建議避開 12 點尖峰"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Hakata+Issou+Hakata+Station+East",
+          transitToNext: {
+            mode: "西鐵巴士（百圓循環巴士）",
+            direction: "往天神・運河城方向",
+            from: "博多站前 A 站牌",
+            to: "運河城前（キャナルシティ博多前）",
+            rideMins: "車程約 6 分鐘",
+            walkMins: "下車步行約 4 分鐘至神社"
+          }
+        },
+        {
+          id: "d1-s4",
+          time: "14:45",
+          category: "sightseeing",
+          categoryLabel: "觀光景點",
+          mustGo: true,
+          title: "【範例】櫛田神社（博多總鎮守）",
+          desc: "福岡最具代表性的古老神社，境內全年展示高達十公尺的豪華「飾り山笠」，別忘了品嘗清甜的靈泉鶴之井。",
+          meta: ["預計停留：50 分鐘", "參拜費用：免費（境內全天開放）"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Kushida+Shrine+Fukuoka",
+          transitToNext: {
+            mode: "全程步行",
+            direction: "穿過川端通商店街連通道",
+            from: "櫛田神社南神門",
+            to: "博多運河城",
+            rideMins: "步行約 4 分鐘",
+            walkMins: "距離約 300 公尺"
+          }
+        },
+        {
+          id: "d1-s5",
+          time: "16:00",
+          category: "shopping",
+          categoryLabel: "購物行程",
+          title: "【範例】博多運河城 Canal City Hakata",
+          desc: "結合運河水舞秀與大型購物商場，可逛橡子共和國、Jump Shop、無印良品與藥妝店，先回飯店辦入住稍作休息。",
+          meta: ["推薦商品：限定版動漫周邊、福岡明太子仙貝", "退稅資訊：館內多數店鋪滿 ¥5,000（未稅）可現場免稅", "營業時間：10:00 - 21:00"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Canal+City+Hakata",
+          transitToNext: {
+            mode: "全程步行",
+            direction: "沿那珂川河畔步道往北",
+            from: "博多運河城西側出口",
+            to: "中洲屋台橫丁（春吉橋旁）",
+            rideMins: "步行約 6 分鐘",
+            walkMins: "距離約 450 公尺"
+          }
+        },
+        {
+          id: "d1-s6",
+          time: "19:00",
+          category: "food",
+          categoryLabel: "美食餐廳",
+          mustGo: true,
+          title: "【範例】中洲屋台街體驗（小金ちゃん／武ちゃん）",
+          desc: "坐在那珂川畔的紅燈籠路邊攤，體驗福岡最道地的夜生活，必點明太子玉子燒、炒拉麵與關東煮。",
+          meta: ["料理類型：日式屋台料理", "招牌菜色：明太子玉子燒、一口餃子、關東煮", "人均預算：¥2,000 - ¥3,000", "訂位建議：現場排隊入座，建議 18:30 前卡位"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Nakasu+Yatai+Fukuoka"
+        }
+      ],
+      rainyEvents: [
+        {
+          id: "d1-r1",
+          time: "11:15",
+          category: "logistics",
+          categoryLabel: "機場入境",
+          title: "【範例】抵達福岡機場國際線航廈",
+          desc: "辦理入境與領取行李，雨天建議直接搭計程車或地鐵前往博多站全室內連通道。",
+          meta: ["預計耗時：約 45-60 分鐘"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Fukuoka+Airport+International+Terminal",
+          transitToNext: {
+            mode: "接駁巴士＋福岡地鐵機場線",
+            direction: "往姪濱方向",
+            from: "福岡機場站",
+            to: "博多站",
+            rideMins: "巴士 12 分 ＋ 地鐵 5 分",
+            walkMins: "地下連通道步行 3 分鐘"
+          }
+        },
+        {
+          id: "d1-r2",
+          time: "12:30",
+          category: "logistics",
+          categoryLabel: "飯店寄放",
+          title: "【範例】JR九州Blossom博多中央 寄放行李",
+          desc: "寄放行李並向櫃台借用免費透明長傘，接著走地下街前往博多站美食街。",
+          meta: ["預計停留：20 分鐘"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=JR+Kyushu+Hotel+Blossom+Hakata+Central",
+          transitToNext: {
+            mode: "室內步行",
+            direction: "博多站筑紫口 2 樓",
+            from: "飯店",
+            to: "博多麵街道（博多デイトス）",
+            rideMins: "步行約 4 分鐘",
+            walkMins: "距離約 300 公尺（全程有遮雨）"
+          }
+        },
+        {
+          id: "d1-r3",
+          time: "13:15",
+          category: "food",
+          categoryLabel: "美食餐廳",
+          title: "【範例】博多麵街道（ShinShin 拉麵）",
+          desc: "免淋雨的室內拉麵一條街，集合福岡各大名店，推薦清爽系豚骨 ShinShin 拉麵。",
+          meta: ["料理類型：博多豚骨拉麵", "招牌菜色：博多純情拉麵、半炒飯", "人均預算：¥1,000 - ¥1,400", "訂位建議：現場排隊"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Hakata+ShinShin+Ramen+DEITOS",
+          transitToNext: {
+            mode: "室內連通道步行",
+            direction: "博多站中央口直結",
+            from: "博多 DEITOS",
+            to: "JR 博多城（AMU PLAZA 博多）",
+            rideMins: "步行約 3 分鐘",
+            walkMins: "距離約 200 公尺"
+          }
+        },
+        {
+          id: "d1-r4",
+          time: "15:00",
+          category: "shopping",
+          categoryLabel: "購物行程",
+          mustGo: true,
+          title: "【範例】AMU PLAZA 博多 & 阪急百貨（雨天備案）",
+          desc: "下雨天最適合逛與車站共構的超大型商場，涵蓋 Tokyu Hands、Pokémon Center 福岡店與服飾雜貨。",
+          meta: ["推薦商品：寶可夢中心博多限定商品、日系文具", "退稅資訊：阪急與 AMU 各設集中退稅櫃台", "營業時間：10:00 - 20:00"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=AMU+PLAZA+Hakata",
+          transitToNext: {
+            mode: "室內步行",
+            direction: "KITTE 博多地下連通道直結",
+            from: "AMU PLAZA 博多",
+            to: "KITTE 博多 9F 美食樓層",
+            rideMins: "步行約 4 分鐘",
+            walkMins: "距離約 250 公尺"
+          }
+        },
+        {
+          id: "d1-r5",
+          time: "18:30",
+          category: "food",
+          categoryLabel: "美食餐廳",
+          title: "【範例】KITTE 博多 敘敘苑燒肉／博多牛腸鍋（雨天備案）",
+          desc: "雨天改至室內餐廳享受豐盛晚餐，無需在户外淋雨排隊。",
+          meta: ["料理類型：日式燒肉／鄉土鍋物", "招牌菜色：牛五花套餐、味噌牛腸鍋", "人均預算：¥3,500 - ¥5,000", "訂位建議：建議提前線上預約"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=KITTE+Hakata"
+        }
+      ]
+    },
+
+    {
+      dayNum: 2,
+      date: "2026-11-17",
+      shortDate: "11/17",
+      weekday: "週二",
+      title: "太宰府天滿宮參拜・柳川遊船與蒸籠鰻魚飯",
+      hotelId: "hotel-hakata",
+      weather: {
+        icon: "☀️",
+        condition: "晴朗微涼",
+        highTemp: 17,
+        lowTemp: 9,
+        rainProb: "10%",
+        outfit: "洋蔥式穿法（發熱衣＋襯衫＋毛衣外套），太宰府山區清晨氣溫較低。"
+      },
+      sunnyEvents: [
+        {
+          id: "d2-s1",
+          time: "09:00",
+          category: "sightseeing",
+          categoryLabel: "觀光景點",
+          mustGo: true,
+          title: "【範例】太宰府天滿宮 & 表參道散步",
+          desc: "日本全國天滿宮總本社，摸摸御神牛祈求智慧，順遊建築大師隈研吾設計的星巴克概念店，現烤梅枝餅必吃！",
+          meta: ["預計停留：2 小時", "必吃點心：かさの家 現烤梅枝餅（¥150）"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Dazaifu+Tenmangu",
+          transitToNext: {
+            mode: "西鐵電車（太宰府線轉天神大牟田線）",
+            direction: "於「西鐵二日市站」轉乘往大牟田方向急行",
+            from: "西鐵太宰府站",
+            to: "西鐵柳川站",
+            rideMins: "車程約 42 分鐘",
+            walkMins: "站內跨月台轉乘約 3 分鐘＋出站搭免費接駁車 10 分鐘"
+          }
+        },
+        {
+          id: "d2-s2",
+          time: "12:15",
+          category: "food",
+          categoryLabel: "美食餐廳",
+          mustGo: true,
+          title: "【範例】元祖本吉屋 柳川蒸籠鰻魚飯",
+          desc: "創業超過三百年的柳川老舖，將蒲燒鰻魚與沾滿秘傳醬汁的米飯放入竹籠二次蒸炊，香氣撲鼻。",
+          meta: ["料理類型：鄉土蒸籠鰻魚飯", "招牌菜色：特上蒸籠鰻魚飯（せいろ蒸し）", "人均預算：¥4,200 - ¥5,500", "訂位建議：熱門時段需現場候位約 30 分鐘"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Ganso+Motoyoshiya+Yanagawa",
+          transitToNext: {
+            mode: "全程步行",
+            direction: "沿護城河畔散步",
+            from: "元祖本吉屋沖端店",
+            to: "柳川遊船乘船處",
+            rideMins: "步行約 5 分鐘",
+            walkMins: "距離約 350 公尺"
+          }
+        },
+        {
+          id: "d2-s3",
+          time: "14:00",
+          category: "sightseeing",
+          categoryLabel: "觀光景點",
+          title: "【範例】水鄉柳川護城河遊船（どんこ舟）",
+          desc: "搭乘傳統木舟穿梭柳樹垂蔭的古運河，聆聽船夫吟唱傳統民謠與驚險的過低橋特技。",
+          meta: ["預計停留：1 小時 10 分", "船票費用：約 ¥1,800（可使用西鐵套票）"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Yanagawa+River+Punting",
+          transitToNext: {
+            mode: "西鐵電車天神大牟田線（特急）",
+            direction: "往西鐵福岡（天神）方向",
+            from: "西鐵柳川站",
+            to: "西鐵福岡（天神）站",
+            rideMins: "車程約 50 分鐘",
+            walkMins: "出站步行約 5 分鐘至百貨區"
+          }
+        },
+        {
+          id: "d2-s4",
+          time: "16:30",
+          category: "shopping",
+          categoryLabel: "購物行程",
+          title: "【範例】天神地下街 & 福岡 PARCO 逛街",
+          desc: "歐風復古石板路的地下街，連接各大百貨，推薦購買 BAKE 起司塔、RINGO 蘋果派與日本藥妝。",
+          meta: ["推薦商品：RINGO 現烤卡士達蘋果派、專櫃美妝", "退稅資訊：PARCO 設有統一免稅櫃台", "營業時間：10:00 - 20:00"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Tenjin+Underground+Shopping+Center"
+        }
+      ],
+      rainyEvents: [
+        {
+          id: "d2-r1",
+          time: "09:30",
+          category: "sightseeing",
+          categoryLabel: "觀光景點",
+          mustGo: true,
+          title: "【範例】太宰府天滿宮（雨天撐傘短暫參拜）",
+          desc: "雨中的太宰府別有一番幽靜詩意，參拜後直接走連通手扶梯前往室內博物館。",
+          meta: ["預計停留：1 小時"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Dazaifu+Tenmangu",
+          transitToNext: {
+            mode: "有頂棚連通手扶梯＋步行",
+            direction: "天滿宮東側虹之隧道",
+            from: "太宰府天滿宮境內",
+            to: "九州國立博物館",
+            rideMins: "步行約 8 分鐘",
+            walkMins: "距離約 500 公尺（大部分有遮蔽）"
+          }
+        },
+        {
+          id: "d2-r2",
+          time: "11:00",
+          category: "sightseeing",
+          categoryLabel: "觀光景點",
+          mustGo: true,
+          title: "【範例】九州國立博物館（雨天室內首選）",
+          desc: "日本四大國立博物館之一，全玻璃帷幕外觀壯觀，館內冷暖氣舒適且館藏豐富。",
+          meta: ["預計停留：2 小時", "門票費用：常設展 ¥700"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Kyushu+National+Museum",
+          transitToNext: {
+            mode: "西鐵電車（太宰府線轉天神大牟田線）",
+            direction: "往西鐵福岡（天神）方向",
+            from: "西鐵太宰府站",
+            to: "西鐵福岡（天神）站",
+            rideMins: "車程約 30 分鐘",
+            walkMins: "站內轉乘步行約 3 分鐘"
+          }
+        },
+        {
+          id: "d2-r3",
+          time: "14:00",
+          category: "shopping",
+          categoryLabel: "購物行程",
+          title: "【範例】天神地下街全天候室內購物（雨天備案）",
+          desc: "放棄戶外柳川遊船，改在全長 600 公尺完全不會淋雨的天神地下街與三越、大丸百貨悠閒逛街喝下午茶。",
+          meta: ["推薦商品：日系服飾、雜貨、甜點伴手禮", "退稅資訊：滿 ¥5,000（未稅）享免稅", "營業時間：10:00 - 20:00"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Tenjin+Underground+Shopping+Center"
+        }
+      ]
+    },
+
+    {
+      dayNum: 3,
+      date: "2026-11-18",
+      shortDate: "11/18",
+      weekday: "週三",
+      title: "大濠公園秋色・福岡城跡與藥院牛腸鍋",
+      hotelId: "hotel-hakata",
+      weather: {
+        icon: "⛅",
+        condition: "多雲時晴",
+        highTemp: 19,
+        lowTemp: 11,
+        rainProb: "20%",
+        outfit: "薄長袖搭配針織開襟衫，適合公園健走的舒適運動鞋。"
+      },
+      sunnyEvents: [
+        {
+          id: "d3-s1",
+          time: "09:30",
+          category: "sightseeing",
+          categoryLabel: "觀光景點",
+          title: "【範例】大濠公園 & 湖畔星巴克晨間咖啡",
+          desc: "仿西湖設計的城市水景公園，11 月中旬湖畔銀杏與紅葉漸染，沿著湖心島步道散步非常愜意。",
+          meta: ["預計停留：1 小時 30 分", "入園費用：免費"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Ohori+Park+Fukuoka",
+          transitToNext: {
+            mode: "全程步行",
+            direction: "穿過大濠公園東側出口至舞鶴公園",
+            from: "大濠公園",
+            to: "福岡城跡（天守台展望台）",
+            rideMins: "步行約 10 分鐘",
+            walkMins: "距離約 750 公尺"
+          }
+        },
+        {
+          id: "d3-s2",
+          time: "11:15",
+          category: "sightseeing",
+          categoryLabel: "觀光景點",
+          title: "【範例】福岡城跡（舞鶴公園）",
+          desc: "黑田官兵衛父子所建的名城遺址，登上天守台可 360 度俯瞰福岡市景與遠方海景。",
+          meta: ["預計停留：1 小時", "門票費用：免費"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Fukuoka+Castle+Ruins",
+          transitToNext: {
+            mode: "福岡地鐵機場線",
+            direction: "往福岡機場・貝塚方向",
+            from: "赤坂站",
+            to: "天神站",
+            rideMins: "車程約 3 分鐘",
+            walkMins: "步行至赤坂站約 8 分鐘"
+          }
+        },
+        {
+          id: "d3-s3",
+          time: "13:00",
+          category: "food",
+          categoryLabel: "美食餐廳",
+          title: "【範例】天神極味屋 漢堡排（味伊萬里牛）",
+          desc: "福岡必排超人氣鐵板漢堡排，自己在熱石上煎烤每一口牛肉，肉汁爆發超下飯！",
+          meta: ["料理類型：日式鐵板漢堡排", "招牌菜色：伊萬里牛漢堡排套餐", "人均預算：¥1,800 - ¥2,600", "訂位建議：不可訂位，建議 13:30 離峰時段前往"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Kiwamiya+Tenjin+PARCO",
+          transitToNext: {
+            mode: "全程步行",
+            direction: "天神西通與警固公園周邊",
+            from: "天神 PARCO",
+            to: "Bic Camera 天神 2 號館",
+            rideMins: "步行約 6 分鐘",
+            walkMins: "距離約 450 公尺"
+          }
+        },
+        {
+          id: "d3-s4",
+          time: "15:00",
+          category: "shopping",
+          categoryLabel: "購物行程",
+          title: "【範例】Bic Camera 天神館 & 天神西通潮牌街",
+          desc: "採購日本最新吹風機、美容儀器、Switch 遊戲與藥妝，搭配優惠券享免稅再折扣。",
+          meta: ["推薦商品：Panasonic 吹風機、日本常備藥", "退稅資訊：10% 免稅＋最高 7% 優惠券", "營業時間：10:00 - 21:00"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Bic+Camera+Tenjin+2nd+Building",
+          transitToNext: {
+            mode: "西鐵電車天神大牟田線",
+            direction: "往大牟田・久留米方向（普通車）",
+            from: "西鐵福岡（天神）站",
+            to: "藥院站",
+            rideMins: "車程約 2 分鐘",
+            walkMins: "出站步行約 5 分鐘"
+          }
+        },
+        {
+          id: "d3-s5",
+          time: "18:30",
+          category: "food",
+          categoryLabel: "美食餐廳",
+          mustGo: true,
+          title: "【範例】博多牛腸鍋（もつ鍋 楽天地／やま中）",
+          desc: "來到福岡絕不能錯過的靈魂鍋物，飽滿彈牙的牛小腸搭配大量韭菜與高麗菜，最後加入強棒麵收尾。",
+          meta: ["料理類型：博多鄉土牛腸鍋", "招牌菜色：味噌口味牛腸鍋、醋拌牛雜", "人均預算：¥3,500 - ¥4,500", "訂位建議：強烈建議提前 2 週網路訂位"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Motsunabe+Yamanaka+Akasaka"
+        }
+      ],
+      rainyEvents: [
+        {
+          id: "d3-r1",
+          time: "10:00",
+          category: "sightseeing",
+          categoryLabel: "觀光景點",
+          mustGo: true,
+          title: "【範例】福岡市美術館（雨天室內藝術行程）",
+          desc: "位於大濠公園南側的知名美術館，門口有草間彌生標誌性的黃色大南瓜，館內收藏達利、米羅與東亞古美術。",
+          meta: ["預計停留：2 小時", "門票費用：常設展 ¥200"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Fukuoka+Art+Museum",
+          transitToNext: {
+            mode: "福岡地鐵機場線",
+            direction: "往福岡機場方向",
+            from: "大濠公園站",
+            to: "天神站",
+            rideMins: "車程約 4 分鐘",
+            walkMins: "步行至地鐵站約 8 分鐘"
+          }
+        },
+        {
+          id: "d3-r2",
+          time: "13:00",
+          category: "food",
+          categoryLabel: "美食餐廳",
+          title: "【範例】天神極味屋 漢堡排（位於 PARCO 地下室內）",
+          desc: "排隊動線位於百貨室內走廊，下雨天也完全不受影響。",
+          meta: ["料理類型：日式鐵板漢堡排", "人均預算：¥1,800 - ¥2,600"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Kiwamiya+Tenjin+PARCO",
+          transitToNext: {
+            mode: "地下連通道步行",
+            direction: "天神地下街往南走到底",
+            from: "天神 PARCO",
+            to: "藥院站周邊餐廳",
+            rideMins: "步行約 12 分鐘",
+            walkMins: "距離約 900 公尺"
+          }
+        },
+        {
+          id: "d3-r3",
+          time: "18:30",
+          category: "food",
+          categoryLabel: "美食餐廳",
+          mustGo: true,
+          title: "【範例】博多牛腸鍋 晚餐",
+          desc: "雨夜裡來一鍋熱騰騰的味噌牛腸鍋最暖身。",
+          meta: ["料理類型：博多鄉土牛腸鍋", "人均預算：¥3,500 - ¥4,500"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Motsunabe+Yamanaka+Akasaka"
+        }
+      ]
+    },
+
+    {
+      dayNum: 4,
+      date: "2026-11-19",
+      shortDate: "11/19",
+      weekday: "週四",
+      title: "門司港懷舊漫步・燒咖哩與小倉城巡禮",
+      hotelId: "hotel-hakata",
+      weather: {
+        icon: "☀️",
+        condition: "晴朗海風大",
+        highTemp: 16,
+        lowTemp: 9,
+        rainProb: "10%",
+        outfit: "關門海峽海風較強，務必穿著防風外套與帽子。"
+      },
+      sunnyEvents: [
+        {
+          id: "d4-s1",
+          time: "09:45",
+          category: "sightseeing",
+          categoryLabel: "觀光景點",
+          mustGo: true,
+          title: "【範例】門司港懷舊區 & 藍翼門司吊橋",
+          desc: "明治至大正時期的紅磚洋風建築群，整點可欣賞日本唯一行人專用「藍翼門司吊橋」開合秀。",
+          meta: ["預計停留：2 小時", "開橋時間：10:00、11:00、13:00 等整點"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Mojiko+Retro",
+          transitToNext: {
+            mode: "全程步行",
+            direction: "沿門司港碼頭棧道",
+            from: "藍翼門司吊橋",
+            to: "門司港海峽廣場餐廳區",
+            rideMins: "步行約 4 分鐘",
+            walkMins: "距離約 300 公尺"
+          }
+        },
+        {
+          id: "d4-s2",
+          time: "12:00",
+          category: "food",
+          categoryLabel: "美食餐廳",
+          mustGo: true,
+          title: "【範例】門司港名物 燒咖哩（Bear Fruits / 伽哩本舗）",
+          desc: "白飯淋上濃厚咖哩醬、打入生雞蛋與滿滿起司進烤箱焗烤，香濃牽絲是門司港必吃美食。",
+          meta: ["料理類型：日式焗烤咖哩", "招牌菜色：牛肉起司燒咖哩、河豚炸物", "人均預算：¥1,300 - ¥1,800", "訂位建議：現場候位"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Bear+Fruits+Mojiko",
+          transitToNext: {
+            mode: "JR 鹿兒島本線（普通/快速列車）",
+            direction: "往博多・久留米方向",
+            from: "JR 門司港站",
+            to: "JR 小倉站",
+            rideMins: "車程約 15 分鐘",
+            walkMins: "出站步行約 12 分鐘至小倉城"
+          }
+        },
+        {
+          id: "d4-s3",
+          time: "14:30",
+          category: "sightseeing",
+          categoryLabel: "觀光景點",
+          title: "【範例】小倉城 & 小倉城庭園",
+          desc: "北九州代表性名城，獨特的「唐造」天守閣內部設有互動體驗展區，秋季庭園楓紅極美。",
+          meta: ["預計停留：1 小時 30 分", "門票費用：天守閣＋庭園共通券 ¥560"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Kokura+Castle",
+          transitToNext: {
+            mode: "全程步行",
+            direction: "經過紫川鷗外橋往東",
+            from: "小倉城東門",
+            to: "旦過市場 & 魚町銀天街",
+            rideMins: "步行約 8 分鐘",
+            walkMins: "距離約 600 公尺"
+          }
+        },
+        {
+          id: "d4-s4",
+          time: "16:30",
+          category: "shopping",
+          categoryLabel: "購物行程",
+          title: "【範例】魚町銀天街 & 小倉站 AMU PLAZA",
+          desc: "日本拱廊商店街發源地，好逛又平價，採買北九州名產「小倉日記」年輪蛋糕後搭車返回博多。",
+          meta: ["推薦商品：つる平 小倉日記、堅パン餅乾", "退稅資訊：車站商場內支援免稅", "營業時間：10:00 - 20:00"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Uomachi+Gintengai+Kokura"
+        }
+      ],
+      rainyEvents: [
+        {
+          id: "d4-r1",
+          time: "10:00",
+          category: "sightseeing",
+          categoryLabel: "觀光景點",
+          mustGo: true,
+          title: "【範例】九州鐵道紀念館（雨天鐵道迷必訪）",
+          desc: "緊鄰 JR 門司港站，室內主館可體驗迷你駕駛模擬器與明治時代客車車廂，完全不受雨天影響。",
+          meta: ["預計停留：1 小時 45 分", "門票費用：¥300"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Kyushu+Railway+History+Museum",
+          transitToNext: {
+            mode: "步行＋JR 鹿兒島本線",
+            direction: "往小倉・博多方向",
+            from: "JR 門司港站",
+            to: "JR 小倉站",
+            rideMins: "車程約 15 分鐘",
+            walkMins: "站內連通步行"
+          }
+        },
+        {
+          id: "d4-r2",
+          time: "12:30",
+          category: "food",
+          categoryLabel: "美食餐廳",
+          title: "【範例】小倉站室內美食街 燒咖哩／小倉鐵鍋餃子",
+          desc: "直接在與小倉站共構的商場享用午餐，免淋雨。",
+          meta: ["料理類型：北九州鄉土料理", "人均預算：¥1,500 - ¥2,200"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Kokura+Station",
+          transitToNext: {
+            mode: "有頂棚拱廊商店街步行",
+            direction: "小倉站南口步行 3 分鐘進入拱廊",
+            from: "JR 小倉站",
+            to: "魚町銀天街全蓋式商店街",
+            rideMins: "步行約 5 分鐘",
+            walkMins: "距離約 350 公尺（全程有遮雨頂棚）"
+          }
+        },
+        {
+          id: "d4-r3",
+          time: "14:00",
+          category: "shopping",
+          categoryLabel: "購物行程",
+          title: "【範例】魚町銀天街全蓋式商店街逛街（雨天備案）",
+          desc: "全程有高挑玻璃頂棚遮雨，集結藥妝、百元商店、老字號和菓子與咖啡館。",
+          meta: ["推薦商品：小倉日記、平價藥妝", "營業時間：10:00 - 20:00"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Uomachi+Gintengai+Kokura"
+        }
+      ]
+    },
+
+    {
+      dayNum: 5,
+      date: "2026-11-20",
+      shortDate: "11/20",
+      weekday: "週五",
+      title: "海之中道公園・福岡塔浪漫夜景",
+      hotelId: "hotel-hakata",
+      weather: {
+        icon: "🌤️",
+        condition: "晴時多雲",
+        highTemp: 18,
+        lowTemp: 11,
+        rainProb: "15%",
+        outfit: "休閒褲裝與輕便外套，傍晚海濱百道海風涼爽建議帶薄圍巾。"
+      },
+      sunnyEvents: [
+        {
+          id: "d5-s1",
+          time: "10:00",
+          category: "sightseeing",
+          categoryLabel: "觀光景點",
+          title: "【範例】海之中道海濱公園（單車環園＋水豚動物森林）",
+          desc: "三面環海的國營大型公園，租借腳踏車穿梭在秋日波斯菊花海與森林車道，還能近距離看水豚與袋鼠。",
+          meta: ["預計停留：3 小時", "門票費用：入園 ¥450＋租腳踏車 ¥600"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Uminonakamichi+Seaside+Park",
+          transitToNext: {
+            mode: "高速渡輪「Uminaka Line」海上航線",
+            direction: "博多灣橫渡航線（往百道濱 Marizon）",
+            from: "海之中道渡輪碼頭",
+            to: "百道濱（Marizon 碼頭）",
+            rideMins: "航程約 20 分鐘",
+            walkMins: "下船步行約 5 分鐘至福岡塔"
+          }
+        },
+        {
+          id: "d5-s2",
+          time: "14:30",
+          category: "food",
+          categoryLabel: "美食餐廳",
+          title: "【範例】百道海濱公園 Marizon 海景下午茶",
+          desc: "坐落在沙灘上的歐風海上建築群，點份明太子義大利麵或鬆餅，眺望博多灣蔚藍海景。",
+          meta: ["料理類型：海景洋食咖啡館", "招牌菜色：博多明太子奶油義大利麵", "人均預算：¥1,600 - ¥2,400", "訂位建議：窗邊座位建議提前預約"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Momochi+Seaside+Park+Marizon",
+          transitToNext: {
+            mode: "全程步行",
+            direction: "沿百道海濱中央步道往南",
+            from: "Marizon 海濱廣場",
+            to: "福岡塔入口",
+            rideMins: "步行約 4 分鐘",
+            walkMins: "距離約 300 公尺"
+          }
+        },
+        {
+          id: "d5-s3",
+          time: "16:45",
+          category: "sightseeing",
+          categoryLabel: "觀光景點",
+          mustGo: true,
+          title: "【範例】福岡塔（日本最高海濱塔・夕陽與百萬夜景）",
+          desc: "登上 123 公尺高空展望室，一次收藏黃昏夕陽染紅博多灣與璀璨城市燈火的絕美時刻。",
+          meta: ["預計停留：1 小時 30 分", "門票費用：成人 ¥800（外國旅客出示護照享優惠）"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Fukuoka+Tower",
+          transitToNext: {
+            mode: "西鐵巴士（306 號快速巴士）",
+            direction: "經都市高速往博多站方向",
+            from: "福岡塔南口站牌",
+            to: "博多巴士總站（博多站旁）",
+            rideMins: "車程約 25 分鐘",
+            walkMins: "下車步行約 3 分鐘"
+          }
+        },
+        {
+          id: "d5-s4",
+          time: "19:00",
+          category: "food",
+          categoryLabel: "美食餐廳",
+          title: "【範例】博多站 水炊雞肉鍋（華味鳥／濱田屋）",
+          desc: "最後一晚品嘗福岡三大名物之一的「水炊雞肉鍋」，乳白色膠原蛋白雞湯鮮美溫潤。",
+          meta: ["料理類型：博多水炊雞肉鍋", "招牌菜色：金華套餐（含前菜、雞肉丸、雜炊）", "人均預算：¥4,500 - ¥6,000", "訂位建議：建議提前線上預約包廂或桌位"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Hakata+Hanamidori+Hakata+Station"
+        }
+      ],
+      rainyEvents: [
+        {
+          id: "d5-r1",
+          time: "10:30",
+          category: "shopping",
+          categoryLabel: "購物行程",
+          mustGo: true,
+          title: "【範例】LaLaport 福岡 & 1:1 實物大鋼彈立像（雨天備案）",
+          desc: "大型全室內購物中心，集結超過 220 間店鋪、九州最大規模美食街與 Jump 專賣店。",
+          meta: ["推薦商品：福岡限定鋼彈模型、日系服飾", "退稅資訊：館內設免稅櫃台", "營業時間：10:00 - 21:00"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=LaLaport+Fukuoka",
+          transitToNext: {
+            mode: "西鐵直達巴士",
+            direction: "往 PayPay 巨蛋・Mark Is 福岡百道方向",
+            from: "LaLaport 福岡巴士站",
+            to: "Mark Is 福岡百道",
+            rideMins: "車程約 35 分鐘",
+            walkMins: "下車直達商場"
+          }
+        },
+        {
+          id: "d5-r2",
+          time: "15:00",
+          category: "sightseeing",
+          categoryLabel: "觀光景點",
+          mustGo: true,
+          title: "【範例】teamLab Forest 福岡（BOSS E・ZO FUKUOKA）",
+          desc: "雨天超推薦的沉浸式光影美術館，在室內就能體驗捕捉森林神獸與奇幻光影互動。",
+          meta: ["預計停留：1 小時 30 分", "門票費用：成人 ¥2,400（建議事先網路購票）"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=teamLab+Forest+Fukuoka",
+          transitToNext: {
+            mode: "西鐵巴士",
+            direction: "往博多站方向",
+            from: "PayPay 巨蛋前站牌",
+            to: "博多站前",
+            rideMins: "車程約 22 分鐘",
+            walkMins: "下車步行 3 分鐘"
+          }
+        },
+        {
+          id: "d5-r3",
+          time: "19:00",
+          category: "food",
+          categoryLabel: "美食餐廳",
+          title: "【範例】博多站 水炊雞肉鍋 晚餐",
+          desc: "溫暖濃郁的雞湯鍋物為旅程畫下完美句點。",
+          meta: ["料理類型：博多水炊雞肉鍋", "人均預算：¥4,500 - ¥6,000"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Hakata+Hanamidori+Hakata+Station"
+        }
+      ]
+    },
+
+    {
+      dayNum: 6,
+      date: "2026-11-21",
+      shortDate: "11/21",
+      weekday: "週六",
+      title: "博多站伴手禮最終採買・滿載而歸",
+      hotelId: "hotel-hakata",
+      weather: {
+        icon: "☀️",
+        condition: "晴朗舒適",
+        highTemp: 18,
+        lowTemp: 10,
+        rainProb: "10%",
+        outfit: "搭機舒適寬鬆穿搭，隨身備一件薄外套因應機上冷氣。"
+      },
+      sunnyEvents: [
+        {
+          id: "d6-s1",
+          time: "08:45",
+          category: "logistics",
+          categoryLabel: "退房寄物",
+          title: "【範例】飯店辦理退房 & 行李暫存",
+          desc: "整理戰利品與檢查護照、充電器，11:00 前完成退房並暫放行李於飯店櫃台。",
+          meta: ["預計停留：15 分鐘", "提醒：液體類伴手禮務必放入託運行李箱"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=JR+Kyushu+Hotel+Blossom+Hakata+Central",
+          transitToNext: {
+            mode: "全程步行",
+            direction: "走進博多站中央大廳",
+            from: "飯店",
+            to: "博多銘品藏（博多駅マイング / デイトス）",
+            rideMins: "步行約 3 分鐘",
+            walkMins: "距離約 220 公尺"
+          }
+        },
+        {
+          id: "d6-s2",
+          time: "09:15",
+          category: "shopping",
+          categoryLabel: "購物行程",
+          mustGo: true,
+          title: "【範例】博多銘品藏 伴手禮最終掃貨",
+          desc: "把漏買的博多伴手禮一次補齊！推薦明月堂「博多通りもん」饅頭、福太郎「Menbei」明太子仙貝與努努雞冷炸雞。",
+          meta: ["推薦商品：博多通饅頭、Menbei 明太子仙貝、如水庵筑紫餅", "退稅資訊：銘品藏指定櫃台滿 ¥5,000（未稅）可免稅", "營業時間：08:00 - 21:00"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Hakata+Meihingura",
+          transitToNext: {
+            mode: "步行取行李＋福岡地鐵機場線＋免費接駁巴士",
+            direction: "往福岡機場方向",
+            from: "博多站",
+            to: "福岡機場國際線航廈",
+            rideMins: "地鐵 5 分 ＋ 接駁巴士 12 分",
+            walkMins: "回飯店拿行李＋轉乘步行約 12 分鐘"
+          }
+        },
+        {
+          id: "d6-s3",
+          time: "10:20",
+          category: "logistics",
+          categoryLabel: "機場報到",
+          title: "【範例】福岡機場國際線報到 & 免稅店最後衝刺",
+          desc: "起飛前 2 小時抵達櫃台辦理行李託運，通關後可於國際線免稅店購買 Royce 生巧克力、白色戀人與一蘭拉麵禮盒（手提上機免佔託運重量）。",
+          meta: ["起飛時間：12:20 (BR105)", "提醒：生鮮明太子需加購保冷袋並確認符合入境規定"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Fukuoka+Airport+International+Terminal"
+        }
+      ],
+      rainyEvents: [
+        {
+          id: "d6-r1",
+          time: "08:45",
+          category: "logistics",
+          categoryLabel: "退房寄物",
+          title: "【範例】飯店辦理退房 & 行李暫存",
+          desc: "整理行李並辦理退房。",
+          meta: ["預計停留：15 分鐘"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=JR+Kyushu+Hotel+Blossom+Hakata+Central",
+          transitToNext: {
+            mode: "步行",
+            direction: "博多站 1 樓室内伴手禮街",
+            from: "飯店",
+            to: "博多銘品藏（Maing 商場）",
+            rideMins: "步行約 3 分鐘",
+            walkMins: "距離約 220 公尺"
+          }
+        },
+        {
+          id: "d6-r2",
+          time: "09:15",
+          category: "shopping",
+          categoryLabel: "購物行程",
+          mustGo: true,
+          title: "【範例】博多 Maing 室內伴手禮街採買",
+          desc: "全室內伴手禮商場，下雨天也能從容購買福岡特產。",
+          meta: ["推薦商品：博多通饅頭、明太子仙貝", "營業時間：09:00 - 21:00"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Hakata+Meihingura",
+          transitToNext: {
+            mode: "地鐵機場線＋接駁巴士（或雨天直接搭計程車約 15 分鐘）",
+            direction: "往福岡機場國際線航廈",
+            from: "博多站",
+            to: "福岡機場國際線航廈",
+            rideMins: "約 15 - 20 分鐘",
+            walkMins: "雨天行李多建議搭計程車直達國際線門口（約 ¥1,600）"
+          }
+        },
+        {
+          id: "d6-r3",
+          time: "10:20",
+          category: "logistics",
+          categoryLabel: "機場報到",
+          title: "【範例】福岡機場國際線報到返台",
+          desc: "辦理託運與出境審查，搭乘 12:20 班機返回溫暖的家。",
+          meta: ["起飛時間：12:20 (BR105)"],
+          mapUrl: "https://www.google.com/maps/search/?api=1&query=Fukuoka+Airport+International+Terminal"
+        }
+      ]
+    }
+  ],
+
+  // 5. 行前清單初始預設項目
+  initialChecklist: {
+    todo: [
+      { id: "td-1", text: "確認護照有效期限（需滿 6 個月以上）", done: true },
+      { id: "td-2", text: "填寫 Visit Japan Web（入境審查與海關申報 QR Code）", done: false },
+      { id: "td-3", text: "購買日本上網卡 / 開通原號 eSIM 漫遊", done: false },
+      { id: "td-4", text: "投保海外旅遊平安險＋不便險（含醫療專機保障）", done: false },
+      { id: "td-5", text: "兌換日圓現鈔（屋台與部分老店僅收現金）", done: false },
+      { id: "td-6", text: "手機綁定交通 IC 卡（Apple Wallet Suica / ICOCA）", done: false },
+      { id: "td-7", text: "確認熱門餐廳訂位（牛腸鍋、水炊雞肉鍋）", done: false }
+    ],
+    luggage: [
+      { id: "lg-1", text: "護照正本、身分證、信用卡（高海外回饋卡）", done: true },
+      { id: "lg-2", text: "日圓現金、零錢包（日本硬幣種類多非常實用）", done: false },
+      { id: "lg-3", text: "行動電源（務必隨身登機，不可託運）＋充電線", done: false },
+      { id: "lg-4", text: "11 月秋裝：薄長袖、針織毛衣、防風保暖外套", done: false },
+      { id: "lg-5", text: "好走的運動鞋（每日步行約 1.2 - 1.8 萬步）", done: false },
+      { id: "lg-6", text: "個人常備藥（腸胃藥、止痛藥、暈船藥、OK繃）", done: false },
+      { id: "lg-7", text: "摺疊購物袋（日本塑膠袋需付費）＋壓縮收納袋", done: false },
+      { id: "lg-8", text: "摺疊晴雨傘、保濕乳液與護唇膏（日本乾燥）", done: false }
+    ]
+  },
+
+  // 6. 福岡分區購物與退稅指南
+  shoppingGuides: [
+    {
+      zone: "📍 博多車站商圈（AMU PLAZA / 阪急 / 銘品藏）",
+      items: "明月堂「博多通りもん」西洋饅頭、福太郎「Menbei」明太子仙貝、稚加榮明太子管裝醬、努努雞（冷吃炸雞）、寶可夢中心博多限定周邊。",
+      taxTip: "阪急百貨與 AMU PLAZA 設有集中退稅櫃台，需於「購物當日」攜帶護照正本、收據與商品辦理（部分手續費約 1.55%）。"
+    },
+    {
+      zone: "📍 天神地下街 & 百貨區（PARCO / 岩田屋 / Bic Camera）",
+      items: "RINGO 現烤卡士達蘋果派、BAKE 起司塔、茅乃舍高湯包（岩田屋本館 B2）、藥妝美妝與家電。",
+      taxTip: "藥妝店與 Bic Camera 多為結帳時直接免稅；消耗品（食品、化妝品）會裝入透明免稅密封袋，出境日本前不可拆封。"
+    },
+    {
+      zone: "📍 中洲川端 & 博多運河城區",
+      items: "川端通商店街傳統和菓子、櫛田神社限定御守、運河城限定卡通周邊與戶外服飾。",
+      taxTip: "日本免稅門檻為同一天、同一店家（或指定商場）消費滿 ¥5,000（未稅，含稅為 ¥5,500）即可辦理。"
+    }
+  ],
+
+  // 7. 緊急聯絡與重要憑證速查
+  emergencyInfo: {
+    reservations: [
+      { title: "【範例】博多牛腸鍋 やま中（11/18 18:30）", code: "預約代號：#MT-90421（2位）" },
+      { title: "【範例】博多華味鳥 水炊鍋（11/20 19:00）", code: "預約代號：#HW-55188（2位）" },
+      { title: "【範例】海外旅平險保單（國泰/富邦範例）", code: "保單號碼：TRV-2026-881920" }
+    ],
+    contacts: [
+      { label: "日本警察局（報案）", number: "110", tel: "110" },
+      { label: "日本火警・救護車", number: "119", tel: "119" },
+      { label: "台北駐福岡經濟文化辦事處（急難救助）", number: "+81-90-1922-9740", tel: "+819019229740" },
+      { label: "日本觀光局 24H 多語種遊客熱線", number: "050-3816-2787", tel: "+815038162787" }
+    ]
+  }
+};
+
+/* ============================================================================
+   【應用程式狀態與 LocalStorage 持久化管理】
+   ============================================================================ */
+const STORAGE_KEY = "fukuoka_trip_2026_state_v1";
+
+let appState = {
+  activeTab: "overview",
+  selectedDay: 1,
+  weatherMode: "sunny", // 'sunny' 或 'rainy'
+  simulateLiveTrip: false, // 預覽旅程進行中模式
+  completedEvents: {}, // { "d1-s1": true }
+  checklist: JSON.parse(JSON.stringify(TRIP_DATA.initialChecklist)),
+  jpyRate: TRIP_DATA.tripInfo.defaultJpyToTwdRate,
+  expenses: {
+    1: [
+      { id: "exp-demo-1", name: "【範例】博多一雙拉麵", category: "餐飲", jpy: 1200 }
+    ],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: []
+  }
+};
+
+// 從 LocalStorage 載入儲存狀態
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      appState = {
+        ...appState,
+        ...parsed,
+        checklist: parsed.checklist || JSON.parse(JSON.stringify(TRIP_DATA.initialChecklist)),
+        expenses: parsed.expenses || appState.expenses
+      };
+    }
+  } catch (e) {
+    console.warn("讀取本機紀錄失敗，使用預設狀態", e);
+  }
+}
+
+// 儲存狀態至 LocalStorage
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+  } catch (e) {
+    console.warn("儲存本機紀錄失敗", e);
+  }
+}
+
+// 顯示輕量提示氣泡
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById("toastMsg");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    el.classList.remove("show");
+  }, 2200);
+}
+
+// 一鍵複製文字（相容 iFrame 與手機瀏覽器）
+function copyText(text, label) {
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    document.execCommand("copy");
+    showToast(`已複製${label || "內容"}：${text}`);
+  } catch (err) {
+    showToast("複製失敗，請手動長按選取");
+  }
+  document.body.removeChild(textarea);
+}
+
+/* ============================================================================
+   【主選單導覽切換與平滑捲動】
+   ============================================================================ */
+function switchTab(tabName) {
+  appState.activeTab = tabName;
+  saveState();
+
+  // 更新導覽按鈕選中狀態
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.tab === tabName);
+  });
+
+  // 切換顯示對應內容區塊
+  document.querySelectorAll(".tab-section").forEach(sec => {
+    sec.classList.toggle("active", sec.id === `tab-${tabName}`);
+  });
+
+  // 若切換到住宿速查，重新計算最新六天總花費
+  if (tabName === "hotel") {
+    renderTotalBudget();
+  }
+}
+
+function scrollToNav() {
+  const navEl = document.querySelector(".main-nav");
+  if (navEl) {
+    navEl.scrollIntoView({ behavior: "smooth", block: "start" });
+  } else {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+/* ============================================================================
+   【分頁一：旅行總覽渲染（智慧倒數 / 進行中提醒 + 登機證卡片）】
+   ============================================================================ */
+function renderOverview() {
+  renderStatusBanner();
+  renderFlights();
+  renderOverviewDaysSummary();
+}
+
+function toggleSimulateTrip() {
+  appState.simulateLiveTrip = !appState.simulateLiveTrip;
+  saveState();
+  renderStatusBanner();
+  showToast(appState.simulateLiveTrip ? "已切換為「旅程進行中」預覽模式" : "已切換回真實時間模式");
+}
+
+function renderStatusBanner() {
+  const banner = document.getElementById("tripStatusBanner");
+  const now = new Date();
+  // 設定日本當地出發時間 2026-11-16 08:10 (UTC+8 台灣起飛)
+  const tripStart = new Date("2026-11-16T08:10:00+08:00");
+  const tripEnd = new Date("2026-11-21T23:59:59+09:00");
+
+  // 判斷目前是否為旅程進行中（或使用者開啟模擬預覽）
+  const isDuringTrip = appState.simulateLiveTrip || (now >= tripStart && now <= tripEnd);
+
+  if (isDuringTrip) {
+    // 計算目前第幾天（模擬模式預設顯示 Day 1 下午）
+    let currentDayNum = 1;
+    let simHour = 14;
+    let simMin = 20;
+
+    if (!appState.simulateLiveTrip) {
+      const diffDays = Math.floor((now - new Date("2026-11-16T00:00:00+09:00")) / (1000 * 60 * 60 * 24)) + 1;
+      currentDayNum = Math.min(Math.max(diffDays, 1), 6);
+      // 取得日本時間時分
+      const jpTimeStr = now.toLocaleTimeString("en-GB", { timeZone: "Asia/Tokyo", hour: "2-digit", minute: "2-digit" });
+      const parts = jpTimeStr.split(":");
+      simHour = parseInt(parts[0], 10);
+      simMin = parseInt(parts[1], 10);
+    }
+
+    const dayData = TRIP_DATA.days[currentDayNum - 1];
+    const events = dayData.sunnyEvents;
+    const nowMinutes = simHour * 60 + simMin;
+
+    // 尋找下一個尚未開始的行程
+    let nextEvent = events.find(ev => {
+      const [h, m] = ev.time.split(":").map(Number);
+      return (h * 60 + m) > nowMinutes;
+    });
+    if (!nextEvent) {
+      nextEvent = events[events.length - 1];
+    }
+
+    banner.innerHTML = `
+      <div class="status-header-row">
+        <span class="status-pill">✨ 旅程進行中・DAY ${currentDayNum} / 6</span>
+        <button type="button" class="sim-toggle-btn" onclick="toggleSimulateTrip()">
+          ${appState.simulateLiveTrip ? "關閉模擬預覽" : "切換日期狀態"}
+        </button>
+      </div>
+      <div style="font-size:19px; font-weight:900; margin-bottom:4px;">
+        今天是 ${dayData.shortDate}（${dayData.weekday}）${dayData.title}
+      </div>
+      <div class="live-next-event">
+        <div style="font-size:13px; color:var(--mentaiko-red); font-weight:900;">⏰ 下一站行程提醒（${nextEvent.time}）</div>
+        <div style="font-size:17px; font-weight:900; margin:2px 0;">${nextEvent.title}</div>
+        <div style="font-size:14px; color:var(--text-muted);">${nextEvent.desc}</div>
+        <div style="margin-top:8px;">
+          <button type="button" style="min-height:38px; font-size:14px; background-color:var(--lantern-yellow);" onclick="jumpToDay(${currentDayNum})">
+            查看今日完整時間軸 →
+          </button>
+        </div>
+      </div>
+    `;
+  } else if (now < tripStart) {
+    // 出發前倒數計時
+    const diffMs = tripStart - now;
+    const totalMins = Math.floor(diffMs / (1000 * 60));
+    const days = Math.floor(totalMins / (60 * 24));
+    const hours = Math.floor((totalMins % (60 * 24)) / 60);
+    const mins = totalMins % 60;
+
+    banner.innerHTML = `
+      <div class="status-header-row">
+        <span class="status-pill">⏳ 距離福岡出發倒數</span>
+        <button type="button" class="sim-toggle-btn" onclick="toggleSimulateTrip()">預覽旅程中畫面</button>
+      </div>
+      <div style="font-size:17px; font-weight:700;">行李準備好了嗎？即將飛往美食之都博多！</div>
+      <div class="countdown-grid">
+        <div class="countdown-box">
+          <div class="countdown-num">${days}</div>
+          <div class="countdown-label">天 DAYS</div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-num">${hours}</div>
+          <div class="countdown-label">小時 HRS</div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-num">${mins}</div>
+          <div class="countdown-label">分鐘 MINS</div>
+        </div>
+      </div>
+    `;
+  } else {
+    // 旅程結束後
+    banner.innerHTML = `
+      <div class="status-header-row">
+        <span class="status-pill">📷 美好回憶已封存</span>
+        <button type="button" class="sim-toggle-btn" onclick="toggleSimulateTrip()">預覽旅程中畫面</button>
+      </div>
+      <div style="font-size:18px; font-weight:900; margin-bottom:4px;">2026 福岡六天五夜自由行圓滿完成！</div>
+      <p style="font-size:15px; opacity:0.95;">您可以隨時翻閱下方行程紀錄，或至「住宿速查」查看六天總花費統計。</p>
+    `;
+  }
+}
+
+function renderFlights() {
+  const container = document.getElementById("flightsContainer");
+  container.innerHTML = TRIP_DATA.flights.map(f => `
+    <article class="boarding-pass" aria-label="${f.label}">
+      <div class="bp-header ${f.type}">
+        <span>✈️ ${f.label}</span>
+        <span>${f.flightNo}</span>
+      </div>
+      <div class="bp-body">
+        <div style="font-size:14px; font-weight:700; color:var(--text-muted); margin-bottom:10px;">
+          ${f.airline} ・ ${f.depDate}
+        </div>
+        <div class="bp-route">
+          <div class="bp-airport">
+            <div class="bp-code">${f.fromCode}</div>
+            <div class="bp-city">${f.fromCity} ${f.fromTerminal}</div>
+            <div class="bp-time">${f.depTime}</div>
+            <div class="bp-tz">${f.depTz}</div>
+          </div>
+
+          <div class="bp-plane-mid">
+            <div style="font-size:20px; margin-bottom:4px;">➔</div>
+            <div class="bp-duration">飛行 ${f.duration}</div>
+          </div>
+
+          <div class="bp-airport right">
+            <div class="bp-code">${f.toCode}</div>
+            <div class="bp-city">${f.toCity} ${f.toTerminal}</div>
+            <div class="bp-time">${f.arrTime}</div>
+            <div class="bp-tz">${f.arrTz}</div>
+          </div>
+        </div>
+
+        <div class="bp-divider" aria-hidden="true">
+          <div class="bp-dashed-line"></div>
+        </div>
+
+        <div class="bp-footer">
+          <div>
+            <div class="bp-meta-label">訂位代號</div>
+            <div class="bp-meta-val">${f.bookingRef}</div>
+          </div>
+          <div>
+            <div class="bp-meta-label">行李額度</div>
+            <div class="bp-meta-val">${f.seatInfo}</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="bp-meta-label">時差提醒</div>
+            <div class="bp-meta-val" style="color:var(--mentaiko-red);">日本 +1hr</div>
+          </div>
+        </div>
+      </div>
+    </article>
+  `).join("");
+}
+
+function renderOverviewDaysSummary() {
+  const wrap = document.getElementById("overviewDaysSummary");
+  wrap.innerHTML = TRIP_DATA.days.map(d => `
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; background-color:var(--bg-mint); border-radius:12px; border:1px solid #C6D6D3;">
+      <div>
+        <div style="font-size:13px; font-weight:900; color:var(--pine-green);">DAY ${d.dayNum} ・ ${d.shortDate}（${d.weekday}）</div>
+        <div style="font-size:15px; font-weight:700; color:var(--hakata-blue);">${d.title}</div>
+      </div>
+      <button type="button" style="min-height:40px; padding:6px 12px; font-size:14px; flex-shrink:0;" onclick="jumpToDay(${d.dayNum})">
+        看行程
+      </button>
+    </div>
+  `).join("");
+}
+
+function jumpToDay(dayNum) {
+  appState.selectedDay = dayNum;
+  switchTab("itinerary");
+  renderItinerary();
+  scrollToNav();
+}
+
+/* ============================================================================
+   【分頁二：每日行程渲染（日期列、黏性摘要、晴雨切換、時間軸與記帳）】
+   ============================================================================ */
+function renderItinerary() {
+  renderDaySelector();
+  renderStickyDaySummary();
+  updateWeatherModeButtons();
+  renderTimeline();
+  renderDailyExpenses();
+}
+
+function renderDaySelector() {
+  const bar = document.getElementById("daySelectorBar");
+  bar.innerHTML = TRIP_DATA.days.map(d => `
+    <button type="button"
+      class="day-btn ${appState.selectedDay === d.dayNum ? 'active' : ''}"
+      role="tab"
+      aria-selected="${appState.selectedDay === d.dayNum}"
+      onclick="selectDay(${d.dayNum})">
+      <span class="day-btn-num">DAY ${d.dayNum}</span>
+      <span class="day-btn-date">${d.shortDate} ${d.weekday.replace('週', '')}</span>
+    </button>
+  `).join("");
+}
+
+function selectDay(dayNum) {
+  appState.selectedDay = dayNum;
+  saveState();
+  renderItinerary();
+}
+
+function renderStickyDaySummary() {
+  const dayData = TRIP_DATA.days[appState.selectedDay - 1];
+  const hotel = TRIP_DATA.hotels.find(h => h.id === dayData.hotelId) || TRIP_DATA.hotels[0];
+  const w = dayData.weather;
+
+  const box = document.getElementById("stickyDaySummary");
+  box.innerHTML = `
+    <div class="sticky-top-row">
+      <div class="weather-pill">
+        <span style="font-size:20px;">${w.icon}</span>
+        <span>${dayData.shortDate}（${dayData.weekday}）${w.lowTemp}°C ~ ${w.highTemp}°C</span>
+      </div>
+      <span class="rain-prob">☔ 降雨 ${w.rainProb}</span>
+    </div>
+    <div class="outfit-tip">👔 <strong>穿搭建議：</strong>${w.outfit}</div>
+    <div class="sticky-hotel-row">
+      <div class="sticky-hotel-info">
+        🏨 今晚住宿：${hotel.name}<br/>
+        <span style="font-size:12px; color:var(--text-muted); font-weight:500;">${hotel.nearestStation}</span>
+      </div>
+      <a href="${hotel.mapUrl}" target="_blank" rel="noopener noreferrer" class="btn-link btn-mini-map">📍 地圖</a>
+    </div>
+  `;
+}
+
+function setWeatherMode(mode) {
+  appState.weatherMode = mode;
+  saveState();
+  updateWeatherModeButtons();
+  renderTimeline();
+  showToast(mode === "sunny" ? "已切換為「☀️ 晴天標準行程」" : "已切換為「☔ 雨天替代方案」");
+}
+
+function updateWeatherModeButtons() {
+  const sunnyBtn = document.getElementById("btnSunnyMode");
+  const rainyBtn = document.getElementById("btnRainyMode");
+  sunnyBtn.className = appState.weatherMode === "sunny" ? "mode-btn active-sunny" : "mode-btn";
+  rainyBtn.className = appState.weatherMode === "rainy" ? "mode-btn active-rainy" : "mode-btn";
+}
+
+function toggleEventComplete(eventId) {
+  appState.completedEvents[eventId] = !appState.completedEvents[eventId];
+  saveState();
+  renderTimeline();
+  if (appState.completedEvents[eventId]) {
+    showToast("✓ 已標記為完成行程！");
+  }
+}
+
+function renderTimeline() {
+  const dayData = TRIP_DATA.days[appState.selectedDay - 1];
+  const events = appState.weatherMode === "rainy" ? dayData.rainyEvents : dayData.sunnyEvents;
+  const container = document.getElementById("timelineContainer");
+
+  container.innerHTML = events.map((ev, idx) => {
+    const isDone = !!appState.completedEvents[ev.id];
+    const catClass = `cat-${ev.category}`;
+    const delayMs = idx * 55;
+
+    // 交通連接器 HTML（若有下一個景點）
+    let transitHtml = "";
+    if (ev.transitToNext) {
+      const t = ev.transitToNext;
+      transitHtml = `
+        <div class="transit-connector">
+          <div class="transit-box">
+            <div class="transit-header">
+              <span class="transit-badge">🚃 ${t.mode}</span>
+              <span>預估 ${t.rideMins}</span>
+            </div>
+            <div class="transit-detail">
+              <strong>路線：</strong>${t.from} ➔ ${t.to}（${t.direction}）
+            </div>
+            ${t.walkMins ? `<div class="transit-sub">🚶 ${t.walkMins}</div>` : ""}
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="timeline-item-anim" style="animation-delay: ${delayMs}ms;">
+        <article class="event-card ${isDone ? 'completed' : ''}">
+          <div class="event-cat-bar ${catClass}">
+            <div>
+              <span>${getCategoryEmoji(ev.category)} ${ev.categoryLabel}</span>
+              ${ev.mustGo ? '<span class="must-go-badge">★ 必去</span>' : ''}
+            </div>
+            <span class="event-time-badge">${ev.time}</span>
+          </div>
+
+          <div class="event-body">
+            <div class="event-title-row">
+              <h3 class="event-title">${ev.title}</h3>
+              <button type="button"
+                class="check-toggle-btn ${isDone ? 'checked' : ''}"
+                aria-pressed="${isDone}"
+                onclick="toggleEventComplete('${ev.id}')">
+                ${isDone ? '✓ 已完成' : '○ 完成'}
+              </button>
+            </div>
+
+            <p class="event-desc">${ev.desc}</p>
+
+            ${ev.meta && ev.meta.length > 0 ? `
+              <div class="event-meta-list">
+                ${ev.meta.map(m => `<div>• ${m}</div>`).join("")}
+              </div>
+            ` : ""}
+
+            <div class="event-actions">
+              <a href="${ev.mapUrl}" target="_blank" rel="noopener noreferrer" class="btn-link">
+                📍 開啟 Google 地圖
+              </a>
+            </div>
+          </div>
+        </article>
+        ${transitHtml}
+      </div>
+    `;
+  }).join("");
+}
+
+function getCategoryEmoji(cat) {
+  const map = {
+    sightseeing: "⛩️",
+    food: "🍜",
+    shopping: "🛍️",
+    logistics: "🧳"
+  };
+  return map[cat] || "📌";
+}
+
+/* ============================================================================
+   【每日花費記帳與匯率換算】
+   ============================================================================ */
+function updateExchangeRate(val) {
+  const num = parseFloat(val);
+  if (!isNaN(num) && num > 0) {
+    appState.jpyRate = num;
+    saveState();
+    renderDailyExpenses();
+    renderTotalBudget();
+    showToast(`匯率已更新為 1 JPY = ${num} TWD`);
+  }
+}
+
+function addDailyExpense(e) {
+  e.preventDefault();
+  const nameInput = document.getElementById("expName");
+  const catInput = document.getElementById("expCategory");
+  const jpyInput = document.getElementById("expAmountJpy");
+
+  const name = nameInput.value.trim();
+  const category = catInput.value;
+  const jpy = parseInt(jpyInput.value, 10);
+
+  if (!name || isNaN(jpy) || jpy <= 0) return;
+
+  const day = appState.selectedDay;
+  if (!appState.expenses[day]) appState.expenses[day] = [];
+
+  appState.expenses[day].push({
+    id: "exp-" + Date.now(),
+    name,
+    category,
+    jpy
+  });
+
+  nameInput.value = "";
+  jpyInput.value = "";
+  saveState();
+  renderDailyExpenses();
+  showToast(`已新增：${name} (¥${jpy.toLocaleString()})`);
+}
+
+function deleteDailyExpense(expId) {
+  const day = appState.selectedDay;
+  appState.expenses[day] = (appState.expenses[day] || []).filter(item => item.id !== expId);
+  saveState();
+  renderDailyExpenses();
+  showToast("已刪除該筆花費紀錄");
+}
+
+function renderDailyExpenses() {
+  const rateInput = document.getElementById("jpyRateInput");
+  rateInput.value = appState.jpyRate;
+
+  const day = appState.selectedDay;
+  const list = appState.expenses[day] || [];
+  const totalJpy = list.reduce((sum, item) => sum + item.jpy, 0);
+  const totalTwd = Math.round(totalJpy * appState.jpyRate);
+
+  const summaryEl = document.getElementById("dailyExpenseSummary");
+  summaryEl.textContent = `DAY ${day} 合計：¥${totalJpy.toLocaleString()}（約 NT$ ${totalTwd.toLocaleString()}）`;
+
+  const ul = document.getElementById("dailyExpenseList");
+  if (list.length === 0) {
+    ul.innerHTML = `<li style="color:var(--text-muted); font-size:15px; text-align:center; padding:12px;">尚無今日花費紀錄，請從上方新增。</li>`;
+    return;
+  }
+
+  ul.innerHTML = list.map(item => {
+    const twd = Math.round(item.jpy * appState.jpyRate);
+    return `
+      <li class="expense-item">
+        <div>
+          <div style="font-weight:700; color:var(--hakata-blue);">[${item.category}] ${item.name}</div>
+          <div style="font-size:14px; color:var(--text-muted);">¥${item.jpy.toLocaleString()} ≒ <strong>NT$ ${twd.toLocaleString()}</strong></div>
+        </div>
+        <button type="button" class="expense-del-btn" aria-label="刪除此筆花費" onclick="deleteDailyExpense('${item.id}')">✕</button>
+      </li>
+    `;
+  }).join("");
+}
+
+/* ============================================================================
+   【分頁三：行前清單渲染與新增/勾選/刪除】
+   ============================================================================ */
+function renderChecklist() {
+  renderChecklistGroup("todo", "todoListUl");
+  renderChecklistGroup("luggage", "luggageListUl");
+  updateChecklistProgress();
+}
+
+function renderChecklistGroup(type, ulId) {
+  const ul = document.getElementById(ulId);
+  const items = appState.checklist[type] || [];
+
+  ul.innerHTML = items.map(item => `
+    <li class="checklist-li ${item.done ? 'done' : ''}">
+      <label class="checklist-label" onclick="toggleChecklistItem('${type}', '${item.id}')">
+        <span class="custom-checkbox" aria-hidden="true">${item.done ? '✓' : ''}</span>
+        <span class="checklist-text">${item.text}</span>
+      </label>
+      <button type="button" class="expense-del-btn" aria-label="移除項目" onclick="removeChecklistItem('${type}', '${item.id}')">✕</button>
+    </li>
+  `).join("");
+}
+
+function toggleChecklistItem(type, id) {
+  const list = appState.checklist[type] || [];
+  const target = list.find(i => i.id === id);
+  if (target) {
+    target.done = !target.done;
+    saveState();
+    renderChecklist();
+  }
+}
+
+function addChecklistItem(type) {
+  const inputId = type === "todo" ? "newTodoInput" : "newLuggageInput";
+  const input = document.getElementById(inputId);
+  const text = input.value.trim();
+  if (!text) return;
+
+  appState.checklist[type].push({
+    id: `${type}-${Date.now()}`,
+    text,
+    done: false
+  });
+  input.value = "";
+  saveState();
+  renderChecklist();
+  showToast(`已新增至${type === "todo" ? "行前待辦" : "行李清單"}`);
+}
+
+function removeChecklistItem(type, id) {
+  appState.checklist[type] = appState.checklist[type].filter(i => i.id !== id);
+  saveState();
+  renderChecklist();
+  showToast("已移除該清單項目");
+}
+
+function updateChecklistProgress() {
+  const all = [...(appState.checklist.todo || []), ...(appState.checklist.luggage || [])];
+  const total = all.length;
+  const done = all.filter(i => i.done).length;
+  const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+
+  document.getElementById("checklistProgressText").textContent = `${done} / ${total} 項 (${pct}%)`;
+  document.getElementById("checklistProgressFill").style.width = `${pct}%`;
+}
+
+/* ============================================================================
+   【分頁四：住宿速查、購物退稅、緊急聯絡與六日總支出統計】
+   ============================================================================ */
+function renderHotelAndInfo() {
+  renderHotels();
+  renderTotalBudget();
+  renderShoppingGuide();
+  renderEmergencyInfo();
+}
+
+function renderHotels() {
+  const container = document.getElementById("hotelsContainer");
+  container.innerHTML = TRIP_DATA.hotels.map(h => `
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:10px;">
+        <div>
+          <span style="display:inline-block; background-color:var(--pine-green); color:#FFFFFF; font-size:13px; font-weight:700; padding:2px 10px; border-radius:999px; margin-bottom:6px;">
+            🏨 住宿資訊・${h.nights}
+          </span>
+          <h2 style="font-size:20px; font-weight:900; color:var(--hakata-blue);">${h.name}</h2>
+          <div style="font-size:14px; color:var(--text-muted);">${h.jpName}</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <div class="info-row">
+          <span class="info-key">最近車站</span>
+          <span class="info-val" style="color:var(--pine-green);">${h.nearestStation}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">入住 / 退房</span>
+          <span class="info-val">入住 ${h.checkIn} ｜ 退房 ${h.checkOut}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">訂房編號</span>
+          <span class="info-val">
+            ${h.bookingCode}
+            <button type="button" style="min-height:32px; padding:2px 8px; font-size:13px; margin-left:4px;" onclick="copyText('${h.bookingCode.replace('【範例】', '')}', '訂房編號')">複製</button>
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">日文地址</span>
+          <span class="info-val" style="font-size:14px;">
+            ${h.addressJp}<br/>
+            <span style="color:var(--text-muted); font-weight:500;">(${h.addressZh})</span>
+          </span>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <button type="button" onclick="copyText('${h.addressJp}', '飯店日文地址')">📋 複製日文地址</button>
+        <a href="${h.mapUrl}" target="_blank" rel="noopener noreferrer" class="btn-link" style="background-color:var(--hakata-blue); color:#FFFFFF;">
+          📍 開啟 Google 地圖
+        </a>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderTotalBudget() {
+  const container = document.getElementById("totalBudgetContainer");
+  const catTotals = { "餐飲": 0, "交通": 0, "購物": 0, "門票": 0, "其他": 0 };
+  let grandJpy = 0;
+
+  for (let d = 1; d <= 6; d++) {
+    const items = appState.expenses[d] || [];
+    items.forEach(it => {
+      grandJpy += it.jpy;
+      if (catTotals[it.category] !== undefined) {
+        catTotals[it.category] += it.jpy;
+      } else {
+        catTotals["其他"] += it.jpy;
+      }
+    });
+  }
+
+  const grandTwd = Math.round(grandJpy * appState.jpyRate);
+
+  const barsHtml = Object.entries(catTotals).map(([cat, jpy]) => {
+    const pct = grandJpy === 0 ? 0 : Math.round((jpy / grandJpy) * 100);
+    const twd = Math.round(jpy * appState.jpyRate);
+    return `
+      <div class="budget-bar-row">
+        <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:700;">
+          <span>${cat}（${pct}%）</span>
+          <span>¥${jpy.toLocaleString()}（NT$ ${twd.toLocaleString()}）</span>
+        </div>
+        <div class="budget-bar-track">
+          <div class="budget-bar-fill" style="width:${pct}%;"></div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  container.innerHTML = `
+    <div style="background-color:var(--bg-mint); border-radius:12px; padding:14px; margin-bottom:14px; text-align:center; border:1px solid var(--hakata-blue);">
+      <div style="font-size:14px; color:var(--text-muted); font-weight:700;">六天累計總支出（匯率 ${appState.jpyRate}）</div>
+      <div style="font-size:26px; font-weight:900; color:var(--mentaiko-red);">¥${grandJpy.toLocaleString()}</div>
+      <div style="font-size:17px; font-weight:900; color:var(--pine-green);">約新台幣 NT$ ${grandTwd.toLocaleString()} 元</div>
+    </div>
+    ${barsHtml}
+  `;
+}
+
+function renderShoppingGuide() {
+  const container = document.getElementById("shoppingGuideContainer");
+  container.innerHTML = TRIP_DATA.shoppingGuides.map(g => `
+    <div class="shop-zone-box">
+      <div style="font-weight:900; color:var(--hakata-blue); margin-bottom:4px;">${g.zone}</div>
+      <div style="font-size:15px; margin-bottom:6px;"><strong>推薦必買：</strong>${g.items}</div>
+      <div style="font-size:14px; color:var(--pine-green); font-weight:700;">💡 退稅提醒：${g.taxTip}</div>
+    </div>
+  `).join("");
+}
+
+function renderEmergencyInfo() {
+  const container = document.getElementById("emergencyContainer");
+  const { reservations, contacts } = TRIP_DATA.emergencyInfo;
+
+  const resHtml = reservations.map(r => `
+    <div class="info-row">
+      <span style="font-weight:700; font-size:15px;">${r.title}</span>
+      <span style="font-weight:900; color:var(--hakata-blue); font-size:14px;">${r.code}</span>
+    </div>
+  `).join("");
+
+  const urgentButtons = contacts.slice(0, 2).map(c => `
+    <a href="tel:${c.tel}" class="btn-link emergency-btn">
+      <span style="font-size:14px;">${c.label}</span>
+      <span class="emergency-num">📞 ${c.number}</span>
+    </a>
+  `).join("");
+
+  const supportRows = contacts.slice(2).map(c => `
+    <div class="info-row">
+      <span style="font-weight:700; font-size:15px;">${c.label}</span>
+      <a href="tel:${c.tel}" class="btn-link" style="min-height:36px; padding:4px 10px; font-size:14px;">📞 ${c.number}</a>
+    </div>
+  `).join("");
+
+  container.innerHTML = `
+    <div class="emergency-grid">${urgentButtons}</div>
+    <div style="margin-bottom:12px;">${supportRows}</div>
+    <div style="background-color:var(--bg-mint); border-radius:12px; padding:12px;">
+      <div style="font-weight:900; color:var(--hakata-blue); margin-bottom:6px;">🎫 餐廳訂位與保單憑證備忘</div>
+      ${resHtml}
+    </div>
+  `;
+}
+
+/* ============================================================================
+   【重設範例資料彈窗控制】
+   ============================================================================ */
+function openResetModal() {
+  document.getElementById("resetModal").classList.add("open");
+}
+
+function closeResetModal() {
+  document.getElementById("resetModal").classList.remove("open");
+}
+
+function confirmResetAllData() {
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+/* ============================================================================
+   【網站啟動初始化】
+   ============================================================================ */
+window.addEventListener("DOMContentLoaded", () => {
+  loadState();
+  renderOverview();
+  renderItinerary();
+  renderChecklist();
+  renderHotelAndInfo();
+  switchTab(appState.activeTab || "overview");
+
+  // 每分鐘自動更新一次總覽時間倒數與行程提醒
+  setInterval(renderStatusBanner, 60000);
+});
+</script>
+</body>
+</html>
