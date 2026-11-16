@@ -203,6 +203,175 @@
     }
 
     /* ==========================================================================
+       二之二、福岡實景明信片橫向畫廊（手帳風拍立得白邊設計）
+       ========================================================================== */
+    .postcard-gallery-section {
+      padding: 12px 14px 16px;
+      border-top: var(--border-main);
+      background-color: var(--bg-mint);
+    }
+
+    .postcard-gallery-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--hakata-blue);
+    }
+
+    .postcard-scroll-track {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .postcard-scroll-track::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .postcard-scroll-track::-webkit-scrollbar-thumb {
+      background-color: var(--hakata-blue);
+      border-radius: 999px;
+    }
+
+    .polaroid-card {
+      flex: 0 0 230px;
+      scroll-snap-align: start;
+      background-color: var(--card-white);
+      border: var(--border-main);
+      border-radius: 14px;
+      padding: 8px 8px 10px;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .polaroid-card:active {
+      transform: scale(0.97);
+    }
+
+    .polaroid-img-box {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 9px;
+      border: 1px solid var(--hakata-blue);
+      overflow: hidden;
+      background-color: #DCECE9;
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .polaroid-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .polaroid-caption {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .polaroid-title {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--hakata-blue);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .polaroid-day-pill {
+      font-size: 11px;
+      font-weight: 900;
+      background-color: var(--lantern-yellow);
+      color: var(--hakata-blue);
+      padding: 2px 7px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+
+    /* 行程卡片 16:9 實景照片容器 */
+    .event-photo-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-bottom: var(--border-main);
+      background-color: #DCECE9;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .event-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .event-photo-caption {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background-color: #FFFFFF;
+      color: var(--hakata-blue);
+      border: 1.5px solid var(--hakata-blue);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 10px;
+      max-width: 88%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* 實景照片放大預覽燈箱 */
+    .photo-lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(35, 64, 107, 0.82);
+      z-index: 1100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .photo-lightbox.open {
+      display: flex;
+    }
+
+    .photo-lightbox-card {
+      background-color: #FFFFFF;
+      border: 2px solid var(--hakata-blue);
+      border-radius: 16px;
+      max-width: 540px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .photo-lightbox-img-box {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background-color: #DCECE9;
+      border-bottom: var(--border-main);
+    }
+
+    .photo-lightbox-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ==========================================================================
        三、四大主分類導覽選單（非固定、高度 >= 64px）
        ========================================================================== */
     .main-nav {
@@ -1271,6 +1440,17 @@
       <h1 class="hero-title">福岡六天五夜自由行</h1>
       <p class="hero-subtitle">2026 年 11 月 16 日（一）至 11 月 21 日（六）</p>
     </div>
+
+    <!-- 福岡必訪實景明信片橫向畫廊 -->
+    <div class="postcard-gallery-section" aria-label="福岡必訪實景明信片畫廊">
+      <div class="postcard-gallery-header">
+        <span>📷 福岡實景明信片（左右滑動・點擊跳轉行程）</span>
+        <span style="font-size:12px; color:var(--text-muted);">REAL VIEW</span>
+      </div>
+      <div class="postcard-scroll-track" id="heroPostcardTrack">
+        <!-- 由 JavaScript 動態渲染實景明信片 -->
+      </div>
+    </div>
   </header>
 
   <!-- ========================================================================
@@ -1483,7 +1663,71 @@
   </div>
 </div>
 
+<!-- 實景明信片預覽燈箱 -->
+<div id="photoLightbox" class="photo-lightbox" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle" onclick="if(event.target===this) closePhotoLightbox()">
+  <div class="photo-lightbox-card">
+    <div class="photo-lightbox-img-box" id="lightboxImgWrap"></div>
+    <div style="padding:14px 16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
+        <h3 id="lightboxTitle" style="font-size:18px; font-weight:900; color:var(--hakata-blue);"></h3>
+        <span id="lightboxDayBadge" class="polaroid-day-pill"></span>
+      </div>
+      <p id="lightboxDesc" style="font-size:15px; color:var(--text-main); margin-bottom:14px;"></p>
+      <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <button type="button" onclick="closePhotoLightbox()">關閉</button>
+        <button type="button" id="lightboxJumpBtn" style="background-color:var(--hakata-blue); color:#FFFFFF;">前往該日行程 →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+/* ============================================================================
+   【真實景點圖片資源與防破圖 SVG 備援工具】
+   ============================================================================ */
+const FUKUOKA_PHOTOS = {
+  fukuokaTower: "https://www.fukuokatower.co.jp/img/viewroom/night/introduction-slider-03.jpg",
+  nakasuYatai: "https://www.japan-guide.com/g21/4803_01.jpg",
+  kushidaShrine: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Kushidajinjafukuoka01.jpg",
+  canalCity: "https://static.gltjp.com/glt/data/article/21000/20643/20240306_160428_7205c5dd_w1920.webp",
+  dazaifu: "https://www.japan-guide.com/g20/4851_02.jpg",
+  yanagawa: "https://www.kyushuandtokyo.org/cdn/front_assets/images_other/spot/small/yanagawa1.jpg",
+  ohoriPark: "https://gofukuoka.jp/files/Spots/0d2d8e7e-0542-4522-a651-38ff10e6390a/image/6664831c411c97b138a41be39e338e3c.jpg",
+  tenjinUnderground: "https://gofukuoka.jp/files/Spots/386ea942-df79-4d14-bc2e-18e849f16504/image/142fd776275e6071c0d1a1b79b72a8f9.jpg",
+  mojikoRetro: "https://www.crossroadfukuoka.jp/storage/special_feature_paragraphs/76/responsive_images/G9ROBIigiwnEOcBRqxoZj470srB9aQMYABnFNpa7__1547_1087.jpg",
+  kokuraCastle: "https://upload.wikimedia.org/wikipedia/commons/b/bc/140721_Kokura_Castle_Kitakyushu_Japan01s3.jpg",
+  uminonakamichi: "https://www.japan-guide.com/g21/4810_01b.jpg",
+  motsunabe: "https://sudachirecipes.com/wp-content/uploads/2023/03/motsunabe.jpg",
+  fukuokaAirport: "https://www.fukuoka-airport.jp/assets/flight/flow_int/img/flow_int_img001.jpg"
+};
+
+// 產生離線或外部伺服器阻擋時自動替換的純色日系 SVG 景點插畫卡片（不使用 base64，改以 DOM 動態插入 SVG）
+function handleImageFallback(imgEl, titleText, categoryKey) {
+  if (!imgEl || !imgEl.parentElement) return;
+  const colorMap = {
+    sightseeing: { bg: "#DCECE9", accent: "#7FB9D6", icon: "⛩️" },
+    food: { bg: "#FDF3DF", accent: "#F2B441", icon: "🍜" },
+    shopping: { bg: "#FCE8EE", accent: "#E58FA6", icon: "🛍️" },
+    logistics: { bg: "#E6ECEB", accent: "#2F7D6B", icon: "✈️" }
+  };
+  const theme = colorMap[categoryKey] || colorMap.sightseeing;
+  const safeLabel = (titleText || "福岡景點實景").replace(/【範例】/g, "").slice(0, 18);
+
+  const svgMarkup = `
+    <svg viewBox="0 0 320 180" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+      <rect width="320" height="180" fill="${theme.bg}" />
+      <circle cx="265" cy="42" r="18" fill="${theme.accent}" stroke="#23406B" stroke-width="1.8" />
+      <path d="M0,138 Q80,124 160,138 T320,134 L320,180 L0,180 Z" fill="${theme.accent}" stroke="#23406B" stroke-width="1.8" />
+      <rect x="34" y="46" width="252" height="74" rx="12" fill="#FFFFFF" stroke="#23406B" stroke-width="1.8" />
+      <text x="160" y="78" font-size="22" text-anchor="middle">${theme.icon}</text>
+      <text x="160" y="104" font-size="13" font-weight="900" fill="#23406B" text-anchor="middle">${safeLabel}</text>
+    </svg>
+  `;
+  const wrapper = imgEl.parentElement;
+  imgEl.remove();
+  wrapper.insertAdjacentHTML("afterbegin", svgMarkup);
+}
+
 /* ============================================================================
    【集中資料設定區 TRIP_DATA】
    說明：未來若要更新航班、住宿、每日行程或緊急電話，只需直接修改下方物件內容，
@@ -1497,6 +1741,58 @@ const TRIP_DATA = {
     endDate: "2026-11-21",
     defaultJpyToTwdRate: 0.215
   },
+
+  // 1-2. 首頁福岡必訪實景明信片畫廊資料
+  featuredPostcards: [
+    {
+      title: "【範例】福岡塔海濱夜景",
+      spotName: "福岡塔展望室",
+      dayNum: 5,
+      category: "sightseeing",
+      imageUrl: FUKUOKA_PHOTOS.fukuokaTower,
+      desc: "日本最高海濱塔，從 123 公尺高空俯瞰博多灣夕陽與百萬城市夜景。"
+    },
+    {
+      title: "【範例】中洲屋台紅燈籠",
+      spotName: "那珂川畔屋台街",
+      dayNum: 1,
+      category: "food",
+      imageUrl: FUKUOKA_PHOTOS.nakasuYatai,
+      desc: "夜晚沿著那珂川亮起溫暖紅燈籠，大啖豚骨拉麵、明太子玉子燒與關東煮。"
+    },
+    {
+      title: "【範例】太宰府天滿宮",
+      spotName: "太宰府天滿宮本殿",
+      dayNum: 2,
+      category: "sightseeing",
+      imageUrl: FUKUOKA_PHOTOS.dazaifu,
+      desc: "學問之神總本社，參拜後漫步表參道品嘗現烤熱騰騰梅枝餅。"
+    },
+    {
+      title: "【範例】門司港懷舊區",
+      spotName: "門司港紅磚洋樓群",
+      dayNum: 4,
+      category: "sightseeing",
+      imageUrl: FUKUOKA_PHOTOS.mojikoRetro,
+      desc: "保存完善的明治大正時期港口建築，必吃濃郁牽絲的門司港名物燒咖哩。"
+    },
+    {
+      title: "【範例】博多牛腸鍋料理",
+      spotName: "博多鄉土牛腸鍋",
+      dayNum: 3,
+      category: "food",
+      imageUrl: FUKUOKA_PHOTOS.motsunabe,
+      desc: "彈牙牛小腸搭配滿滿韭菜與高麗菜熬煮，福岡夜晚最暖心的靈魂美食。"
+    },
+    {
+      title: "【範例】柳川護城河遊船",
+      spotName: "水鄉柳川扁舟",
+      dayNum: 2,
+      category: "sightseeing",
+      imageUrl: FUKUOKA_PHOTOS.yanagawa,
+      desc: "搭乘傳統木舟穿梭垂柳運河，聆聽船夫吟唱民謠並享用百年蒸籠鰻魚飯。"
+    }
+  ],
 
   // 2. 航班資訊（【範例】含台灣 UTC+8 與日本 UTC+9 時差計算）
   flights: [
@@ -1586,6 +1882,8 @@ const TRIP_DATA = {
           category: "logistics",
           categoryLabel: "機場入境",
           title: "【範例】抵達福岡機場國際線航廈",
+          imageUrl: FUKUOKA_PHOTOS.fukuokaAirport,
+          imageCaption: "福岡機場國際線航廈入境大廳",
           desc: "辦理入境審查與領取行李，準備搭乘機場接駁車前往國內線航廈轉乘地鐵。",
           meta: ["預計耗時：約 45-60 分鐘", "提醒：事先截圖 Visit Japan Web QR Code"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Fukuoka+Airport+International+Terminal",
@@ -1604,6 +1902,8 @@ const TRIP_DATA = {
           category: "logistics",
           categoryLabel: "飯店寄放",
           title: "【範例】JR九州Blossom博多中央 寄放行李",
+          imageUrl: FUKUOKA_PHOTOS.canalCity,
+          imageCaption: "博多站前商圈與飯店周邊街區",
           desc: "先至飯店櫃台辦理預先登記並寄放大型行李，輕鬆展開第一天市區散步。",
           meta: ["預計停留：20 分鐘", "入住時間：14:00 後可領取房卡"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=JR+Kyushu+Hotel+Blossom+Hakata+Central",
@@ -1622,6 +1922,8 @@ const TRIP_DATA = {
           category: "food",
           categoryLabel: "美食餐廳",
           title: "【範例】博多一雙 豚骨拉麵",
+          imageUrl: FUKUOKA_PHOTOS.nakasuYatai,
+          imageCaption: "博多道地豚骨拉麵美食體驗",
           desc: "福岡超人氣「豚骨卡布奇諾」濃郁泡沫湯頭拉麵，麵條可選硬麵搭配明太子飯。",
           meta: ["料理類型：博多豚骨拉麵", "招牌菜色：味玉拉麵、半熟蛋", "人均預算：¥1,000 - ¥1,300", "訂位建議：無訂位制，建議避開 12 點尖峰"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Hakata+Issou+Hakata+Station+East",
@@ -1641,6 +1943,8 @@ const TRIP_DATA = {
           categoryLabel: "觀光景點",
           mustGo: true,
           title: "【範例】櫛田神社（博多總鎮守）",
+          imageUrl: FUKUOKA_PHOTOS.kushidaShrine,
+          imageCaption: "櫛田神社境內與傳統神社建築",
           desc: "福岡最具代表性的古老神社，境內全年展示高達十公尺的豪華「飾り山笠」，別忘了品嘗清甜的靈泉鶴之井。",
           meta: ["預計停留：50 分鐘", "參拜費用：免費（境內全天開放）"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Kushida+Shrine+Fukuoka",
@@ -1659,6 +1963,8 @@ const TRIP_DATA = {
           category: "shopping",
           categoryLabel: "購物行程",
           title: "【範例】博多運河城 Canal City Hakata",
+          imageUrl: FUKUOKA_PHOTOS.canalCity,
+          imageCaption: "博多運河城中央運河與購物中心",
           desc: "結合運河水舞秀與大型購物商場，可逛橡子共和國、Jump Shop、無印良品與藥妝店，先回飯店辦入住稍作休息。",
           meta: ["推薦商品：限定版動漫周邊、福岡明太子仙貝", "退稅資訊：館內多數店鋪滿 ¥5,000（未稅）可現場免稅", "營業時間：10:00 - 21:00"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Canal+City+Hakata",
@@ -1678,6 +1984,8 @@ const TRIP_DATA = {
           categoryLabel: "美食餐廳",
           mustGo: true,
           title: "【範例】中洲屋台街體驗（小金ちゃん／武ちゃん）",
+          imageUrl: FUKUOKA_PHOTOS.nakasuYatai,
+          imageCaption: "中洲那珂川畔屋台紅燈籠夜景",
           desc: "坐在那珂川畔的紅燈籠路邊攤，體驗福岡最道地的夜生活，必點明太子玉子燒、炒拉麵與關東煮。",
           meta: ["料理類型：日式屋台料理", "招牌菜色：明太子玉子燒、一口餃子、關東煮", "人均預算：¥2,000 - ¥3,000", "訂位建議：現場排隊入座，建議 18:30 前卡位"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Nakasu+Yatai+Fukuoka"
@@ -1690,6 +1998,8 @@ const TRIP_DATA = {
           category: "logistics",
           categoryLabel: "機場入境",
           title: "【範例】抵達福岡機場國際線航廈",
+          imageUrl: FUKUOKA_PHOTOS.fukuokaAirport,
+          imageCaption: "福岡機場國際線航廈",
           desc: "辦理入境與領取行李，雨天建議直接搭計程車或地鐵前往博多站全室內連通道。",
           meta: ["預計耗時：約 45-60 分鐘"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Fukuoka+Airport+International+Terminal",
@@ -1708,6 +2018,8 @@ const TRIP_DATA = {
           category: "logistics",
           categoryLabel: "飯店寄放",
           title: "【範例】JR九州Blossom博多中央 寄放行李",
+          imageUrl: FUKUOKA_PHOTOS.tenjinUnderground,
+          imageCaption: "博多車站地下街全室內連通道",
           desc: "寄放行李並向櫃台借用免費透明長傘，接著走地下街前往博多站美食街。",
           meta: ["預計停留：20 分鐘"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=JR+Kyushu+Hotel+Blossom+Hakata+Central",
@@ -1726,6 +2038,8 @@ const TRIP_DATA = {
           category: "food",
           categoryLabel: "美食餐廳",
           title: "【範例】博多麵街道（ShinShin 拉麵）",
+          imageUrl: FUKUOKA_PHOTOS.nakasuYatai,
+          imageCaption: "博多站室內拉麵街美食",
           desc: "免淋雨的室內拉麵一條街，集合福岡各大名店，推薦清爽系豚骨 ShinShin 拉麵。",
           meta: ["料理類型：博多豚骨拉麵", "招牌菜色：博多純情拉麵、半炒飯", "人均預算：¥1,000 - ¥1,400", "訂位建議：現場排隊"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Hakata+ShinShin+Ramen+DEITOS",
@@ -1745,6 +2059,8 @@ const TRIP_DATA = {
           categoryLabel: "購物行程",
           mustGo: true,
           title: "【範例】AMU PLAZA 博多 & 阪急百貨（雨天備案）",
+          imageUrl: FUKUOKA_PHOTOS.canalCity,
+          imageCaption: "福岡大型室內複合購物商場",
           desc: "下雨天最適合逛與車站共構的超大型商場，涵蓋 Tokyu Hands、Pokémon Center 福岡店與服飾雜貨。",
           meta: ["推薦商品：寶可夢中心博多限定商品、日系文具", "退稅資訊：阪急與 AMU 各設集中退稅櫃台", "營業時間：10:00 - 20:00"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=AMU+PLAZA+Hakata",
@@ -1763,6 +2079,8 @@ const TRIP_DATA = {
           category: "food",
           categoryLabel: "美食餐廳",
           title: "【範例】KITTE 博多 敘敘苑燒肉／博多牛腸鍋（雨天備案）",
+          imageUrl: FUKUOKA_PHOTOS.motsunabe,
+          imageCaption: "博多熱騰騰鍋物與燒肉料理",
           desc: "雨天改至室內餐廳享受豐盛晚餐，無需在户外淋雨排隊。",
           meta: ["料理類型：日式燒肉／鄉土鍋物", "招牌菜色：牛五花套餐、味噌牛腸鍋", "人均預算：¥3,500 - ¥5,000", "訂位建議：建議提前線上預約"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=KITTE+Hakata"
@@ -1793,6 +2111,8 @@ const TRIP_DATA = {
           categoryLabel: "觀光景點",
           mustGo: true,
           title: "【範例】太宰府天滿宮 & 表參道散步",
+          imageUrl: FUKUOKA_PHOTOS.dazaifu,
+          imageCaption: "太宰府天滿宮朱紅鳥居與御本殿",
           desc: "日本全國天滿宮總本社，摸摸御神牛祈求智慧，順遊建築大師隈研吾設計的星巴克概念店，現烤梅枝餅必吃！",
           meta: ["預計停留：2 小時", "必吃點心：かさの家 現烤梅枝餅（¥150）"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Dazaifu+Tenmangu",
@@ -1812,6 +2132,8 @@ const TRIP_DATA = {
           categoryLabel: "美食餐廳",
           mustGo: true,
           title: "【範例】元祖本吉屋 柳川蒸籠鰻魚飯",
+          imageUrl: FUKUOKA_PHOTOS.yanagawa,
+          imageCaption: "水鄉柳川老舖與運河風情",
           desc: "創業超過三百年的柳川老舖，將蒲燒鰻魚與沾滿秘傳醬汁的米飯放入竹籠二次蒸炊，香氣撲鼻。",
           meta: ["料理類型：鄉土蒸籠鰻魚飯", "招牌菜色：特上蒸籠鰻魚飯（せいろ蒸し）", "人均預算：¥4,200 - ¥5,500", "訂位建議：熱門時段需現場候位約 30 分鐘"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Ganso+Motoyoshiya+Yanagawa",
@@ -1830,6 +2152,8 @@ const TRIP_DATA = {
           category: "sightseeing",
           categoryLabel: "觀光景點",
           title: "【範例】水鄉柳川護城河遊船（どんこ舟）",
+          imageUrl: FUKUOKA_PHOTOS.yanagawa,
+          imageCaption: "柳川護城河傳統木舟遊船體驗",
           desc: "搭乘傳統木舟穿梭柳樹垂蔭的古運河，聆聽船夫吟唱傳統民謠與驚險的過低橋特技。",
           meta: ["預計停留：1 小時 10 分", "船票費用：約 ¥1,800（可使用西鐵套票）"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Yanagawa+River+Punting",
@@ -1848,6 +2172,8 @@ const TRIP_DATA = {
           category: "shopping",
           categoryLabel: "購物行程",
           title: "【範例】天神地下街 & 福岡 PARCO 逛街",
+          imageUrl: FUKUOKA_PHOTOS.tenjinUnderground,
+          imageCaption: "天神地下街歐風復古石板商店街",
           desc: "歐風復古石板路的地下街，連接各大百貨，推薦購買 BAKE 起司塔、RINGO 蘋果派與日本藥妝。",
           meta: ["推薦商品：RINGO 現烤卡士達蘋果派、專櫃美妝", "退稅資訊：PARCO 設有統一免稅櫃台", "營業時間：10:00 - 20:00"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Tenjin+Underground+Shopping+Center"
@@ -1861,6 +2187,8 @@ const TRIP_DATA = {
           categoryLabel: "觀光景點",
           mustGo: true,
           title: "【範例】太宰府天滿宮（雨天撐傘短暫參拜）",
+          imageUrl: FUKUOKA_PHOTOS.dazaifu,
+          imageCaption: "雨中幽靜的太宰府天滿宮",
           desc: "雨中的太宰府別有一番幽靜詩意，參拜後直接走連通手扶梯前往室內博物館。",
           meta: ["預計停留：1 小時"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Dazaifu+Tenmangu",
@@ -1880,6 +2208,8 @@ const TRIP_DATA = {
           categoryLabel: "觀光景點",
           mustGo: true,
           title: "【範例】九州國立博物館（雨天室內首選）",
+          imageUrl: FUKUOKA_PHOTOS.dazaifu,
+          imageCaption: "太宰府文化園區室內博物館",
           desc: "日本四大國立博物館之一，全玻璃帷幕外觀壯觀，館內冷暖氣舒適且館藏豐富。",
           meta: ["預計停留：2 小時", "門票費用：常設展 ¥700"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Kyushu+National+Museum",
@@ -1898,6 +2228,8 @@ const TRIP_DATA = {
           category: "shopping",
           categoryLabel: "購物行程",
           title: "【範例】天神地下街全天候室內購物（雨天備案）",
+          imageUrl: FUKUOKA_PHOTOS.tenjinUnderground,
+          imageCaption: "免淋雨的天神地下街歐風拱廊",
           desc: "放棄戶外柳川遊船，改在全長 600 公尺完全不會淋雨的天神地下街與三越、大丸百貨悠閒逛街喝下午茶。",
           meta: ["推薦商品：日系服飾、雜貨、甜點伴手禮", "退稅資訊：滿 ¥5,000（未稅）享免稅", "營業時間：10:00 - 20:00"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Tenjin+Underground+Shopping+Center"
@@ -1927,6 +2259,8 @@ const TRIP_DATA = {
           category: "sightseeing",
           categoryLabel: "觀光景點",
           title: "【範例】大濠公園 & 湖畔星巴克晨間咖啡",
+          imageUrl: FUKUOKA_PHOTOS.ohoriPark,
+          imageCaption: "大濠公園湖心島與秋日水景步道",
           desc: "仿西湖設計的城市水景公園，11 月中旬湖畔銀杏與紅葉漸染，沿著湖心島步道散步非常愜意。",
           meta: ["預計停留：1 小時 30 分", "入園費用：免費"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Ohori+Park+Fukuoka",
@@ -1945,6 +2279,8 @@ const TRIP_DATA = {
           category: "sightseeing",
           categoryLabel: "觀光景點",
           title: "【範例】福岡城跡（舞鶴公園）",
+          imageUrl: FUKUOKA_PHOTOS.kokuraCastle,
+          imageCaption: "北九州名城石垣與天守建築風貌",
           desc: "黑田官兵衛父子所建的名城遺址，登上天守台可 360 度俯瞰福岡市景與遠方海景。",
           meta: ["預計停留：1 小時", "門票費用：免費"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Fukuoka+Castle+Ruins",
@@ -1963,6 +2299,8 @@ const TRIP_DATA = {
           category: "food",
           categoryLabel: "美食餐廳",
           title: "【範例】天神極味屋 漢堡排（味伊萬里牛）",
+          imageUrl: FUKUOKA_PHOTOS.motsunabe,
+          imageCaption: "福岡人氣和牛與在地特色美食",
           desc: "福岡必排超人氣鐵板漢堡排，自己在熱石上煎烤每一口牛肉，肉汁爆發超下飯！",
           meta: ["料理類型：日式鐵板漢堡排", "招牌菜色：伊萬里牛漢堡排套餐", "人均預算：¥1,800 - ¥2,600", "訂位建議：不可訂位，建議 13:30 離峰時段前往"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Kiwamiya+Tenjin+PARCO",
@@ -1981,6 +2319,8 @@ const TRIP_DATA = {
           category: "shopping",
           categoryLabel: "購物行程",
           title: "【範例】Bic Camera 天神館 & 天神西通潮牌街",
+          imageUrl: FUKUOKA_PHOTOS.tenjinUnderground,
+          imageCaption: "天神核心商圈購物大道",
           desc: "採購日本最新吹風機、美容儀器、Switch 遊戲與藥妝，搭配優惠券享免稅再折扣。",
           meta: ["推薦商品：Panasonic 吹風機、日本常備藥", "退稅資訊：10% 免稅＋最高 7% 優惠券", "營業時間：10:00 - 21:00"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Bic+Camera+Tenjin+2nd+Building",
@@ -2000,6 +2340,8 @@ const TRIP_DATA = {
           categoryLabel: "美食餐廳",
           mustGo: true,
           title: "【範例】博多牛腸鍋（もつ鍋 楽天地／やま中）",
+          imageUrl: FUKUOKA_PHOTOS.motsunabe,
+          imageCaption: "博多正宗濃郁牛腸鍋與滿滿韭菜",
           desc: "來到福岡絕不能錯過的靈魂鍋物，飽滿彈牙的牛小腸搭配大量韭菜與高麗菜，最後加入強棒麵收尾。",
           meta: ["料理類型：博多鄉土牛腸鍋", "招牌菜色：味噌口味牛腸鍋、醋拌牛雜", "人均預算：¥3,500 - ¥4,500", "訂位建議：強烈建議提前 2 週網路訂位"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Motsunabe+Yamanaka+Akasaka"
@@ -2013,6 +2355,8 @@ const TRIP_DATA = {
           categoryLabel: "觀光景點",
           mustGo: true,
           title: "【範例】福岡市美術館（雨天室內藝術行程）",
+          imageUrl: FUKUOKA_PHOTOS.ohoriPark,
+          imageCaption: "大濠公園南側福岡市美術館周邊",
           desc: "位於大濠公園南側的知名美術館，門口有草間彌生標誌性的黃色大南瓜，館內收藏達利、米羅與東亞古美術。",
           meta: ["預計停留：2 小時", "門票費用：常設展 ¥200"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Fukuoka+Art+Museum",
@@ -2031,6 +2375,8 @@ const TRIP_DATA = {
           category: "food",
           categoryLabel: "美食餐廳",
           title: "【範例】天神極味屋 漢堡排（位於 PARCO 地下室內）",
+          imageUrl: FUKUOKA_PHOTOS.tenjinUnderground,
+          imageCaption: "天神地下街直結美食樓層",
           desc: "排隊動線位於百貨室內走廊，下雨天也完全不受影響。",
           meta: ["料理類型：日式鐵板漢堡排", "人均預算：¥1,800 - ¥2,600"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Kiwamiya+Tenjin+PARCO",
@@ -2050,6 +2396,8 @@ const TRIP_DATA = {
           categoryLabel: "美食餐廳",
           mustGo: true,
           title: "【範例】博多牛腸鍋 晚餐",
+          imageUrl: FUKUOKA_PHOTOS.motsunabe,
+          imageCaption: "熱騰騰博多味噌牛腸鍋",
           desc: "雨夜裡來一鍋熱騰騰的味噌牛腸鍋最暖身。",
           meta: ["料理類型：博多鄉土牛腸鍋", "人均預算：¥3,500 - ¥4,500"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Motsunabe+Yamanaka+Akasaka"
@@ -2080,6 +2428,8 @@ const TRIP_DATA = {
           categoryLabel: "觀光景點",
           mustGo: true,
           title: "【範例】門司港懷舊區 & 藍翼門司吊橋",
+          imageUrl: FUKUOKA_PHOTOS.mojikoRetro,
+          imageCaption: "門司港懷舊區紅磚建築與港灣風景",
           desc: "明治至大正時期的紅磚洋風建築群，整點可欣賞日本唯一行人專用「藍翼門司吊橋」開合秀。",
           meta: ["預計停留：2 小時", "開橋時間：10:00、11:00、13:00 等整點"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Mojiko+Retro",
@@ -2099,6 +2449,8 @@ const TRIP_DATA = {
           categoryLabel: "美食餐廳",
           mustGo: true,
           title: "【範例】門司港名物 燒咖哩（Bear Fruits / 伽哩本舗）",
+          imageUrl: FUKUOKA_PHOTOS.mojikoRetro,
+          imageCaption: "門司港海峽廣場美食街",
           desc: "白飯淋上濃厚咖哩醬、打入生雞蛋與滿滿起司進烤箱焗烤，香濃牽絲是門司港必吃美食。",
           meta: ["料理類型：日式焗烤咖哩", "招牌菜色：牛肉起司燒咖哩、河豚炸物", "人均預算：¥1,300 - ¥1,800", "訂位建議：現場候位"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Bear+Fruits+Mojiko",
@@ -2117,6 +2469,8 @@ const TRIP_DATA = {
           category: "sightseeing",
           categoryLabel: "觀光景點",
           title: "【範例】小倉城 & 小倉城庭園",
+          imageUrl: FUKUOKA_PHOTOS.kokuraCastle,
+          imageCaption: "小倉城唐造天守閣與護城河景觀",
           desc: "北九州代表性名城，獨特的「唐造」天守閣內部設有互動體驗展區，秋季庭園楓紅極美。",
           meta: ["預計停留：1 小時 30 分", "門票費用：天守閣＋庭園共通券 ¥560"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Kokura+Castle",
@@ -2135,6 +2489,8 @@ const TRIP_DATA = {
           category: "shopping",
           categoryLabel: "購物行程",
           title: "【範例】魚町銀天街 & 小倉站 AMU PLAZA",
+          imageUrl: FUKUOKA_PHOTOS.tenjinUnderground,
+          imageCaption: "北九州拱廊商店街採買伴手禮",
           desc: "日本拱廊商店街發源地，好逛又平價，採買北九州名產「小倉日記」年輪蛋糕後搭車返回博多。",
           meta: ["推薦商品：つる平 小倉日記、堅パン餅乾", "退稅資訊：車站商場內支援免稅", "營業時間：10:00 - 20:00"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Uomachi+Gintengai+Kokura"
@@ -2148,6 +2504,8 @@ const TRIP_DATA = {
           categoryLabel: "觀光景點",
           mustGo: true,
           title: "【範例】九州鐵道紀念館（雨天鐵道迷必訪）",
+          imageUrl: FUKUOKA_PHOTOS.mojikoRetro,
+          imageCaption: "門司港站旁九州鐵道文化園區",
           desc: "緊鄰 JR 門司港站，室內主館可體驗迷你駕駛模擬器與明治時代客車車廂，完全不受雨天影響。",
           meta: ["預計停留：1 小時 45 分", "門票費用：¥300"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Kyushu+Railway+History+Museum",
@@ -2166,6 +2524,8 @@ const TRIP_DATA = {
           category: "food",
           categoryLabel: "美食餐廳",
           title: "【範例】小倉站室內美食街 燒咖哩／小倉鐵鍋餃子",
+          imageUrl: FUKUOKA_PHOTOS.kokuraCastle,
+          imageCaption: "小倉車站共構室內美食街",
           desc: "直接在與小倉站共構的商場享用午餐，免淋雨。",
           meta: ["料理類型：北九州鄉土料理", "人均預算：¥1,500 - ¥2,200"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Kokura+Station",
@@ -2184,6 +2544,8 @@ const TRIP_DATA = {
           category: "shopping",
           categoryLabel: "購物行程",
           title: "【範例】魚町銀天街全蓋式商店街逛街（雨天備案）",
+          imageUrl: FUKUOKA_PHOTOS.tenjinUnderground,
+          imageCaption: "全蓋式遮雨拱廊商店街",
           desc: "全程有高挑玻璃頂棚遮雨，集結藥妝、百元商店、老字號和菓子與咖啡館。",
           meta: ["推薦商品：小倉日記、平價藥妝", "營業時間：10:00 - 20:00"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Uomachi+Gintengai+Kokura"
@@ -2213,6 +2575,8 @@ const TRIP_DATA = {
           category: "sightseeing",
           categoryLabel: "觀光景點",
           title: "【範例】海之中道海濱公園（單車環園＋水豚動物森林）",
+          imageUrl: FUKUOKA_PHOTOS.uminonakamichi,
+          imageCaption: "海之中道海濱公園四季花海與海灣景致",
           desc: "三面環海的國營大型公園，租借腳踏車穿梭在秋日波斯菊花海與森林車道，還能近距離看水豚與袋鼠。",
           meta: ["預計停留：3 小時", "門票費用：入園 ¥450＋租腳踏車 ¥600"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Uminonakamichi+Seaside+Park",
@@ -2231,6 +2595,8 @@ const TRIP_DATA = {
           category: "food",
           categoryLabel: "美食餐廳",
           title: "【範例】百道海濱公園 Marizon 海景下午茶",
+          imageUrl: FUKUOKA_PHOTOS.uminonakamichi,
+          imageCaption: "博多灣海濱度假風情",
           desc: "坐落在沙灘上的歐風海上建築群，點份明太子義大利麵或鬆餅，眺望博多灣蔚藍海景。",
           meta: ["料理類型：海景洋食咖啡館", "招牌菜色：博多明太子奶油義大利麵", "人均預算：¥1,600 - ¥2,400", "訂位建議：窗邊座位建議提前預約"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Momochi+Seaside+Park+Marizon",
@@ -2250,6 +2616,8 @@ const TRIP_DATA = {
           categoryLabel: "觀光景點",
           mustGo: true,
           title: "【範例】福岡塔（日本最高海濱塔・夕陽與百萬夜景）",
+          imageUrl: FUKUOKA_PHOTOS.fukuokaTower,
+          imageCaption: "福岡塔展望室俯瞰博多灣璀璨夜景",
           desc: "登上 123 公尺高空展望室，一次收藏黃昏夕陽染紅博多灣與璀璨城市燈火的絕美時刻。",
           meta: ["預計停留：1 小時 30 分", "門票費用：成人 ¥800（外國旅客出示護照享優惠）"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Fukuoka+Tower",
@@ -2268,6 +2636,8 @@ const TRIP_DATA = {
           category: "food",
           categoryLabel: "美食餐廳",
           title: "【範例】博多站 水炊雞肉鍋（華味鳥／濱田屋）",
+          imageUrl: FUKUOKA_PHOTOS.motsunabe,
+          imageCaption: "博多經典鍋物料理饗宴",
           desc: "最後一晚品嘗福岡三大名物之一的「水炊雞肉鍋」，乳白色膠原蛋白雞湯鮮美溫潤。",
           meta: ["料理類型：博多水炊雞肉鍋", "招牌菜色：金華套餐（含前菜、雞肉丸、雜炊）", "人均預算：¥4,500 - ¥6,000", "訂位建議：建議提前線上預約包廂或桌位"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Hakata+Hanamidori+Hakata+Station"
@@ -2281,6 +2651,8 @@ const TRIP_DATA = {
           categoryLabel: "購物行程",
           mustGo: true,
           title: "【範例】LaLaport 福岡 & 1:1 實物大鋼彈立像（雨天備案）",
+          imageUrl: FUKUOKA_PHOTOS.canalCity,
+          imageCaption: "福岡大型室內購物中心",
           desc: "大型全室內購物中心，集結超過 220 間店鋪、九州最大規模美食街與 Jump 專賣店。",
           meta: ["推薦商品：福岡限定鋼彈模型、日系服飾", "退稅資訊：館內設免稅櫃台", "營業時間：10:00 - 21:00"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=LaLaport+Fukuoka",
@@ -2300,6 +2672,8 @@ const TRIP_DATA = {
           categoryLabel: "觀光景點",
           mustGo: true,
           title: "【範例】teamLab Forest 福岡（BOSS E・ZO FUKUOKA）",
+          imageUrl: FUKUOKA_PHOTOS.fukuokaTower,
+          imageCaption: "百道濱娛樂區與福岡塔周邊",
           desc: "雨天超推薦的沉浸式光影美術館，在室內就能體驗捕捉森林神獸與奇幻光影互動。",
           meta: ["預計停留：1 小時 30 分", "門票費用：成人 ¥2,400（建議事先網路購票）"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=teamLab+Forest+Fukuoka",
@@ -2318,6 +2692,8 @@ const TRIP_DATA = {
           category: "food",
           categoryLabel: "美食餐廳",
           title: "【範例】博多站 水炊雞肉鍋 晚餐",
+          imageUrl: FUKUOKA_PHOTOS.motsunabe,
+          imageCaption: "博多暖心鍋物晚餐",
           desc: "溫暖濃郁的雞湯鍋物為旅程畫下完美句點。",
           meta: ["料理類型：博多水炊雞肉鍋", "人均預算：¥4,500 - ¥6,000"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Hakata+Hanamidori+Hakata+Station"
@@ -2347,6 +2723,8 @@ const TRIP_DATA = {
           category: "logistics",
           categoryLabel: "退房寄物",
           title: "【範例】飯店辦理退房 & 行李暫存",
+          imageUrl: FUKUOKA_PHOTOS.fukuokaAirport,
+          imageCaption: "準備踏上返台歸途",
           desc: "整理戰利品與檢查護照、充電器，11:00 前完成退房並暫放行李於飯店櫃台。",
           meta: ["預計停留：15 分鐘", "提醒：液體類伴手禮務必放入託運行李箱"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=JR+Kyushu+Hotel+Blossom+Hakata+Central",
@@ -2366,6 +2744,8 @@ const TRIP_DATA = {
           categoryLabel: "購物行程",
           mustGo: true,
           title: "【範例】博多銘品藏 伴手禮最終掃貨",
+          imageUrl: FUKUOKA_PHOTOS.tenjinUnderground,
+          imageCaption: "福岡車站伴手禮名店街",
           desc: "把漏買的博多伴手禮一次補齊！推薦明月堂「博多通りもん」饅頭、福太郎「Menbei」明太子仙貝與努努雞冷炸雞。",
           meta: ["推薦商品：博多通饅頭、Menbei 明太子仙貝、如水庵筑紫餅", "退稅資訊：銘品藏指定櫃台滿 ¥5,000（未稅）可免稅", "營業時間：08:00 - 21:00"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Hakata+Meihingura",
@@ -2384,6 +2764,8 @@ const TRIP_DATA = {
           category: "logistics",
           categoryLabel: "機場報到",
           title: "【範例】福岡機場國際線報到 & 免稅店最後衝刺",
+          imageUrl: FUKUOKA_PHOTOS.fukuokaAirport,
+          imageCaption: "福岡機場國際線航廈報到櫃台",
           desc: "起飛前 2 小時抵達櫃台辦理行李託運，通關後可於國際線免稅店購買 Royce 生巧克力、白色戀人與一蘭拉麵禮盒（手提上機免佔託運重量）。",
           meta: ["起飛時間：12:20 (BR105)", "提醒：生鮮明太子需加購保冷袋並確認符合入境規定"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Fukuoka+Airport+International+Terminal"
@@ -2396,6 +2778,8 @@ const TRIP_DATA = {
           category: "logistics",
           categoryLabel: "退房寄物",
           title: "【範例】飯店辦理退房 & 行李暫存",
+          imageUrl: FUKUOKA_PHOTOS.fukuokaAirport,
+          imageCaption: "退房整理行李準備前往機場",
           desc: "整理行李並辦理退房。",
           meta: ["預計停留：15 分鐘"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=JR+Kyushu+Hotel+Blossom+Hakata+Central",
@@ -2415,6 +2799,8 @@ const TRIP_DATA = {
           categoryLabel: "購物行程",
           mustGo: true,
           title: "【範例】博多 Maing 室內伴手禮街採買",
+          imageUrl: FUKUOKA_PHOTOS.tenjinUnderground,
+          imageCaption: "全室內伴手禮採買商場",
           desc: "全室內伴手禮商場，下雨天也能從容購買福岡特產。",
           meta: ["推薦商品：博多通饅頭、明太子仙貝", "營業時間：09:00 - 21:00"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Hakata+Meihingura",
@@ -2433,6 +2819,8 @@ const TRIP_DATA = {
           category: "logistics",
           categoryLabel: "機場報到",
           title: "【範例】福岡機場國際線報到返台",
+          imageUrl: FUKUOKA_PHOTOS.fukuokaAirport,
+          imageCaption: "福岡機場國際線航廈",
           desc: "辦理託運與出境審查，搭乘 12:20 班機返回溫暖的家。",
           meta: ["起飛時間：12:20 (BR105)"],
           mapUrl: "https://www.google.com/maps/search/?api=1&query=Fukuoka+Airport+International+Terminal"
@@ -2610,6 +2998,62 @@ function scrollToNav() {
   } else {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
+}
+
+/* ============================================================================
+   【首頁福岡實景明信片畫廊與燈箱預覽】
+   ============================================================================ */
+function renderHeroPostcards() {
+  const track = document.getElementById("heroPostcardTrack");
+  if (!track) return;
+
+  track.innerHTML = TRIP_DATA.featuredPostcards.map((p, index) => `
+    <div class="polaroid-card" role="button" tabindex="0"
+      aria-label="預覽 ${p.title}"
+      onclick="openPhotoLightbox(${index})"
+      onkeydown="if(event.key==='Enter') openPhotoLightbox(${index})">
+      <div class="polaroid-img-box">
+        <img src="${p.imageUrl}"
+          alt="${p.spotName}"
+          referrerpolicy="no-referrer"
+          loading="lazy"
+          onerror="handleImageFallback(this, '${p.title}', '${p.category}')" />
+      </div>
+      <div class="polaroid-caption">
+        <span class="polaroid-title">${p.title}</span>
+        <span class="polaroid-day-pill">DAY ${p.dayNum}</span>
+      </div>
+    </div>
+  `).join("");
+}
+
+function openPhotoLightbox(index) {
+  const item = TRIP_DATA.featuredPostcards[index];
+  if (!item) return;
+
+  const imgWrap = document.getElementById("lightboxImgWrap");
+  imgWrap.innerHTML = `
+    <img src="${item.imageUrl}"
+      alt="${item.spotName}"
+      referrerpolicy="no-referrer"
+      onerror="handleImageFallback(this, '${item.title}', '${item.category}')" />
+  `;
+
+  document.getElementById("lightboxTitle").textContent = item.title;
+  document.getElementById("lightboxDayBadge").textContent = `DAY ${item.dayNum} 行程`;
+  document.getElementById("lightboxDesc").textContent = item.desc;
+
+  const jumpBtn = document.getElementById("lightboxJumpBtn");
+  jumpBtn.onclick = () => {
+    closePhotoLightbox();
+    jumpToDay(item.dayNum);
+  };
+
+  document.getElementById("photoLightbox").classList.add("open");
+}
+
+function closePhotoLightbox() {
+  document.getElementById("photoLightbox").classList.remove("open");
 }
 
 /* ============================================================================
@@ -2928,6 +3372,17 @@ function renderTimeline() {
             </div>
             <span class="event-time-badge">${ev.time}</span>
           </div>
+
+          ${ev.imageUrl ? `
+            <div class="event-photo-wrap">
+              <img src="${ev.imageUrl}"
+                alt="${ev.imageCaption || ev.title}"
+                referrerpolicy="no-referrer"
+                loading="lazy"
+                onerror="handleImageFallback(this, '${ev.title}', '${ev.category}')" />
+              <span class="event-photo-caption">📷 ${ev.imageCaption || ev.title}</span>
+            </div>
+          ` : ""}
 
           <div class="event-body">
             <div class="event-title-row">
@@ -3293,6 +3748,7 @@ function confirmResetAllData() {
    ============================================================================ */
 window.addEventListener("DOMContentLoaded", () => {
   loadState();
+  renderHeroPostcards();
   renderOverview();
   renderItinerary();
   renderChecklist();
