@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>福岡六天五夜自由行</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--b:#23406B;--r:#D9482F;--y:#F2B441;--p:#E58FA6;--g:#2F7D6B;--w:#7FB9D6;--bg:#EEF4F3}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:#1c2b44;font:16px/1.7 'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+.wrap{max-width:560px;margin:0 auto;padding:12px}
+h1{font-size:24px;margin:8px 0 2px;color:var(--b)}h2{font-size:19px;margin:4px 0 8px;color:var(--b)}
+.c{background:#fff;border:1.5px solid var(--b);border-radius:16px;padding:14px;margin:0 0 12px}
+.s{background:#E3F1F8}.f{background:#FCEBC4}.b{background:#FBE3E9}.a{background:#F3F4F4}
+.tag{display:inline-block;font-size:15px;line-height:1.5;padding:0 10px;border-radius:99px;color:#fff;background:var(--r);margin-left:6px}
+.ex{background:var(--y);color:var(--b)}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between}
+.nm{font-weight:700;flex:1}
+.ln{color:#33476a}
+#nav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 14px}
+#nav button{min-height:64px;border:1.5px solid var(--b);border-radius:16px;background:#fff;color:var(--b);font:700 17px 'Noto Sans TC',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+#nav button.on{background:var(--b);color:#fff}
+svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.back{width:100%;min-height:52px;border:1.5px solid var(--b);border-radius:16px;background:var(--bg);color:var(--b);font:700 16px 'Noto Sans TC',sans-serif;margin-top:6px;cursor:pointer}
+.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1.5px solid var(--b);border-radius:12px;background:#fff;color:var(--b);text-decoration:none;font:500 16px 'Noto Sans TC',sans-serif;cursor:pointer}
+.ck{display:flex;align-items:center;gap:8px;min-height:44px}.ck input{width:22px;height:22px;accent-color:var(--g)}
+.dn{opacity:.6}.dn .nm{text-decoration:line-through}
+.tr{margin:-4px 0 8px 14px;padding:2px 0 2px 12px;border-left:3px dashed var(--b);color:var(--b);font-size:16px}
+.chips{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 10px}
+.chip{flex:0 0 82px;min-height:72px;scroll-snap-align:center;border:1.5px solid var(--b);border-radius:16px;background:#fff;color:var(--b);font:500 16px/1.3 'Noto Sans TC',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}
+.chip.on{background:var(--b);color:#fff}.chip small{font-size:14px}
+.sum{position:sticky;top:0;z-index:5;padding:8px 14px}
+.sumbar{all:unset;display:flex;justify-content:space-between;gap:8px;width:100%;min-height:44px;align-items:center;cursor:pointer;font-weight:500}
+input[type=text],input[type=number],textarea{font:16px 'Noto Sans TC',sans-serif;min-height:44px;border:1.5px solid var(--b);border-radius:12px;padding:6px 10px;width:100%;color:var(--b)}
+input[type=number]{width:120px}
+.bar{height:14px;background:#dbe7e5;border-radius:99px;overflow:hidden;border:1.5px solid var(--b)}.bar i{display:block;height:100%;background:var(--g)}
+.bp{display:flex;justify-content:space-between;gap:12px;margin-top:10px;padding-top:10px;border-top:1.5px dashed var(--b)}
+.bp>div{flex:1}
+.x{border:0;background:none;color:var(--r);font-size:20px;min-width:44px;min-height:44px;cursor:pointer}
+.hero svg{width:100%;height:auto;display:block;border-radius:12px}
+.big{font-size:22px;font-weight:700;color:var(--b)}
+.pn{display:none}.pn.on{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}60%{transform:translateY(-3px) scale(1.01)}to{opacity:1;transform:none}}
+.card{animation:pop .5s cubic-bezier(.34,1.56,.64,1) both;animation-delay:calc(var(--i)*70ms)}
+@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes steam{0%{opacity:0;transform:translateY(4px)}50%{opacity:.8}100%{opacity:0;transform:translateY(-12px)}}
+@keyframes rip{0%,100%{transform:translateX(0)}50%{transform:translateX(-8px)}}
+.lan{transform-box:fill-box;transform-origin:50% 0;animation:sway 3.2s ease-in-out infinite}
+.st{animation:steam 3s ease-in-out infinite}.st2{animation-delay:1.2s}
+.wv{animation:rip 4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.art{width:100%;height:auto;display:block;border-radius:10px;margin-bottom:8px;border:1.5px solid var(--b)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+<svg viewBox="0 0 360 200" role="img" aria-label="福岡插畫：福岡塔、中洲屋台、那珂川與太宰府梅花">
+<rect width="360" height="200" fill="#DCEBF2"/>
+<circle cx="60" cy="40" r="20" fill="#F2B441"/>
+<path d="M270 28h6l12 112h-30z" fill="#23406B"/><path d="M273 8h0l3 20h-6z" fill="#23406B"/><path d="M262 140h34v6h-34z" fill="#7FB9D6" stroke="#23406B" stroke-width="2"/>
+<circle cx="273" cy="70" r="4" fill="#F2B441"/>
+<rect y="146" width="360" height="54" fill="#7FB9D6"/>
+<g class="wv"><path d="M10 160q15-8 30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0" fill="none" stroke="#fff" stroke-width="2"/><path d="M-10 180q15-8 30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0" fill="none" stroke="#fff" stroke-width="2"/></g>
+<rect x="20" y="96" width="120" height="50" fill="#fff" stroke="#23406B" stroke-width="2"/>
+<path d="M12 96l8-26h120l8 26z" fill="#23406B"/>
+<rect x="30" y="112" width="100" height="10" fill="#F2B441"/>
+<g class="lan"><line x1="42" y1="96" x2="42" y2="102" stroke="#23406B" stroke-width="2"/><ellipse cx="42" cy="110" rx="8" ry="10" fill="#D9482F"/></g>
+<g class="lan" style="animation-delay:.8s"><line x1="118" y1="96" x2="118" y2="102" stroke="#23406B" stroke-width="2"/><ellipse cx="118" cy="110" rx="8" ry="10" fill="#D9482F"/></g>
+<g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path class="st" d="M78 92q-5-8 0-14"/><path class="st st2" d="M90 92q-5-8 0-14"/></g>
+<rect x="64" y="124" width="40" height="22" fill="#F2B441" stroke="#23406B" stroke-width="2"/>
+<path d="M340 30q-40 20-70 4M318 40q-10 14-20 18" fill="none" stroke="#23406B" stroke-width="3" stroke-linecap="round"/>
+<g fill="#E58FA6" stroke="#fff" stroke-width="1.5"><circle cx="338" cy="30" r="7"/><circle cx="318" cy="38" r="7"/><circle cx="296" cy="36" r="6"/><circle cx="300" cy="58" r="6"/></g>
+<g fill="#F2B441"><circle cx="338" cy="30" r="2"/><circle cx="318" cy="38" r="2"/><circle cx="296" cy="36" r="2"/><circle cx="300" cy="58" r="2"/></g>
+</svg>
+<h1>福岡六天五夜自由行</h1>
+<div style="color:#33476a">2026/11/16（一）– 11/21（六）· 博多・太宰府・柳川</div>
+<div id="nav"></div>
+</header>
+<main>
+<section class="pn" id="p0"></section>
+<section class="pn" id="p1"></section>
+<section class="pn" id="p2"></section>
+<section class="pn" id="p3"></section>
+</main>
+</div>
+<script>
+/* ===== TRIP_DATA：所有「範例」內容請在此區修改 ===== */
+const EX=true; // true 時，示範資料旁會顯示「範例」標籤
+const FLIGHTS=[
+ {dir:'去程',date:'11/16（一）',al:'範例航空',no:'XX 000',f:'TPE 桃園',ft:'第一航廈',t:'FUK 福岡',tt:'國際線航廈',dep:'09:30',arr:'13:00',dur:'2 小時 30 分',note:'台灣時間 09:30 ＝ 日本時間 10:30'},
+ {dir:'回程',date:'11/21（六）',al:'範例航空',no:'XX 001',f:'FUK 福岡',ft:'國際線航廈',t:'TPE 桃園',tt:'第一航廈',dep:'14:30',arr:'15:50',dur:'2 小時 20 分',note:'日本時間 14:30 ＝ 台灣時間 13:30'}
+];
+const HOTEL={n:'博多車站前範例飯店',addr:'福岡市博多區博多駅前 0-0-0（範例）',st:'JR 博多站',walk:'步行 5 分鐘',ci:'15:00',co:'11:00',bk:'HTL-000000（範例）'};
+/* 餐廳/景點格式：[類型,名稱,時間,細節（用 | 分行）,前往此處的交通]；類型 S=必去景點 s=景點 f=餐廳 b=購物 a=機場/飯店 */
+const DAYS=[
+{d:'11/16',w:'一',t:'抵達與博多初體驗',wx:['☀','19','12','10','薄外套＋襯衫，傍晚微涼'],
+ it:[['a','福岡機場入境','13:00','國際線航廈｜辦理入境、購買交通 IC 卡'],
+ ['a','飯店入住','14:30','入住 15:00，可先寄放行李','地鐵空港線 福岡空港→博多｜約 5 分＋步行 5 分'],
+ ['b','博多運河城','16:00','推薦：無印良品、UNIQLO、噴水秀｜退稅：同店單日未稅滿 ¥5,000｜營業 10:00–21:00','步行｜約 1.1 公里・15 分'],
+ ['f','中洲屋台','19:00','料理：屋台小吃｜招牌：豚骨拉麵、串燒、明太子玉子燒｜預算：約 ¥3,000｜訂位：不需，建議 19:00 前入座','步行｜約 800 公尺・10 分']],
+ rain:[['b','博多車站 Amu Plaza','16:00','站內室內逛街｜營業 10:00–21:00'],['f','博多拉麵街','19:00','運河城 5 樓｜預算約 ¥1,200','']]},
+{d:'11/17',w:'二',t:'太宰府與梅枝餅',wx:['☁','18','11','30','襯衫＋薄外套，備折傘'],
+ it:[['S','太宰府天滿宮','09:30','停留約 120 分｜學問之神、梅花名所｜太宰府車站步行 5 分','西鐵 天神→二日市轉乘→太宰府｜約 40 分'],
+ ['f','參道午餐','11:45','料理：和食、小吃｜招牌：梅枝餅、蕎麥麵｜預算：約 ¥1,500｜訂位：不需','步行｜約 300 公尺・5 分'],
+ ['s','九州國立博物館','13:30','停留約 90 分｜亞洲文化展','步行｜約 400 公尺・6 分'],
+ ['b','天神地下街','16:30','推薦：藥妝、伴手禮、PARCO｜退稅：未稅滿 ¥5,000｜營業 10:00–20:00','西鐵 太宰府→天神｜約 40 分'],
+ ['f','水炊き晚餐','18:30','料理：雞肉火鍋｜招牌：水炊き、雞肉丸子｜預算：約 ¥4,500｜訂位：建議','步行｜約 600 公尺・8 分']],
+ rain:[['s','天神 Visconti／地下街','10:00','全天室內逛街'],['s','福岡市美術館','13:30','大濠公園旁｜停留約 90 分','']]},
+{d:'11/18',w:'三',t:'福岡塔與海濱',wx:['☀','19','13','10','輕便外套，海邊風大'],
+ it:[['S','福岡塔','10:00','停留約 90 分｜海濱高塔、夜景佳','巴士 博多站→福岡塔南口｜約 30 分'],
+ ['f','百道濱午餐','12:00','料理：海鮮丼、咖啡｜預算：約 ¥2,000｜訂位：不需','步行｜約 600 公尺・8 分'],
+ ['s','大濠公園','15:00','停留約 60 分｜湖畔散步','地鐵空港線 西新→大濠公園｜約 7 分'],
+ ['b','大名・天神','17:30','推薦：選物店、潮牌｜退稅：未稅滿 ¥5,000｜營業約 11:00–20:00','地鐵空港線 大濠公園→天神｜約 4 分'],
+ ['f','博多拉麵','19:00','料理：豚骨拉麵｜招牌：加麵（替玉）｜預算：約 ¥1,000｜訂位：不需','步行｜約 800 公尺・10 分']],
+ rain:[['s','福岡市博物館','10:30','停留約 90 分'],['s','Yahuoku! Dome 周邊 MARK IS','14:00','室內商場｜營業 10:00–20:00','']]},
+{d:'11/19',w:'四',t:'柳川遊船',wx:['☂','17','10','55','防水外套、雨具必備'],
+ it:[['S','柳川遊船','10:30','停留約 70 分｜水鄉撐篙遊船，多有遮雨棚','西鐵 天神→西鉄柳川（特急）｜約 50 分'],
+ ['f','鰻魚蒸籠飯','12:30','料理：鰻魚｜招牌：蒸籠鰻魚飯｜預算：約 ¥3,000｜訂位：建議','步行｜約 600 公尺・8 分'],
+ ['s','北原白秋生家','14:00','停留約 40 分｜詩人故居','步行｜約 800 公尺・10 分'],
+ ['b','大名散策','16:30','推薦：咖啡、雜貨｜營業約 11:00–20:00','西鐵 柳川→天神｜約 50 分'],
+ ['f','牛腸鍋晚餐','19:00','料理：內臟鍋｜招牌：牛腸鍋、辣味噌｜預算：約 ¥3,500｜訂位：建議','步行｜約 900 公尺・12 分']],
+ rain:[['s','柳川遊船（雨天照常，視天候）','10:30','若停駛，改逛天神地下街'],['b','天神 Core／Imaizumi','14:00','室內購物','']]},
+{d:'11/20',w:'五',t:'市區深度與購物',wx:['☁','18','11','20','襯衫＋薄外套'],
+ it:[['S','櫛田神社','09:30','停留約 60 分｜博多總鎮守、祇園山笠','地鐵空港線 博多→祇園｜約 2 分＋步行 5 分'],
+ ['s','川端商店街','10:45','拱廊商店街，雨天也可逛','步行｜約 200 公尺・3 分'],
+ ['f','明太子午餐','12:30','料理：辛子明太子定食｜預算：約 ¥2,000｜訂位：不需','地鐵 中洲川端→博多｜約 4 分'],
+ ['b','博多站伴手禮','14:00','推薦：明太子、通りもん、博多雞蛋糕｜退稅：未稅滿 ¥5,000，需護照｜營業約 8:00–21:00','步行｜站內'],
+ ['f','水炊き晚餐','18:30','料理：雞肉火鍋｜預算：約 ¥4,500｜訂位：建議','步行｜約 500 公尺・6 分']],
+ rain:[['b','博多站 Amu Plaza','10:00','全天室內'],['s','川端商店街','13:00','拱廊，不怕雨','']]},
+{d:'11/21',w:'六',t:'返程',wx:['☀','19','12','10','舒適外套'],
+ it:[['a','飯店早餐＋退房','08:00','退房 11:00'],
+ ['a','福岡空港','11:30','辦理登機、退稅櫃台｜國際線航廈','地鐵空港線 博多→福岡空港｜約 5 分'],
+ ['a','FUK→TPE 起飛','14:30','日本時間 14:30，台灣時間 15:50 抵達（範例航班）','']],
+ rain:[['a','機場內購物','12:00','國際線航廈免稅店']]}
+];
+const AREAS=[['博多站','明太子、通りもん、博多雞蛋糕'],['天神／大名','藥妝、選物、伴手禮'],['太宰府參道','梅枝餅、御守'],['機場國際線','免稅零食、最後補貨']];
+const TODO0=['確認護照有效期','辦理日本入境線上 Visit Japan Web','訂位餐廳確認','兌換日圓'];
+const BAG0=['護照','日圓現金／信用卡','行動電源','充電器與轉接頭','薄外套','折傘','常備藥品'];
+/* ===== 程式 ===== */
+const $=s=>document.querySelector(s);
+let S={done:{},sp:{},rain:{},rate:0.21,todo:null,bag:null,chk:{},mode:'auto',sum:false};
+try{Object.assign(S,JSON.parse(localStorage.getItem('fk26')||'{}'))}catch(e){}
+S.todo=S.todo||TODO0.map(t=>({t,d:0}));S.bag=S.bag||BAG0.map(t=>({t,d:0}));
+const save=()=>{try{localStorage.setItem('fk26',JSON.stringify(S))}catch(e){}};
+const X=()=>EX?'<span class="tag ex">範例</span>':'';
+const mp=n=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(n+' 福岡');
+let tab=0,cur=0;
+const IC=['<path d="M3 11l9-8 9 8v9H3z"/>','<path d="M4 5h16v15H4zM4 10h16M8 3v4M16 3v4"/>','<path d="M5 12l4 4 10-10"/>','<path d="M3 19V7M3 14h18v5M21 14v-3a3 3 0 0 0-3-3h-7v6"/>'];
+const NM=['總覽','每日行程','行前清單','住宿速查'];
+function nav(){$('#nav').innerHTML=NM.map((n,i)=>`<button data-a="tab" data-k="${i}" class="${i==tab?'on':''}"><svg class="i" viewBox="0 0 24 24">${IC[i]}</svg>${n}</button>`).join('')}
+const back='<button class="back" data-a="top">↑ 返回主選單</button>';
+function status(){
+ const jst=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Tokyo'}));
+ let idx=Math.floor((new Date(jst.getFullYear(),jst.getMonth(),jst.getDate())-new Date(2026,10,16))/864e5);
+ if(S.mode=='before')idx=-1;else if(S.mode=='during'&&(idx<0||idx>5))idx=0;
+ if(idx<0){const ms=Math.max(0,new Date('2026-11-16T09:30:00+08:00')-new Date());
+  return `<div class="big">距離出發 ${Math.floor(ms/864e5)} 天 ${Math.floor(ms%864e5/36e5)} 小時 ${Math.floor(ms%36e5/6e4)} 分</div>`}
+ if(idx>5)return '<div class="big">旅程結束，歡迎回家！</div>';
+ const hm=('0'+jst.getHours()).slice(-2)+':'+('0'+jst.getMinutes()).slice(-2);
+ const nx=DAYS[idx].it.find((x,j)=>x[2]>=hm&&!S.done[idx+'-'+j]);
+ return `<div class="big">旅行第 ${idx+1} 天／共 6 天</div><div>${nx?'下一站：'+nx[2]+' '+nx[1]:'今日行程已結束，好好休息'}</div>`}
+function fl(f){return `<div class="c" style="border-left:10px solid var(--r)"><div class="row"><b>${f.dir}・${f.date}</b>${X()}</div>
+<div>${f.al}　${f.no}</div>
+<div class="row" style="margin:6px 0"><div><div class="big">${f.dep}</div>${f.f}<br>${f.ft}</div><div style="text-align:center">✈<br>${f.dur}</div><div style="text-align:right"><div class="big">${f.arr}</div>${f.t}<br>${f.tt}</div></div>
+<div style="border-top:1.5px dashed var(--b);padding-top:6px;color:#33476a">時差：日本比台灣快 1 小時｜${f.note}</div></div>`}
+function p0(){$('#p0').innerHTML=`<div class="c" id="st"></div>
+<label class="row c">預覽模式<select id="md" data-a="mode" style="min-height:44px;font:16px 'Noto Sans TC';border:1.5px solid var(--b);border-radius:12px"><option value="auto">自動</option><option value="before">出發前</option><option value="during">旅程中</option></select></label>
+${FLIGHTS.map(fl).join('')}${tour()}${back}`;$('#md').value=S.mode;$('#st').innerHTML=status()}
+const V=(bg,b)=>`<svg class="art" viewBox="0 0 320 80" role="img" aria-hidden="true"><rect width="320" height="80" fill="${bg}"/>${b}</svg>`;
+const SC={
+shrine:V('#E3F1F8','<rect y="62" width="320" height="18" fill="#2F7D6B"/><rect x="110" y="14" width="100" height="8" fill="#23406B"/><rect x="120" y="22" width="80" height="6" fill="#D9482F"/><rect x="130" y="28" width="6" height="36" fill="#D9482F"/><rect x="184" y="28" width="6" height="36" fill="#D9482F"/><rect x="126" y="38" width="68" height="5" fill="#D9482F"/><path d="M46 66V40M276 66V46" stroke="#23406B" stroke-width="3"/><g fill="#E58FA6"><circle cx="40" cy="38" r="8"/><circle cx="54" cy="32" r="7"/><circle cx="270" cy="40" r="8"/><circle cx="284" cy="48" r="7"/></g>'),
+tower:V('#DCEBF2','<circle cx="60" cy="26" r="14" fill="#F2B441"/><path d="M200 6h4l10 52h-24z" fill="#23406B"/><circle cx="202" cy="34" r="3" fill="#F2B441"/><rect y="58" width="320" height="22" fill="#7FB9D6"/><path d="M10 68q10-6 20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0" fill="none" stroke="#fff" stroke-width="2"/>'),
+boat:V('#DCEBF2','<rect y="50" width="320" height="30" fill="#7FB9D6"/><g stroke="#2F7D6B" stroke-width="3" fill="none"><path d="M40 0v34M52 0v40M64 0v30M256 0v36M268 0v42M280 0v32"/></g><path d="M120 52h80l-10 12h-60z" fill="#23406B"/><rect x="150" y="36" width="22" height="16" fill="#F2B441"/><path d="M200 30l40 36" stroke="#23406B" stroke-width="3"/>'),
+museum:V('#F3F4F4','<path d="M90 28l70-18 70 18z" fill="#23406B"/><g fill="#fff" stroke="#23406B" stroke-width="2"><rect x="104" y="30" width="12" height="34"/><rect x="134" y="30" width="12" height="34"/><rect x="164" y="30" width="12" height="34"/><rect x="194" y="30" width="12" height="34"/></g><rect x="84" y="64" width="152" height="8" fill="#7FB9D6"/>'),
+park:V('#E3F1F8','<ellipse cx="160" cy="58" rx="110" ry="14" fill="#7FB9D6"/><g fill="#2F7D6B"><circle cx="40" cy="42" r="16"/><circle cx="280" cy="40" r="18"/><circle cx="64" cy="46" r="12"/></g><circle cx="160" cy="20" r="10" fill="#F2B441"/>'),
+beach:V('#DCEBF2','<circle cx="250" cy="24" r="14" fill="#F2B441"/><rect y="40" width="320" height="24" fill="#7FB9D6"/><rect y="64" width="320" height="16" fill="#F2D9A0"/><path d="M10 52q10-5 20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0t20 0" fill="none" stroke="#fff" stroke-width="2"/>'),
+yatai:V('#23406B','<rect x="100" y="42" width="120" height="28" fill="#F2B441"/><path d="M92 42l10-22h116l10 22z" fill="#D9482F"/><g fill="#D9482F" stroke="#F2B441" stroke-width="1.5"><ellipse cx="110" cy="54" rx="7" ry="9"/><ellipse cx="210" cy="54" rx="7" ry="9"/></g><path d="M150 38q-5-8 0-14M166 38q-5-8 0-14" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>'),
+plane:V('#DCEBF2','<g fill="#fff"><ellipse cx="60" cy="54" rx="30" ry="8"/><ellipse cx="270" cy="26" rx="26" ry="7"/></g><path d="M110 44l100-6 20 6-20 6-100-4z" fill="#23406B"/><path d="M150 42l-20-20h14l24 20z" fill="#D9482F"/><path d="M222 40l10-12h8l-6 14z" fill="#D9482F"/>'),
+hotel:V('#F3F4F4','<rect x="110" y="8" width="100" height="62" fill="#23406B"/><g fill="#F2B441"><rect x="122" y="18" width="14" height="10"/><rect x="153" y="18" width="14" height="10"/><rect x="184" y="18" width="14" height="10"/><rect x="122" y="38" width="14" height="10"/><rect x="184" y="38" width="14" height="10"/></g><rect x="150" y="52" width="20" height="18" fill="#7FB9D6"/>'),
+food:V('#FCEBC4','<path d="M110 40h100a50 30 0 0 1-100 0z" fill="#fff" stroke="#23406B" stroke-width="2"/><rect x="112" y="38" width="96" height="6" fill="#D9482F"/><path d="M140 32q-5-8 0-14M160 32q-5-8 0-14M180 32q-5-8 0-14" stroke="#23406B" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M200 20l30 40M210 18l30 40" stroke="#23406B" stroke-width="3"/>'),
+shop:V('#FBE3E9','<rect x="90" y="30" width="140" height="40" fill="#fff" stroke="#23406B" stroke-width="2"/><path d="M84 30l8-18h136l8 18z" fill="#E58FA6"/><rect x="146" y="44" width="28" height="26" fill="#7FB9D6"/><path d="M250 44h22l4 24h-30z" fill="#F2B441" stroke="#23406B" stroke-width="2"/>')};
+function art(nm,k){let t=/太宰府|櫛田|神社|天滿宮/.test(nm)?'shrine':/福岡塔/.test(nm)?'tower':/柳川遊船/.test(nm)?'boat':/白秋|博物館|美術館/.test(nm)?'museum':/公園/.test(nm)?'park':/百道/.test(nm)?'beach':/屋台|中洲/.test(nm)?'yatai':/機場|空港|FUK|入境/.test(nm)?'plane':/飯店|退房/.test(nm)?'hotel':k=='f'||/拉麵|明太子|蒸籠|水炊/.test(nm)?'food':'shop';return SC[t]}
+function tour(){const m=[];DAYS.forEach(d=>d.it.forEach(x=>{if(x[0]=='S')m.push(x)}));return `<div class="c"><h2>必去景點巡禮 ${X()}</h2>${m.map(x=>`<div style="margin-bottom:10px">${art(x[1],'S')}<b>${x[1]}</b></div>`).join('')}</div>`}
+function card(it,id,n){const [k,nm,tm,dt,tr]=it;const dn=S.done[id];
+ return (tr?`<div class="tr">▸ ${tr.split('｜').join('<br>')}</div>`:'')+`<div class="c card ${k.toLowerCase()} ${dn?'dn':''}" style="--i:${n}">${art(nm,k)}<div class="row"><span class="nm">${tm}　${nm}</span>${k=='S'?'<span class="tag">必去</span>':''}</div>${dt.split('｜').map(x=>`<div class="ln">${x}</div>`).join('')}<div class="row"><label class="ck"><input type="checkbox" data-a="done" data-id="${id}" ${dn?'checked':''}>已完成</label><a class="btn" target="_blank" rel="noopener" href="${mp(nm)}">地圖</a></div></div>`}
+const yen=i=>+S.sp[i]||0;
+function p1(){const d=DAYS[cur],r=S.rain[cur],w=d.wx;
+ const list=(r?d.rain:d.it).map((x,j)=>card(x,(r?'r':'')+cur+'-'+j,j)).join('');
+ $('#p1').innerHTML=`<div class="chips">${DAYS.map((x,k)=>`<button class="chip ${k==cur?'on':''}" data-a="day" data-k="${k}"><b>${x.d}</b><span>週${x.w}</span><small>第 ${k+1} 天</small></button>`).join('')}</div>
+<div class="c sum"><button class="sumbar" data-a="sum"><span>${w[0]} ${w[2]}–${w[1]}°C・雨 ${w[3]}%</span><span>${HOTEL.n} ${S.sum?'▲':'▼'}</span></button>
+${S.sum?`<div class="ln">穿搭：${w[4]} ${X()}<br>住宿：${HOTEL.addr}<br>鄰近：${HOTEL.st}（${HOTEL.walk}）<br><a class="btn" target="_blank" rel="noopener" href="${mp(HOTEL.n)}">Google 地圖</a></div>`:''}</div>
+<h2>${d.t}</h2>
+<label class="ck"><input type="checkbox" data-a="rain" ${r?'checked':''}>切換為雨天替代方案</label>
+${list}
+<div class="c"><b>今日花費</b><div class="row"><span>¥ <input type="number" inputmode="numeric" id="sp" data-a="sp" value="${S.sp[cur]||''}" placeholder="日圓"></span><b id="nt">≈ NT$ ${Math.round(yen(cur)*S.rate)}</b></div>
+<label class="row">匯率（日圓→台幣）<input type="number" step="0.001" data-a="rate" value="${S.rate}"></label></div>${back}`}
+function lst(key,title){const a=S[key],n=a.filter(x=>x.d).length;
+ return `<div class="c"><h2>${title}</h2>${a.map((x,i)=>`<div class="row"><label class="ck nm"><input type="checkbox" data-a="lk" data-l="${key}" data-i="${i}" ${x.d?'checked':''}>${x.t}</label><button class="x" data-a="ld" data-l="${key}" data-i="${i}" aria-label="移除">✕</button></div>`).join('')}
+<div class="row"><input type="text" id="n-${key}" placeholder="新增項目" style="flex:1"><button class="btn" data-a="la" data-l="${key}">新增</button></div></div>`}
+function p2(){const a=S.todo.concat(S.bag),n=a.filter(x=>x.d).length,pc=a.length?Math.round(n/a.length*100):0;
+ $('#p2').innerHTML=`<div class="c"><b>整體準備進度 ${n}／${a.length}（${pc}%）</b><div class="bar"><i style="width:${pc}%"></i></div></div>${lst('todo','行前待辦')}${lst('bag','行李準備')}${back}`}
+function p3(){const tot=Object.values(S.sp).reduce((a,b)=>a+(+b||0),0);
+ $('#p3').innerHTML=`<div class="c"><h2>${HOTEL.n} ${X()}</h2><div class="ln">地址：${HOTEL.addr}<br>最近車站：${HOTEL.st}（${HOTEL.walk}）<br>入住 ${HOTEL.ci}／退房 ${HOTEL.co}<br>訂房編號：${HOTEL.bk}</div><a class="btn" target="_blank" rel="noopener" href="${mp(HOTEL.n)}">Google 地圖</a></div>
+<div class="c b"><h2>伴手禮與退稅</h2>${AREAS.map(a=>`<div><b>${a[0]}</b>：${a[1]}</div>`).join('')}<div class="ln" style="margin-top:8px">退稅：同店單日未稅滿 ¥5,000，需出示護照，詳細規定請以官方資訊為準。</div></div>
+<div class="c"><h2>旅遊資訊速查</h2><div class="ln">警察：<a href="tel:110">110</a>｜消防・救護：<a href="tel:119">119</a><br>餐廳訂位編號：（尚未填寫）<br>保險資料：（尚未填寫）</div></div>
+<div class="c"><h2>旅遊預算</h2>${DAYS.map((d,i)=>`<div class="row"><span>${d.d} ${d.t}</span><span>¥${yen(i).toLocaleString()}</span></div>`).join('')}<div class="bp"><div class="big">總計 ¥${tot.toLocaleString()}</div><div class="big">≈ NT$ ${Math.round(tot*S.rate).toLocaleString()}</div></div></div>
+<div class="c"><h2>資料備份</h2><textarea id="bk" rows="3" placeholder="匯出後會顯示於此，或貼上備份後按匯入"></textarea><div class="row" style="margin-top:8px"><button class="btn" data-a="exp">匯出</button><button class="btn" data-a="imp">匯入</button></div></div>${back}`}
+function draw(){nav();document.querySelectorAll('.pn').forEach((e,i)=>e.classList.toggle('on',i==tab));[p0,p1,p2,p3][tab]()}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a,k=+t.dataset.k;
+ if(a=='tab'){tab=k;draw()}
+ else if(a=='top'){$('#nav').scrollIntoView({behavior:'smooth'})}
+ else if(a=='day'){cur=k;p1();document.querySelector('.chip.on').scrollIntoView({inline:'center',block:'nearest'})}
+ else if(a=='sum'){S.sum=!S.sum;save();p1()}
+ else if(a=='ld'){S[t.dataset.l].splice(+t.dataset.i,1);save();p2()}
+ else if(a=='la'){const v=$('#n-'+t.dataset.l).value.trim();if(v){S[t.dataset.l].push({t:v,d:0});save();p2()}}
+ else if(a=='exp'){$('#bk').value=JSON.stringify(S)}
+ else if(a=='imp'){try{Object.assign(S,JSON.parse($('#bk').value));save();draw()}catch(x){alert('備份內容格式不正確')}}});
+document.addEventListener('change',e=>{const t=e.target,a=t.dataset.a;if(!a)return;
+ if(a=='done'){S.done[t.dataset.id]=t.checked;save();p1()}
+ else if(a=='rain'){S.rain[cur]=t.checked;save();p1()}
+ else if(a=='lk'){S[t.dataset.l][+t.dataset.i].d=t.checked?1:0;save();p2()}
+ else if(a=='rate'){S.rate=+t.value||0.21;save();p1()}
+ else if(a=='mode'){S.mode=t.value;save();p0()}});
+document.addEventListener('input',e=>{if(e.target.dataset.a=='sp'){S.sp[cur]=e.target.value;save();$('#nt').textContent='≈ NT$ '+Math.round(yen(cur)*S.rate)}});
+setInterval(()=>{if(tab==0)$('#st').innerHTML=status()},30000);
+draw();
+</script>
+</body>
+</html>
