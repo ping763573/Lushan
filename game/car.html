@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>極速卡丁車拉力賽 v2 (Turbo Kart Rally)</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body {
+            background-color: #2c3e50;
+            font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; overflow: hidden; color: white;
+        }
+        #game-container {
+            position: relative; width: 100%; max-width: 800px; aspect-ratio: 16 / 10;
+            background: #87CEEB; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5); border: 4px solid #fff; touch-action: none;
+        }
+        canvas { display: block; width: 100%; height: 100%; }
+        .overlay {
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; background: rgba(0,0,0,0.45);
+            transition: opacity 0.3s; z-index: 10; padding: 10px;
+        }
+        .hidden { opacity: 0; pointer-events: none; }
+        .title-box { text-align: center; transform: rotate(-3deg); margin-bottom: 18px; }
+        .title-main {
+            font-size: clamp(2.2rem, 8vw, 4.6rem); font-weight: 900; color: #FFA500;
+            text-shadow: -3px -3px 0 #fff, 3px -3px 0 #fff, -3px 3px 0 #fff, 3px 3px 0 #fff,
+                         0 6px 0 #d35400, 0 10px 15px rgba(0,0,0,0.6);
+            letter-spacing: 2px; line-height: 1;
+        }
+        .title-sub {
+            font-size: clamp(1.3rem, 5vw, 2.6rem); font-weight: 900; color: #fff;
+            text-shadow: -2px -2px 0 #0044cc, 2px -2px 0 #0044cc, -2px 2px 0 #0044cc, 2px 2px 0 #0044cc, 0 5px 0 #002266;
+            margin-top: 5px;
+        }
+        .tips {
+            background: rgba(0,0,0,0.55); border: 2px solid rgba(255,255,255,0.6); border-radius: 12px;
+            padding: 8px 16px; margin-bottom: 14px; font-size: clamp(0.7rem, 2vw, 0.95rem);
+            line-height: 1.6; text-align: center;
+        }
+        .stats { font-size: clamp(0.85rem, 2.4vw, 1.1rem); margin-bottom: 14px; text-align: center; line-height: 1.7; }
+        .record { color: #f1c40f; font-weight: 900; font-size: clamp(1rem, 3vw, 1.4rem); animation: pulse 0.8s infinite; }
+        .start-btn {
+            font-size: clamp(1.05rem, 3vw, 1.5rem); font-weight: bold; color: #fff;
+            background: linear-gradient(180deg, #ff5e62 0%, #ff9966 100%); border: 3px solid #fff;
+            padding: 11px 28px; border-radius: 50px; cursor: pointer;
+            box-shadow: 0 6px 0 #c0392b, 0 10px 20px rgba(0,0,0,0.4);
+            animation: pulse 1.2s infinite; transition: transform 0.1s;
+        }
+        .start-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #c0392b; }
+        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
+        #hud { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; justify-content: space-between;
+               align-items: center; z-index: 5; pointer-events: none; gap: 6px; }
+        .hud-badge {
+            background: rgba(0,0,0,0.6); border: 2px solid #fff; padding: 5px 13px; border-radius: 20px;
+            font-weight: bold; font-size: clamp(0.8rem, 2.3vw, 1.1rem); text-shadow: 1px 1px 2px black; white-space: nowrap;
+        }
+        .hud-btns { display: flex; gap: 6px; }
+        .hud-btn {
+            pointer-events: auto; cursor: pointer; background: rgba(0,0,0,0.7); border: 2px solid #fff; color: white;
+            padding: 5px 11px; border-radius: 20px; font-size: clamp(0.7rem, 2vw, 0.85rem); font-weight: bold;
+        }
+        .hud-btn:hover { background: rgba(255,255,255,0.2); }
+
+        #hud-bottom { position: absolute; bottom: 10px; left: 12px; right: 12px; display: flex; justify-content: space-between;
+                      align-items: center; gap: 10px; z-index: 5; pointer-events: none; }
+        #livesDisplay { letter-spacing: 1px; }
+        .nitro-wrap { position: relative; flex: 1; max-width: 340px; height: 22px; background: rgba(0,0,0,0.65);
+                      border: 2px solid #fff; border-radius: 12px; overflow: hidden; }
+        #nitroFill { height: 100%; width: 40%; background: linear-gradient(90deg, #00c6ff, #0072ff); }
+        .nitro-wrap.boosting #nitroFill { background: linear-gradient(90deg, #ff9a00, #ff3d00); }
+        .nitro-wrap.boosting { box-shadow: 0 0 14px #ff6a00; }
+        .nitro-wrap.locked #nitroFill { background: linear-gradient(90deg, #888, #aaa); }
+        .nitro-label { position: absolute; inset: 0; text-align: center; font-size: 0.72rem; line-height: 18px;
+                       font-weight: bold; text-shadow: 1px 1px 2px #000; }
+
+        #mobile-controls { display: none; width: 100%; max-width: 800px; justify-content: space-between; padding: 12px 20px; gap: 15px; }
+        .control-group { display: flex; gap: 15px; }
+        .touch-btn {
+            width: 65px; height: 65px; background: rgba(255,255,255,0.2); border: 3px solid rgba(255,255,255,0.6);
+            border-radius: 50%; color: white; font-size: 1.5rem; font-weight: bold; display: flex; align-items: center;
+            justify-content: center; touch-action: none;
+        }
+        .touch-btn:active { background: rgba(255,165,0,0.7); transform: scale(0.95); }
+        .footer-info { margin-top: 10px; font-size: 0.85rem; color: #bdc3c7; text-align: center; padding: 0 10px; line-height: 1.6; }
+        @media (max-width: 768px), (pointer: coarse) { #mobile-controls { display: flex; } }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+    <div id="hud">
+        <div class="hud-badge">分數: <span id="scoreDisplay">0</span></div>
+        <div class="hud-badge" style="color:#f1c40f;"><span id="speedDisplay">0</span> km/h</div>
+        <div class="hud-btns">
+            <button id="pause-btn" class="hud-btn">⏸ (P)</button>
+            <button id="mute-btn" class="hud-btn">🔊 (M)</button>
+        </div>
+    </div>
+
+    <div id="hud-bottom">
+        <div class="hud-badge" id="livesDisplay">❤❤❤</div>
+        <div class="nitro-wrap" id="nitroWrap">
+            <div id="nitroFill"></div>
+            <div class="nitro-label" id="nitroLabel">氮氣 NITRO</div>
+        </div>
+        <div class="hud-badge"><span id="distDisplay">0</span> m</div>
+    </div>
+
+    <div id="start-screen" class="overlay">
+        <div class="title-box">
+            <div class="title-main">極速卡丁車</div>
+            <div class="title-sub">TURBO KART RALLY</div>
+        </div>
+        <div class="tips">
+            🪙 吃金幣累積氮氣與連擊 ・ 🏎 與對手擦身而過得高分<br>
+            🛡 護盾 ・ 🧲 磁鐵 ・ ❤ 加命 ・ 氮氣衝撞可撞飛三角錐<br>
+            ⚠ 避開紅白路障、油漬與藍色會變換車道的對手
+        </div>
+        <div class="stats" id="bestText"></div>
+        <button class="start-btn" id="startBtn">按 ENTER 或點擊開始遊戲</button>
+    </div>
+
+    <div id="game-over-screen" class="overlay hidden">
+        <div class="title-box">
+            <div class="title-main" style="color:#e74c3c;">比賽結束！</div>
+            <div class="title-sub" id="finalScoreText">最終得分: 0</div>
+        </div>
+        <div class="stats" id="statsText"></div>
+        <div class="record hidden" id="recordText">🏆 新紀錄！</div>
+        <button class="start-btn" id="restartBtn" style="margin-top:12px;">再玩一次 (ENTER)</button>
+    </div>
+</div>
+
+<div id="mobile-controls">
+    <div class="control-group">
+        <button class="touch-btn" id="btn-up">▲</button>
+        <button class="touch-btn" id="btn-down">▼</button>
+    </div>
+    <div class="control-group">
+        <button class="touch-btn" id="btn-boost" style="width:100px;border-radius:32px;font-size:1rem;">🔥 氮氣</button>
+    </div>
+</div>
+
+<div class="footer-info">
+    <b>↑ / ↓</b> 或 <b>W / S</b> 換車道 ・ 按住 <b>空白鍵</b> 噴射氮氣 ・ <b>P</b> 暫停 ・ <b>M</b> 靜音 ・ 手機可在畫面上下滑動換道
+</div>
+
+<script>
+/* =========================================================
+ * 1. 音效引擎 (Web Audio API)
+ *    - 動態配樂：鼓組 + 貝斯 + 琶音主旋律 + 和弦墊，速度越快 BPM 越高、層次越多
+ *    - 引擎聲隨車速變調，氮氣有噴射聲
+ *    - 各式音效：金幣(連擊升調)、擦身、撞擊、護盾、爆炸、倒數、過關
+ * ========================================================= */
+const mtof = n => 440 * Math.pow(2, (n - 69) / 12);
+
+class SoundEngine {
+    constructor() {
+        this.ctx = null; this.muted = false;
+        this.musicRunning = false; this.timer = null;
+        this.step = 0; this.nextTime = 0; this.bpm = 124;
+        this.intensity = 0; this.boost = false; this.transpose = 0;
+        this.chords = [
+            { b: 36, n: [72, 76, 79, 84] }, // C
+            { b: 31, n: [71, 74, 79, 83] }, // G
+            { b: 33, n: [69, 72, 76, 81] }, // Am
+            { b: 29, n: [69, 72, 77, 81] }  // F
+        ];
+        this.patA = [0,-1,1,-1,2,-1,3,2, 1,-1,2,-1,3,-1,2,1];
+        this.patB = [3,-1,2,1,0,-1,1,2, 3,-1,3,2,1,-1,0,-1];
+    }
+
+    init() {
+        if (!this.ctx) {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) return;
+            const c = this.ctx = new AC();
+            this.master = c.createGain();
+            this.master.gain.value = this.muted ? 0 : 1;
+            const comp = c.createDynamicsCompressor();
+            comp.threshold.value = -14; comp.knee.value = 20; comp.ratio.value = 6;
+            comp.attack.value = 0.003; comp.release.value = 0.2;
+            this.master.connect(comp); comp.connect(c.destination);
+            this.sfx = c.createGain(); this.sfx.gain.value = 0.9; this.sfx.connect(this.master);
+            this.music = c.createGain(); this.music.gain.value = 0.55; this.music.connect(this.master);
+
+            // 白噪音緩衝
+            const len = c.sampleRate * 2;
+            this.noiseBuf = c.createBuffer(1, len, c.sampleRate);
+            const d = this.noiseBuf.getChannelData(0);
+            for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+
+            // 引擎聲：鋸齒波 + 方波(低八度) + 低通濾波 + 顫音
+            this.eOsc = c.createOscillator(); this.eOsc.type = 'sawtooth';
+            this.eOsc2 = c.createOscillator(); this.eOsc2.type = 'square';
+            this.eFilter = c.createBiquadFilter(); this.eFilter.type = 'lowpass'; this.eFilter.frequency.value = 400;
+            this.eGain = c.createGain(); this.eGain.gain.value = 0;
+            this.eLfo = c.createOscillator(); this.eLfo.frequency.value = 24;
+            const lfoGain = c.createGain(); lfoGain.gain.value = 5;
+            this.eLfo.connect(lfoGain); lfoGain.connect(this.eOsc.frequency);
+            this.eOsc.connect(this.eFilter); this.eOsc2.connect(this.eFilter);
+            this.eFilter.connect(this.eGain); this.eGain.connect(this.sfx);
+            this.eOsc.start(); this.eOsc2.start(); this.eLfo.start();
+        }
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+    }
+
+    toggleMute() {
+        this.muted = !this.muted;
+        document.getElementById('mute-btn').innerText = this.muted ? '🔇 (M)' : '🔊 (M)';
+        if (this.ctx) this.master.gain.setTargetAtTime(this.muted ? 0 : 1, this.ctx.currentTime, 0.02);
+    }
+
+    /* ---------- 基礎合成 ---------- */
+    tone(freq, type, t, dur, vol, o = {}, bus = null) {
+        if (!this.ctx || freq <= 0) return;
+        const c = this.ctx, osc = c.createOscillator(), g = c.createGain();
+        osc.type = type; osc.frequency.setValueAtTime(freq, t);
+        if (o.slideTo) osc.frequency.exponentialRampToValueAtTime(Math.max(1, o.slideTo), t + dur);
+        let node = osc;
+        if (o.lp) { const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = o.lp; osc.connect(f); node = f; }
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(vol, t + 0.006);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        node.connect(g); g.connect(bus || this.sfx);
+        osc.start(t); osc.stop(t + dur + 0.03);
+    }
+
+    noise(t, dur, vol, type, f0, f1, q = 1, bus = null) {
+        if (!this.ctx) return;
+        const c = this.ctx, src = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+        src.buffer = this.noiseBuf;
+        f.type = type; f.frequency.setValueAtTime(f0, t);
+        if (f1) f.frequency.exponentialRampToValueAtTime(f1, t + dur);
+        f.Q.value = q;
+        g.gain.setValueAtTime(vol, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        src.connect(f); f.connect(g); g.connect(bus || this.sfx);
+        src.start(t, Math.random() * 0.9); src.stop(t + dur + 0.03);
+    }
+
+    kick(t) {
+        const c = this.ctx, o = c.createOscillator(), g = c.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.14);
+        g.gain.setValueAtTime(0.7, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+        o.connect(g); g.connect(this.music); o.start(t); o.stop(t + 0.22);
+    }
+    snare(t) {
+        this.noise(t, 0.13, 0.22, 'highpass', 1200, null, 0.7, this.music);
+        this.tone(190, 'triangle', t, 0.09, 0.14, {}, this.music);
+    }
+    hat(t, open = false, v = 1) {
+        this.noise(t, open ? 0.12 : 0.035, 0.07 * v, 'highpass', 7500, null, 0.7, this.music);
+    }
+
+    /* ---------- 動態配樂 ---------- */
+    startMusic() {
+        if (!this.ctx || this.musicRunning) return;
+        this.musicRunning = true;
+        this.music.gain.cancelScheduledValues(this.ctx.currentTime);
+        this.music.gain.setTargetAtTime(0.55, this.ctx.currentTime, 0.05);
+        this.step = 0; this.nextTime = this.ctx.currentTime + 0.06;
+        this.timer = setInterval(() => this.schedule(), 25);
+    }
+    stopMusic() {
+        if (!this.musicRunning) return;
+        this.musicRunning = false;
+        clearInterval(this.timer); this.timer = null;
+        if (this.ctx) this.music.gain.setTargetAtTime(0, this.ctx.currentTime, 0.12);
+    }
+    setIntensity(v, boosting) { this.intensity = Math.max(0, Math.min(1, v)); this.boost = !!boosting; }
+    setKey(semi) { this.transpose = semi; }
+
+    schedule() {
+        const c = this.ctx;
+        const target = 124 + this.intensity * 38 + (this.boost ? 10 : 0);
+        this.bpm += (target - this.bpm) * 0.08;
+        while (this.nextTime < c.currentTime + 0.14) {
+            this.playStep(this.step, this.nextTime);
+            this.nextTime += 60 / this.bpm / 4;
+            this.step++;
+        }
+    }
+
+    playStep(step, t) {
+        const s = step % 16, bar = Math.floor(step / 16) % 4, ch = this.chords[bar];
+        const tr = this.transpose, I = this.intensity + (this.boost ? 0.3 : 0), m = this.music;
+
+        // 鼓組
+        if (s % 4 === 0) this.kick(t);
+        if (s === 4 || s === 12) this.snare(t);
+        if (s % 2 === 0) this.hat(t, false);
+        else if (I > 0.35) this.hat(t, false, 0.5);
+        if (s === 14 && I > 0.5) this.hat(t, true);
+
+        // 貝斯
+        const bassMap = { 0: 0, 3: 0, 6: 12, 8: 0, 10: 0, 11: 7, 14: 12 };
+        if (bassMap[s] !== undefined) {
+            this.tone(mtof(ch.b + tr + bassMap[s]), 'sawtooth', t, 0.14, 0.16, { lp: 700 }, m);
+        }
+
+        // 主旋律（琶音）
+        const pat = (Math.floor(step / 64) % 2 === 0) ? this.patA : this.patB;
+        const idx = pat[s];
+        if (idx >= 0) {
+            const n = ch.n[idx] + tr;
+            this.tone(mtof(n), 'square', t, 0.12, 0.05, { lp: 3200 }, m);
+            if (I > 0.55) this.tone(mtof(n + 12), 'triangle', t, 0.1, 0.035, {}, m);
+        }
+
+        // 和弦墊
+        if (s === 0) {
+            const bl = 60 / this.bpm * 4 * 0.95;
+            for (const i of [0, 1, 2]) this.tone(mtof(ch.n[i] - 12 + tr), 'sawtooth', t, bl, 0.018, { lp: 1200 }, m);
+        }
+        // 高強度時加入反拍和弦刺
+        if (I > 0.6 && (s === 6 || s === 14)) {
+            for (const i of [0, 2]) this.tone(mtof(ch.n[i] - 12 + tr), 'square', t, 0.08, 0.025, { lp: 2200 }, m);
+        }
+    }
+
+    /* ---------- 引擎聲 ---------- */
+    setEngine(ratio, boosting, on) {
+        if (!this.ctx) return;
+        const t = this.ctx.currentTime;
+        ratio = Math.max(0, Math.min(1.6, ratio));
+        const f = 48 + ratio * 95 + (boosting ? 28 : 0);
+        this.eOsc.frequency.setTargetAtTime(f, t, 0.05);
+        this.eOsc2.frequency.setTargetAtTime(f * 0.5, t, 0.05);
+        this.eFilter.frequency.setTargetAtTime(350 + ratio * 1200 + (boosting ? 700 : 0), t, 0.06);
+        this.eGain.gain.setTargetAtTime(on ? 0.05 + ratio * 0.03 : 0, t, 0.08);
+    }
+
+    /* ---------- 音效 ---------- */
+    get t() { return this.ctx.currentTime; }
+    coin(combo) {
+        if (!this.ctx) return; const t = this.t;
+        const base = 880 * Math.pow(2, Math.min(combo, 12) / 12);
+        this.tone(base, 'triangle', t, 0.09, 0.22);
+        this.tone(base * 1.5, 'triangle', t + 0.07, 0.16, 0.22);
+        this.tone(base * 2, 'sine', t + 0.07, 0.2, 0.08);
+    }
+    nearMiss() {
+        if (!this.ctx) return; const t = this.t;
+        this.noise(t, 0.28, 0.28, 'bandpass', 600, 3200, 1.2);
+        this.tone(1400, 'sine', t + 0.05, 0.14, 0.12, { slideTo: 2400 });
+    }
+    boostStart() {
+        if (!this.ctx) return; const t = this.t;
+        this.noise(t, 0.6, 0.3, 'bandpass', 300, 2600, 0.8);
+        this.tone(110, 'sawtooth', t, 0.5, 0.16, { slideTo: 440, lp: 1500 });
+        this.tone(660, 'square', t + 0.05, 0.16, 0.06, { slideTo: 1320 });
+    }
+    boostEnd() {
+        if (!this.ctx) return; const t = this.t;
+        this.noise(t, 0.3, 0.15, 'lowpass', 2500, 300, 0.7);
+        this.tone(440, 'sawtooth', t, 0.3, 0.08, { slideTo: 140, lp: 1200 });
+    }
+    boostEmpty() {
+        if (!this.ctx) return; const t = this.t;
+        this.tone(300, 'square', t, 0.1, 0.12); this.tone(210, 'square', t + 0.12, 0.14, 0.12);
+    }
+    crash() {
+        if (!this.ctx) return; const t = this.t;
+        this.noise(t, 0.5, 0.6, 'lowpass', 4000, 200, 0.7);
+        this.tone(140, 'sine', t, 0.35, 0.6, { slideTo: 35 });
+        this.tone(90, 'sawtooth', t, 0.3, 0.2, { slideTo: 40, lp: 400 });
+        this.tone(1800, 'square', t, 0.05, 0.08);
+    }
+    explosion() {
+        if (!this.ctx) return; const t = this.t;
+        this.noise(t, 1.0, 0.7, 'lowpass', 3000, 120, 0.7);
+        this.tone(80, 'sine', t, 0.7, 0.8, { slideTo: 24 });
+        this.tone(60, 'sawtooth', t, 0.6, 0.25, { slideTo: 28, lp: 300 });
+    }
+    shieldGet() {
+        if (!this.ctx) return; const t = this.t;
+        [523, 659, 784, 1047].forEach((f, i) => this.tone(f, 'triangle', t + i * 0.06, 0.16, 0.2));
+    }
+    shieldBreak() {
+        if (!this.ctx) return; const t = this.t;
+        this.noise(t, 0.35, 0.35, 'bandpass', 3500, 800, 1.5);
+        this.tone(1300, 'sine', t, 0.3, 0.2, { slideTo: 250 });
+    }
+    magnetGet() {
+        if (!this.ctx) return; const t = this.t;
+        [440, 660, 880, 660, 880, 1100].forEach((f, i) => this.tone(f, 'square', t + i * 0.05, 0.1, 0.08, { lp: 2500 }));
+    }
+    heartGet() {
+        if (!this.ctx) return; const t = this.t;
+        [659, 784, 988, 1319].forEach((f, i) => this.tone(f, 'triangle', t + i * 0.07, 0.2, 0.22));
+    }
+    lane() {
+        if (!this.ctx) return; const t = this.t;
+        this.noise(t, 0.06, 0.1, 'bandpass', 1800, 900, 2);
+    }
+    bump() {
+        if (!this.ctx) return; const t = this.t;
+        this.tone(120, 'square', t, 0.1, 0.2, { slideTo: 70 });
+        this.noise(t, 0.1, 0.2, 'lowpass', 1500, 300);
+    }
+    smash() {
+        if (!this.ctx) return; const t = this.t;
+        this.noise(t, 0.18, 0.3, 'highpass', 1500, 4000, 0.8);
+        this.tone(500, 'square', t, 0.09, 0.1, { slideTo: 250 });
+        this.tone(900, 'triangle', t + 0.02, 0.08, 0.08);
+    }
+    skid() {
+        if (!this.ctx) return; const t = this.t;
+        this.noise(t, 0.75, 0.28, 'bandpass', 2600, 1400, 3);
+    }
+    beep(go) {
+        if (!this.ctx) return; const t = this.t;
+        this.tone(go ? 1046 : 523, 'square', t, go ? 0.45 : 0.15, 0.2, { lp: 3000 });
+        if (go) this.tone(1568, 'triangle', t, 0.45, 0.12);
+    }
+    stageUp() {
+        if (!this.ctx) return; const t = this.t;
+        [523, 659, 784, 1047, 1319].forEach((f, i) => {
+            this.tone(f, 'square', t + i * 0.08, 0.14, 0.09, { lp: 3000 });
+            this.tone(f / 2, 'triangle', t + i * 0.08, 0.16, 0.1);
+        });
+    }
+    gameOver(record) {
+        if (!this.ctx) return; const t = this.t;
+        if (record) {
+            [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => this.tone(f, 'square', t + i * 0.12, 0.16, 0.12, { lp: 3000 }));
+        } else {
+            [392, 349, 311, 262].forEach((f, i) => this.tone(f, 'sawtooth', t + i * 0.22, i === 3 ? 0.8 : 0.22, 0.12, { lp: 1200 }));
+        }
+    }
+}
+const sound = new SoundEngine();
+
+/* =========================================================
+ * 2. 遊戲核心
+ * ========================================================= */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const W = 800, H = 500;
+const MAX_LIVES = 5;
+const STAGE_LEN = 600;          // 每區長度(公尺)
+const BEST_KEY = 'turboKartRallyBest';
+const lanes = [275, 325, 375];
+const FONT = "'Microsoft JhengHei','PingFang TC',sans-serif";
+
+function loadBest() { try { return parseInt(localStorage.getItem(BEST_KEY)) || 0; } catch (e) { return 0; } }
+function saveBest(v) { try { localStorage.setItem(BEST_KEY, String(v)); } catch (e) {} }
+let best = loadBest();
+
+/* ---- 關卡配色 ---- */
+const PALETTES = [
+    { name: '晨光草原', skyTop: [135,190,230], skyBot: [220,235,245], mount: [149,165,166], sun: [255,242,168], sy: [80],  grass1: [106,176,76],  grass2: [78,140,51],   tree1: [46,125,50],  tree2: [56,142,60],  night: [0] },
+    { name: '夕陽山丘', skyTop: [255,110,90],  skyBot: [254,184,123], mount: [150,95,115],  sun: [255,170,80],  sy: [150], grass1: [150,160,60],  grass2: [120,125,40],  tree1: [70,110,40],  tree2: [90,125,45],  night: [0.15] },
+    { name: '星夜公路', skyTop: [8,12,40],     skyBot: [42,52,105],   mount: [50,60,95],    sun: [235,240,255], sy: [70],  grass1: [30,80,62],    grass2: [20,60,46],    tree1: [20,70,55],   tree2: [28,85,62],   night: [1] },
+    { name: '雪白山脈', skyTop: [170,200,232], skyBot: [240,248,255], mount: [200,215,232], sun: [255,250,220], sy: [90],  grass1: [236,241,246], grass2: [214,224,236], tree1: [60,120,95],  tree2: [80,140,110], night: [0] }
+];
+const PAL_KEYS = ['skyTop','skyBot','mount','sun','sy','grass1','grass2','tree1','tree2','night'];
+function clonePal(p) { const o = { name: p.name }; PAL_KEYS.forEach(k => o[k] = p[k].slice()); return o; }
+function rgb(a) { return `rgb(${a[0]|0},${a[1]|0},${a[2]|0})`; }
+let pal = clonePal(PALETTES[0]), targetPal = PALETTES[0];
+
+const mountains = [
+    { x: 100, w: 220, h: 160 }, { x: 350, w: 280, h: 190 }, { x: 650, w: 240, h: 150 }
+];
+let trees = [];
+for (let i = 0; i < 15; i++) trees.push({ x: i * 65, y: 150 + (i % 3) * 15, scale: 0.7 + (i % 3) * 0.2 });
+const stars = [];
+for (let i = 0; i < 60; i++) stars.push({ x: Math.random() * W, y: Math.random() * 180, r: 1 + Math.random() * 1.5, p: Math.random() * 6 });
+
+/* ---- 狀態 ---- */
+let gameState = 'START'; // START, COUNTDOWN, PLAYING, PAUSED, DYING, GAMEOVER
+let score = 0, distance = 0, baseSpeed = 6, currentSpeed = 6, speedMul = 1;
+let lives = 3, nitro = 40, boostHeld = false, boosting = false, boostLock = false;
+let combo = 0, comboTimer = 0, maxCombo = 0, shake = 0, hitFlash = 0;
+let frameCount = 0, roadOffset = 0, bgOffset = 0, stage = 0, spawnTimer = 300;
+let dyingTimer = 0, cdTimer = 0, bannerTimer = 0, bannerText = '';
+let rivals = [], hazards = [], coins = [], powers = [], particles = [], popups = [], speedLines = [];
+
+const player = { x: 160, laneIndex: 1, y: lanes[1], targetY: lanes[1], tilt: 0, spin: 0, spinT: 0, inv: 0, shield: false, magnet: 0 };
+
+function resetGame() {
+    score = 0; distance = 0; baseSpeed = 6; currentSpeed = 6; speedMul = 1;
+    lives = 3; nitro = 40; boostHeld = false; boosting = false; boostLock = false;
+    combo = 0; comboTimer = 0; maxCombo = 0; shake = 0; hitFlash = 0;
+    frameCount = 0; stage = 0; spawnTimer = 300; dyingTimer = 0; cdTimer = 0; bannerTimer = 0;
+    rivals = []; hazards = []; coins = []; powers = []; particles = []; popups = []; speedLines = [];
+    Object.assign(player, { laneIndex: 1, y: lanes[1], targetY: lanes[1], tilt: 0, spin: 0, spinT: 0, inv: 0, shield: false, magnet: 0 });
+    pal = clonePal(PALETTES[0]); targetPal = PALETTES[0];
+    sound.setKey(0);
+    updateHUD(true);
+}
+
+function startGame() {
+    if (!(gameState === 'START' || gameState === 'GAMEOVER')) return;
+    sound.init();
+    resetGame();
+    gameState = 'COUNTDOWN';
+    document.getElementById('start-screen').classList.add('hidden');
+    document.getElementById('game-over-screen').classList.add('hidden');
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+}
+
+function beginRace() {
+    gameState = 'PLAYING';
+    sound.startMusic();
+    bannerText = '第 1 區：' + PALETTES[0].name; bannerTimer = 120;
+}
+
+function startDying() {
+    gameState = 'DYING'; dyingTimer = 75;
+    boosting = false; boostHeld = false;
+    sound.stopMusic(); sound.setEngine(0, false, false); sound.explosion();
+    burst(player.x, player.y, 40, ['#ff5722', '#ffeb3b', '#fff', '#e74c3c'], 9, 'spark');
+    burst(player.x, player.y, 14, ['#555', '#777'], 3, 'smoke');
+    shake = 28; hitFlash = 20;
+}
+
+function gameOver() {
+    gameState = 'GAMEOVER';
+    const fs = Math.floor(score);
+    let rec = false;
+    if (fs > best) { best = fs; saveBest(best); rec = true; }
+    document.getElementById('finalScoreText').innerText = `最終得分: ${fs}`;
+    document.getElementById('statsText').innerHTML =
+        `行駛距離 ${Math.floor(distance)} m ・ 最高連擊 ${maxCombo} ・ 抵達第 ${stage + 1} 區<br>歷史最高分 ${best}`;
+    document.getElementById('recordText').classList.toggle('hidden', !rec);
+    document.getElementById('game-over-screen').classList.remove('hidden');
+    sound.gameOver(rec);
+}
+
+function togglePause() {
+    if (gameState === 'PLAYING') {
+        gameState = 'PAUSED';
+        sound.stopMusic(); sound.setEngine(0, false, false);
+    } else if (gameState === 'PAUSED') {
+        gameState = 'PLAYING';
+        sound.startMusic();
+    }
+}
+
+/* ---- 工具 ---- */
+function getMult() { return Math.min(6, 1 + Math.floor(combo / 6)); }
+function rand(a, b) { return a + Math.random() * (b - a); }
+function pickWeighted(w) {
+    let sum = 0; for (const k in w) sum += w[k];
+    let r = Math.random() * sum;
+    for (const k in w) { r -= w[k]; if (r <= 0) return k; }
+    return Object.keys(w)[0];
+}
+function emit(x, y, vx, vy, life, size, color, type) {
+    if (particles.length > 380) return;
+    particles.push({ x, y, vx, vy, life, max: life, size, color, type });
+}
+function burst(x, y, n, colors, speed, type) {
+    for (let i = 0; i < n; i++) {
+        const a = Math.random() * Math.PI * 2, s = Math.random() * speed;
+        emit(x, y, Math.cos(a) * s, Math.sin(a) * s - 1, rand(18, 40), rand(2, 5), colors[(Math.random() * colors.length) | 0], type);
+    }
+}
+function popup(x, y, text, color, size = 18, life = 55) { popups.push({ x, y, text, color, size, life, max: life }); }
+function addCombo(n) {
+    combo += n; comboTimer = 240;
+    if (combo > maxCombo) maxCombo = combo;
+}
+
+/* ---- 生成器 ---- */
+function freeLanes() {
+    const used = [false, false, false];
+    rivals.forEach(r => { if (r.x > W - 200) used[r.lane] = true; });
+    hazards.forEach(h => { if (h.type !== 'cone' && h.x > W - 200) used[h.lane] = true; });
+    const f = []; for (let i = 0; i < 3; i++) if (!used[i]) f.push(i);
+    return f;
+}
+function spawnRival(lane, x) {
+    const colors = [
+        { body: '#2ecc71', hat: '#27ae60' }, { body: '#e74c3c', hat: '#c0392b' }, { body: '#9b59b6', hat: '#8e44ad' }
+    ];
+    const swerve = stage >= 1 && Math.random() < 0.2 + stage * 0.05;
+    const st = swerve ? { body: '#3498db', hat: '#2980b9' } : colors[(Math.random() * colors.length) | 0];
+    rivals.push({ x, y: lanes[lane], lane, targetY: lanes[lane], v: baseSpeed * rand(0.4, 0.65),
+        bodyColor: st.body, hatColor: st.hat, sw: swerve, swState: 0, warn: 0, newLane: lane, near: false });
+}
+function spawnHazard(type, lane, x) { hazards.push({ type, x, y: lanes[lane], lane, hit: false }); }
+
+function spawnPattern() {
+    const x = W + 80, free = freeLanes();
+    const w = { rival: 30, rival2: stage >= 1 ? 8 + stage * 4 : 0, barrier: 14, oil: 10, cones: 10, coins: 24, zigzag: 10, power: 6 };
+    let kind = pickWeighted(w);
+    const need = { rival: 1, rival2: 2, barrier: 1, oil: 1, cones: 1 }[kind] || 0;
+    if (need && free.length < need + 1) kind = 'coins';
+    if (kind === 'zigzag' && free.length < 3) kind = 'coins';
+    const pick = arr => arr[(Math.random() * arr.length) | 0];
+    switch (kind) {
+        case 'rival': spawnRival(pick(free), x); break;
+        case 'rival2': { const f = free.slice().sort(() => Math.random() - 0.5); spawnRival(f[0], x); spawnRival(f[1], x + 25); break; }
+        case 'barrier': spawnHazard('barrier', pick(free), x); break;
+        case 'oil': spawnHazard('oil', pick(free), x); break;
+        case 'cones': { const l = pick(free); for (let i = 0; i < 3; i++) spawnHazard('cone', l, x + i * 42); break; }
+        case 'coins': {
+            const l = pick(free.length ? free : [0, 1, 2]), n = 5 + ((Math.random() * 3) | 0);
+            for (let i = 0; i < n; i++) coins.push({ x: x + i * 44, y: lanes[l], ph: Math.random() * 6 });
+            break;
+        }
+        case 'zigzag': {
+            const seq = [0, 1, 2, 1, 0, 1, 2];
+            seq.forEach((l, i) => coins.push({ x: x + i * 52, y: lanes[l], ph: Math.random() * 6 }));
+            break;
+        }
+        case 'power': {
+            const types = lives < MAX_LIVES ? ['shield', 'magnet', 'heart'] : ['shield', 'magnet'];
+            const l = pick([0, 1, 2]);
+            powers.push({ type: pick(types), x, y: lanes[l], ph: Math.random() * 6 });
+            break;
+        }
+    }
+}
+
+/* ---- 受傷 ---- */
+function hitPlayer(x, y) {
+    if (player.inv > 0) return false;
+    if (player.shield) {
+        player.shield = false; player.inv = 60; shake = 12;
+        sound.shieldBreak();
+        burst(player.x, player.y, 24, ['#5dd6ff', '#fff', '#9be7ff'], 6, 'spark');
+        popup(player.x, player.y - 50, '護盾破碎！', '#5dd6ff', 20);
+        return true;
+    }
+    lives--; combo = 0; comboTimer = 0; speedMul = 0.45; player.inv = 100; shake = 20; hitFlash = 14;
+    sound.crash();
+    burst(x, y, 20, ['#ff5722', '#ffeb3b', '#fff'], 7, 'spark');
+    updateHUD(true);
+    if (lives <= 0) startDying();
+    return true;
+}
+
+/* ---- 更新 ---- */
+function updateFx() {
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.type === 'smoke') { p.size += 0.15; p.vy -= 0.01; }
+        else if (p.type === 'spark') p.vy += 0.25;
+        p.life--;
+        if (p.life <= 0) particles.splice(i, 1);
+    }
+    for (let i = popups.length - 1; i >= 0; i--) {
+        const p = popups[i]; p.y -= 0.8; p.life--;
+        if (p.life <= 0) popups.splice(i, 1);
+    }
+    for (let i = speedLines.length - 1; i >= 0; i--) {
+        const l = speedLines[i]; l.x -= l.spd;
+        if (l.x + l.len < 0) speedLines.splice(i, 1);
+    }
+    if (shake > 0) shake *= 0.9; if (shake < 0.3) shake = 0;
+    if (hitFlash > 0) hitFlash--;
+    if (bannerTimer > 0) bannerTimer--;
+}
+
+function update() {
+    frameCount++;
+    updateFx();
+
+    if (gameState === 'START' || gameState === 'GAMEOVER') { roadOffset += 2; bgOffset += 1; return; }
+
+    if (gameState === 'COUNTDOWN') {
+        if (cdTimer % 50 === 0) sound.beep(Math.floor(cdTimer / 50) === 3);
+        cdTimer++;
+        if (cdTimer >= 200) beginRace();
+        return;
+    }
+
+    if (gameState === 'DYING') {
+        dyingTimer--;
+        currentSpeed *= 0.94; roadOffset += currentSpeed; bgOffset += currentSpeed * 0.5;
+        player.spin += 0.35;
+        if (dyingTimer % 4 === 0) emit(player.x + rand(-20, 20), player.y + rand(-15, 10), rand(-1, 1), -1.5, 30, rand(5, 10), '#444', 'smoke');
+        if (dyingTimer <= 0) gameOver();
+        return;
+    }
+
+    if (gameState !== 'PLAYING') return;
+
+    /* 速度與氮氣 */
+    baseSpeed = Math.min(13, 6 + distance / 320);
+    const wantBoost = boostHeld && !boostLock && nitro > 0 && player.spinT <= 0;
+    if (wantBoost && !boosting) { boosting = true; sound.boostStart(); }
+    if (!wantBoost && boosting) { boosting = false; sound.boostEnd(); }
+    if (boosting) {
+        nitro -= 0.55;
+        if (nitro <= 0) { nitro = 0; boosting = false; boostLock = true; sound.boostEmpty(); }
+    } else {
+        nitro = Math.min(100, nitro + 0.03);
+        if (boostLock && nitro >= 18) boostLock = false;
+    }
+    speedMul += (1 - speedMul) * 0.03;
+    const targetSpd = baseSpeed * (boosting ? 1.45 : 1) * speedMul * (player.spinT > 0 ? 0.7 : 1);
+    currentSpeed += (targetSpd - currentSpeed) * 0.1;
+
+    distance += currentSpeed * 0.05;
+    roadOffset += currentSpeed; bgOffset += currentSpeed * 0.5;
+    score += currentSpeed * 0.1;
+
+    /* 關卡切換 */
+    const s = Math.floor(distance / STAGE_LEN);
+    if (s !== stage) {
+        stage = s; targetPal = PALETTES[stage % PALETTES.length];
+        bannerText = `第 ${stage + 1} 區：${targetPal.name}`; bannerTimer = 130;
+        sound.stageUp(); sound.setKey([0, 2, -2, 3][stage % 4]);
+        score += 200; popup(W / 2, 170, '區域獎勵 +200', '#f1c40f', 22, 80);
+    }
+    PAL_KEYS.forEach(k => { const a = pal[k], b = targetPal[k]; for (let i = 0; i < a.length; i++) a[i] += (b[i] - a[i]) * 0.02; });
+
+    /* 玩家 */
+    player.y += (player.targetY - player.y) * 0.22;
+    player.tilt = Math.max(-0.25, Math.min(0.25, (player.targetY - player.y) * 0.012));
+    if (player.spinT > 0) { player.spinT--; player.spin = (1 - player.spinT / 50) * Math.PI * 4; if (player.spinT === 0) player.spin = 0; }
+    if (player.inv > 0) player.inv--;
+    if (player.magnet > 0) player.magnet--;
+    if (comboTimer > 0) { comboTimer--; if (comboTimer === 0) combo = 0; }
+
+    /* 特效：排氣、火焰、速度線 */
+    if (frameCount % 3 === 0) emit(player.x - 34, player.y + 6, -currentSpeed * 0.5 - Math.random() * 1.5, -0.3 - Math.random() * 0.6, 26, 4 + Math.random() * 3, '#dcdcdc', 'smoke');
+    if (boosting) {
+        for (let k = 0; k < 2; k++) emit(player.x - 36, player.y + 8, -6 - Math.random() * 5, (Math.random() - 0.5) * 1.2, 16, 5 + Math.random() * 4, Math.random() > 0.5 ? '#ff6a00' : '#ffe34d', 'flame');
+        shake = Math.max(shake, 1.8);
+        for (let k = 0; k < 2; k++) speedLines.push({ x: W + 10, y: rand(0, H), len: rand(60, 160), spd: rand(26, 40) });
+    } else if (currentSpeed > 9 && frameCount % 3 === 0) {
+        speedLines.push({ x: W + 10, y: rand(0, H), len: rand(40, 90), spd: rand(20, 30) });
+    }
+
+    /* 生成 */
+    spawnTimer -= currentSpeed;
+    if (spawnTimer <= 0) {
+        spawnPattern();
+        spawnTimer = Math.max(320, 300 + baseSpeed * 18 - stage * 12) + Math.random() * 120;
+    }
+
+    /* 對手 */
+    for (let i = rivals.length - 1; i >= 0; i--) {
+        const r = rivals[i];
+        r.x -= Math.max(2.5, currentSpeed - r.v);
+        if (r.sw) {
+            if (r.swState === 0 && r.x < 560) {
+                r.swState = 1; r.warn = 32;
+                r.newLane = r.lane === 1 ? (Math.random() < 0.5 ? 0 : 2) : 1;
+            } else if (r.swState === 1) {
+                if (--r.warn <= 0) { r.swState = 2; r.lane = r.newLane; r.targetY = lanes[r.lane]; }
+            }
+        }
+        r.y += (r.targetY - r.y) * 0.12;
+
+        const dx = Math.abs(player.x - r.x), dy = Math.abs(player.y - r.y);
+        if (dx < 46 && dy < 20) {
+            if (hitPlayer(r.x, r.y)) {
+                burst(r.x, r.y, 12, [r.bodyColor, '#fff'], 6, 'spark');
+                rivals.splice(i, 1);
+                if (gameState !== 'PLAYING') return;
+                continue;
+            }
+        } else if (!r.near && dx < 34 && dy > 28 && dy < 66) {
+            r.near = true;
+            const pts = 25 * getMult() * (boosting ? 2 : 1);
+            score += pts; addCombo(2); nitro = Math.min(100, nitro + 10);
+            sound.nearMiss();
+            popup(player.x + 30, player.y - 45, `擦身而過！+${pts}`, '#7efff5', 18);
+            for (let k = 0; k < 6; k++) emit(player.x, player.y, rand(-2, 4), rand(-3, 3), 18, 3, '#7efff5', 'spark');
+        }
+        if (r.x < -90) rivals.splice(i, 1);
+    }
+
+    /* 障礙 */
+    for (let i = hazards.length - 1; i >= 0; i--) {
+        const h = hazards[i];
+        h.x -= currentSpeed;
+        const dx = Math.abs(player.x - h.x), dy = Math.abs(player.y - h.y);
+        if (h.type === 'barrier' && dx < 34 && dy < 20) {
+            if (player.inv > 0) { /* 無敵時穿過 */ }
+            else {
+                hitPlayer(h.x, h.y);
+                burst(h.x, h.y, 14, ['#e74c3c', '#fff'], 7, 'spark');
+                hazards.splice(i, 1);
+                if (gameState !== 'PLAYING') return;
+                continue;
+            }
+        } else if (h.type === 'cone' && dx < 30 && dy < 18) {
+            if (boosting) {
+                const pts = 10 * getMult(); score += pts; addCombo(1);
+                sound.smash(); popup(h.x, h.y - 30, `撞飛！+${pts}`, '#ffa94d', 16, 40);
+                for (let k = 0; k < 8; k++) emit(h.x, h.y, rand(-2, 8), rand(-8, -2), 30, 4, '#ff8c1a', 'spark');
+            } else {
+                speedMul = Math.min(speedMul, 0.75); combo = 0; comboTimer = 0; shake = 6; sound.bump();
+                burst(h.x, h.y, 6, ['#ff8c1a'], 4, 'spark');
+            }
+            hazards.splice(i, 1); continue;
+        } else if (h.type === 'oil' && !h.hit && dx < 40 && dy < 16 && !boosting) {
+            h.hit = true;
+            if (player.spinT <= 0) {
+                player.spinT = 50; speedMul = Math.min(speedMul, 0.7); combo = 0; comboTimer = 0;
+                sound.skid(); popup(player.x, player.y - 45, '打滑！', '#c8a2ff', 20);
+            }
+        }
+        if (h.x < -90) hazards.splice(i, 1);
+    }
+
+    /* 金幣 */
+    for (let i = coins.length - 1; i >= 0; i--) {
+        const c = coins[i];
+        c.x -= currentSpeed;
+        if (player.magnet > 0 && Math.abs(player.x - c.x) < 280 && c.x > player.x - 40) {
+            c.x += (player.x - c.x) * 0.14; c.y += (player.y - c.y) * 0.14;
+        }
+        if (Math.abs(player.x - c.x) < 36 && Math.abs(player.y - c.y) < 26) {
+            addCombo(1);
+            const pts = 10 * getMult(); score += pts; nitro = Math.min(100, nitro + 5);
+            sound.coin(combo);
+            popup(c.x, c.y - 22, `+${pts}`, '#ffe066', 14, 32);
+            for (let k = 0; k < 5; k++) emit(c.x, c.y, rand(-3, 3), rand(-4, 1), 20, 3, '#ffe066', 'spark');
+            coins.splice(i, 1); continue;
+        }
+        if (c.x < -40) coins.splice(i, 1);
+    }
+
+    /* 道具 */
+    for (let i = powers.length - 1; i >= 0; i--) {
+        const p = powers[i];
+        p.x -= currentSpeed;
+        if (Math.abs(player.x - p.x) < 38 && Math.abs(player.y - p.y) < 28) {
+            if (p.type === 'shield') { player.shield = true; sound.shieldGet(); popup(player.x, player.y - 50, '護盾啟動！', '#5dd6ff', 20); }
+            else if (p.type === 'magnet') { player.magnet = 480; sound.magnetGet(); popup(player.x, player.y - 50, '磁鐵吸金！', '#ff7675', 20); }
+            else { lives = Math.min(MAX_LIVES, lives + 1); sound.heartGet(); popup(player.x, player.y - 50, '+1 生命', '#ff6b81', 20); updateHUD(true); }
+            burst(p.x, p.y, 16, ['#fff', '#ffe066', '#9be7ff'], 5, 'spark');
+            powers.splice(i, 1); continue;
+        }
+        if (p.x < -40) powers.splice(i, 1);
+    }
+
+    /* 音效動態調整 */
+    sound.setEngine(currentSpeed / 13, boosting, true);
+    sound.setIntensity((baseSpeed - 6) / 7 + (boosting ? 0.15 : 0), boosting);
+
+    updateHUD();
+}
+
+/* =========================================================
+ * 3. 繪圖
+ * ========================================================= */
+function drawWheel(wx, wy, radius) {
+    ctx.fillStyle = '#1e272e'; ctx.beginPath(); ctx.arc(wx, wy, radius, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#ecf0f1'; ctx.beginPath(); ctx.arc(wx, wy, radius * 0.45, 0, Math.PI * 2); ctx.fill();
+}
+
+function drawKart(x, y, bodyColor, hatColor, o = {}) {
+    ctx.save();
+    ctx.translate(x, y);
+    if (o.alpha !== undefined) ctx.globalAlpha = o.alpha;
+
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath(); ctx.ellipse(0, 16, 34, 8, 0, 0, Math.PI * 2); ctx.fill();
+
+    ctx.save();
+    ctx.rotate((o.tilt || 0) + (o.spin || 0));
+    if (o.boost) {
+        ctx.fillStyle = Math.random() > 0.5 ? '#ff5722' : '#ffeb3b';
+        ctx.beginPath(); ctx.moveTo(-32, 0); ctx.lineTo(-58 - Math.random() * 18, 6); ctx.lineTo(-32, 12); ctx.fill();
+    }
+    ctx.fillStyle = '#34495e'; ctx.fillRect(-30, -6, 14, 14);
+    ctx.fillStyle = bodyColor;
+    ctx.beginPath(); ctx.moveTo(-25, 10); ctx.lineTo(32, 10); ctx.lineTo(26, -2); ctx.lineTo(-22, -4); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fillRect(-15, 2, 40, 4);
+    ctx.fillStyle = hatColor;
+    ctx.beginPath(); ctx.arc(-4, -14, 10, 0, Math.PI * 2); ctx.fill();
+    ctx.fillRect(-4, -18, 14, 4);
+    ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(8, -2); ctx.lineTo(14, -10); ctx.stroke();
+    const wo = Math.sin(frameCount * 0.5) * 1.5;
+    drawWheel(-18, 12 + wo, 9); drawWheel(18, 12 - wo, 8);
+    ctx.restore();
+
+    if (o.shield) {
+        ctx.globalAlpha = 0.9;
+        ctx.strokeStyle = 'rgba(93,214,255,0.9)'; ctx.lineWidth = 3;
+        ctx.fillStyle = 'rgba(93,214,255,0.16)';
+        ctx.beginPath(); ctx.ellipse(0, -2, 46, 34 + Math.sin(frameCount * 0.2) * 2, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    }
+    if (o.magnet) {
+        ctx.globalAlpha = 0.5; ctx.strokeStyle = '#ff7675'; ctx.lineWidth = 2; ctx.setLineDash([6, 6]);
+        ctx.beginPath(); ctx.arc(0, 0, 52 + Math.sin(frameCount * 0.25) * 4, 0, Math.PI * 2); ctx.stroke();
+        ctx.setLineDash([]);
+    }
+    if (o.warn) {
+        ctx.globalAlpha = 1;
+        if (Math.floor(frameCount / 4) % 2 === 0) {
+            ctx.fillStyle = '#ff3b30'; ctx.beginPath(); ctx.moveTo(0, -48); ctx.lineTo(-11, -28); ctx.lineTo(11, -28); ctx.fill();
+            ctx.fillStyle = '#fff'; ctx.font = `bold 14px ${FONT}`; ctx.textAlign = 'center'; ctx.fillText('!', 0, -31);
+        }
+    }
+    ctx.restore();
+}
+
+function drawHazard(h) {
+    ctx.save(); ctx.translate(h.x, h.y);
+    if (h.type === 'barrier') {
+        ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.beginPath(); ctx.ellipse(0, 14, 28, 6, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.save();
+        ctx.beginPath(); ctx.rect(-22, -18, 44, 30); ctx.clip();
+        ctx.fillStyle = '#ecf0f1'; ctx.fillRect(-22, -18, 44, 30);
+        ctx.fillStyle = '#e74c3c';
+        for (let i = -60; i < 60; i += 16) {
+            ctx.beginPath(); ctx.moveTo(i, -18); ctx.lineTo(i + 8, -18); ctx.lineTo(i - 10, 12); ctx.lineTo(i - 18, 12); ctx.fill();
+        }
+        ctx.restore();
+        ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 3; ctx.strokeRect(-22, -18, 44, 30);
+    } else if (h.type === 'cone') {
+        ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.beginPath(); ctx.ellipse(0, 12, 13, 4, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#ff8c1a'; ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(-11, 10); ctx.lineTo(11, 10); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(-5, -6); ctx.lineTo(5, -6); ctx.lineTo(7, 0); ctx.lineTo(-7, 0); ctx.fill();
+        ctx.fillStyle = '#d35400'; ctx.fillRect(-13, 9, 26, 4);
+    } else if (h.type === 'oil') {
+        ctx.scale(1, 0.4);
+        const g = ctx.createRadialGradient(0, 0, 4, 0, 0, 42);
+        g.addColorStop(0, 'rgba(10,10,25,0.95)'); g.addColorStop(0.7, 'rgba(60,35,110,0.75)'); g.addColorStop(1, 'rgba(60,35,110,0)');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, 42, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = 'rgba(120,200,255,0.25)'; ctx.beginPath(); ctx.arc(-10, -6, 10, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+}
+
+function drawCoin(c) {
+    const w = Math.abs(Math.cos(frameCount * 0.12 + c.ph)) * 11 + 2;
+    ctx.fillStyle = '#f1c40f'; ctx.beginPath(); ctx.ellipse(c.x, c.y, w, 11, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+    if (w > 7) { ctx.fillStyle = '#d35400'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('★', c.x, c.y + 4); }
+}
+
+function drawPower(p) {
+    const bob = Math.sin(frameCount * 0.1 + p.ph) * 3;
+    const col = p.type === 'shield' ? '93,214,255' : p.type === 'magnet' ? '255,118,117' : '255,107,129';
+    const g = ctx.createRadialGradient(p.x, p.y + bob, 4, p.x, p.y + bob, 30);
+    g.addColorStop(0, `rgba(${col},0.8)`); g.addColorStop(1, `rgba(${col},0)`);
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y + bob, 30, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = `rgba(${col},1)`; ctx.beginPath(); ctx.arc(p.x, p.y + bob, 15, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.font = '16px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(p.type === 'shield' ? '🛡' : p.type === 'magnet' ? '🧲' : '❤', p.x, p.y + bob + 1);
+    ctx.textBaseline = 'alphabetic';
+}
+
+function drawEnvironment() {
+    // 天空
+    const sg = ctx.createLinearGradient(0, 0, 0, 220);
+    sg.addColorStop(0, rgb(pal.skyTop)); sg.addColorStop(1, rgb(pal.skyBot));
+    ctx.fillStyle = sg; ctx.fillRect(0, 0, W, 220);
+    const night = pal.night[0];
+    if (night > 0.05) {
+        ctx.fillStyle = '#fff';
+        stars.forEach(s => { ctx.globalAlpha = night * (0.5 + 0.5 * Math.sin(frameCount * 0.05 + s.p)); ctx.fillRect(s.x, s.y, s.r, s.r); });
+        ctx.globalAlpha = 1;
+    }
+    // 太陽 / 月亮
+    const sy = pal.sy[0];
+    const glow = ctx.createRadialGradient(620, sy, 10, 620, sy, 70);
+    glow.addColorStop(0, `rgba(${pal.sun[0]|0},${pal.sun[1]|0},${pal.sun[2]|0},0.55)`);
+    glow.addColorStop(1, `rgba(${pal.sun[0]|0},${pal.sun[1]|0},${pal.sun[2]|0},0)`);
+    ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(620, sy, 70, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = rgb(pal.sun); ctx.beginPath(); ctx.arc(620, sy, 26, 0, Math.PI * 2); ctx.fill();
+
+    // 遠山
+    mountains.forEach((m, i) => {
+        let mx = (m.x - bgOffset * 0.2) % (W + 300);
+        if (mx < -250) mx += W + 300;
+        const c = pal.mount.map(v => v + (i % 2 ? -18 : 0));
+        ctx.fillStyle = rgb(c);
+        ctx.beginPath(); ctx.moveTo(mx, 210); ctx.lineTo(mx + m.w / 2, 210 - m.h); ctx.lineTo(mx + m.w, 210); ctx.fill();
+        ctx.fillStyle = 'rgba(0,0,0,0.15)';
+        ctx.beginPath(); ctx.moveTo(mx + m.w / 2, 210 - m.h); ctx.lineTo(mx + m.w, 210); ctx.lineTo(mx + m.w * 0.65, 210); ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        ctx.beginPath(); ctx.moveTo(mx + m.w / 2, 210 - m.h); ctx.lineTo(mx + m.w / 2 - 22, 210 - m.h + 38); ctx.lineTo(mx + m.w / 2 + 22, 210 - m.h + 38); ctx.fill();
+    });
+
+    // 草地
+    ctx.fillStyle = rgb(pal.grass1); ctx.fillRect(0, 190, W, 60);
+    ctx.fillStyle = rgb(pal.grass2); ctx.fillRect(0, 405, W, 95);
+    // 近景草地速度條紋
+    ctx.fillStyle = 'rgba(0,0,0,0.07)';
+    const so = (roadOffset * 1.4) % 80;
+    for (let x = -80; x < W + 80; x += 80) ctx.fillRect(x - so, 418, 40, 82);
+
+    // 松樹
+    trees.forEach(t => {
+        let tx = (t.x - bgOffset * 0.8) % (W + 100);
+        if (tx < -50) tx += W + 100;
+        ctx.save(); ctx.translate(tx, t.y); ctx.scale(t.scale, t.scale);
+        ctx.fillStyle = '#5d4037'; ctx.fillRect(-4, 25, 8, 15);
+        ctx.fillStyle = rgb(pal.tree1); ctx.beginPath(); ctx.moveTo(0, -15); ctx.lineTo(-18, 15); ctx.lineTo(18, 15); ctx.fill();
+        ctx.fillStyle = rgb(pal.tree2); ctx.beginPath(); ctx.moveTo(0, -30); ctx.lineTo(-14, 0); ctx.lineTo(14, 0); ctx.fill();
+        ctx.restore();
+    });
+
+    // 賽道
+    ctx.fillStyle = '#4b5563'; ctx.fillRect(0, 245, W, 160);
+    ctx.fillStyle = 'rgba(0,0,0,0.12)'; ctx.fillRect(0, 245, W, 6);
+
+    // 路緣石
+    const cw = 40, off = roadOffset % (cw * 2);
+    for (let i = -1; i < W / cw + 3; i++) {
+        const x = i * cw - off;
+        ctx.fillStyle = (((i % 2) + 2) % 2 === 0) ? '#e74c3c' : '#ffffff';
+        ctx.fillRect(x, 235, cw, 12); ctx.fillRect(x, 400, cw, 16);
+    }
+
+    // 車道線
+    ctx.fillStyle = '#f1c40f';
+    for (let x = -60; x < W + 60; x += 90) ctx.fillRect(x - (roadOffset % 90), 298, 45, 4);
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    for (let x = -60; x < W + 60; x += 90) ctx.fillRect(x - (roadOffset % 90), 348, 45, 4);
+}
+
+function drawCanvasHud() {
+    ctx.save();
+    ctx.textAlign = 'center';
+    // 連擊
+    if (combo >= 2) {
+        const mult = getMult();
+        ctx.font = `bold ${22 + Math.min(10, mult * 2)}px ${FONT}`;
+        ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+        const txt = `COMBO ${combo}  ×${mult}`;
+        ctx.strokeText(txt, W / 2, 68);
+        ctx.fillStyle = mult >= 4 ? '#ff6b6b' : mult >= 2 ? '#ffd166' : '#fff';
+        ctx.fillText(txt, W / 2, 68);
+        ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(W / 2 - 70, 76, 140, 6);
+        ctx.fillStyle = '#ffd166'; ctx.fillRect(W / 2 - 70, 76, 140 * comboTimer / 240, 6);
+    }
+    // 道具狀態
+    ctx.textAlign = 'left'; ctx.font = '18px sans-serif';
+    let iy = 66;
+    if (player.shield) { ctx.fillText('🛡', 16, iy); iy += 26; }
+    if (player.magnet > 0) {
+        ctx.fillText('🧲', 16, iy);
+        ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(42, iy - 10, 50, 6);
+        ctx.fillStyle = '#ff7675'; ctx.fillRect(42, iy - 10, 50 * player.magnet / 480, 6);
+    }
+    ctx.textAlign = 'center';
+    // 區域橫幅
+    if (bannerTimer > 0 && gameState !== 'START') {
+        const a = Math.min(1, bannerTimer / 30, (130 - bannerTimer + 1) / 20);
+        ctx.globalAlpha = Math.max(0, Math.min(1, a));
+        ctx.font = `900 34px ${FONT}`; ctx.lineWidth = 6; ctx.strokeStyle = 'rgba(0,0,0,0.75)';
+        ctx.strokeText(bannerText, W / 2, 140);
+        ctx.fillStyle = '#fff'; ctx.fillText(bannerText, W / 2, 140);
+        ctx.globalAlpha = 1;
+    }
+    // 倒數
+    if (gameState === 'COUNTDOWN') {
+        const idx = Math.floor(cdTimer / 50), f = (cdTimer % 50) / 50;
+        const txt = idx >= 3 ? 'GO!' : String(3 - idx);
+        ctx.globalAlpha = 1 - f * 0.6;
+        ctx.font = `900 ${110 - f * 25}px ${FONT}`; ctx.lineWidth = 10; ctx.strokeStyle = '#000';
+        ctx.strokeText(txt, W / 2, 200);
+        ctx.fillStyle = idx >= 3 ? '#2ecc71' : '#ffa500'; ctx.fillText(txt, W / 2, 200);
+        ctx.globalAlpha = 1;
+    }
+    // 暫停
+    if (gameState === 'PAUSED') {
+        ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = '#fff'; ctx.font = `900 56px ${FONT}`; ctx.fillText('暫停中', W / 2, 230);
+        ctx.font = `20px ${FONT}`; ctx.fillText('按 P / Esc 或點擊 ⏸ 繼續', W / 2, 270);
+    }
+    ctx.restore();
+}
+
+function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.save();
+    if (shake > 0) ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
+
+    drawEnvironment();
+    hazards.forEach(h => { if (h.type === 'oil') drawHazard(h); });
+
+    // 依 Y 排序繪製車輛與立體障礙
+    const ents = [];
+    rivals.forEach(r => ents.push({ y: r.y, f: () => drawKart(r.x, r.y, r.bodyColor, r.hatColor, { warn: r.swState === 1 }) }));
+    hazards.forEach(h => { if (h.type !== 'oil') ents.push({ y: h.y, f: () => drawHazard(h) }); });
+    if (gameState !== 'GAMEOVER') {
+        let alpha = 1;
+        if (player.inv > 0 && Math.floor(frameCount / 4) % 2 === 0) alpha = 0.35;
+        if (gameState === 'DYING') alpha = Math.max(0, Math.min(1, dyingTimer / 40));
+        ents.push({ y: player.y, f: () => drawKart(player.x, player.y, '#f1c40f', '#f39c12', {
+            tilt: player.tilt, spin: player.spin, alpha, boost: boosting, shield: player.shield, magnet: player.magnet > 0 }) });
+    }
+    ents.sort((a, b) => a.y - b.y).forEach(e => e.f());
+
+    coins.forEach(drawCoin);
+    powers.forEach(drawPower);
+
+    // 粒子
+    particles.forEach(p => {
+        const a = p.life / p.max;
+        ctx.globalAlpha = p.type === 'smoke' ? a * 0.5 : a;
+        ctx.fillStyle = p.color;
+        if (p.type === 'flame') ctx.globalCompositeOperation = 'lighter';
+        ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(0.5, p.size * (p.type === 'smoke' ? 1 : a)), 0, Math.PI * 2); ctx.fill();
+        ctx.globalCompositeOperation = 'source-over';
+    });
+    ctx.globalAlpha = 1;
+
+    // 夜間
+    const night = pal.night[0];
+    if (night > 0.05) {
+        ctx.fillStyle = `rgba(5,8,30,${night * 0.42})`; ctx.fillRect(0, 0, W, H);
+        ctx.save(); ctx.globalCompositeOperation = 'lighter';
+        const g = ctx.createLinearGradient(player.x + 30, 0, player.x + 380, 0);
+        g.addColorStop(0, `rgba(255,240,170,${0.4 * night})`); g.addColorStop(1, 'rgba(255,240,170,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.moveTo(player.x + 30, player.y - 4); ctx.lineTo(player.x + 380, player.y - 80);
+        ctx.lineTo(player.x + 380, player.y + 80); ctx.lineTo(player.x + 30, player.y + 8); ctx.fill();
+        ctx.restore();
+    }
+
+    // 速度線
+    ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    speedLines.forEach(l => { ctx.moveTo(l.x, l.y); ctx.lineTo(l.x + l.len, l.y); });
+    ctx.stroke();
+
+    // 氮氣暈邊
+    if (boosting) {
+        const v = ctx.createRadialGradient(W / 2, H / 2, 180, W / 2, H / 2, 480);
+        v.addColorStop(0, 'rgba(255,120,0,0)'); v.addColorStop(1, 'rgba(255,90,0,0.35)');
+        ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+    }
+    // 受傷閃紅
+    if (hitFlash > 0) { ctx.fillStyle = `rgba(255,40,40,${hitFlash / 40})`; ctx.fillRect(0, 0, W, H); }
+
+    // 浮動文字
+    ctx.textAlign = 'center';
+    popups.forEach(p => {
+        ctx.globalAlpha = Math.min(1, p.life / (p.max * 0.5));
+        ctx.font = `bold ${p.size}px ${FONT}`; ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+        ctx.strokeText(p.text, p.x, p.y); ctx.fillStyle = p.color; ctx.fillText(p.text, p.x, p.y);
+    });
+    ctx.globalAlpha = 1;
+
+    ctx.restore();
+    drawCanvasHud();
+}
+
+/* =========================================================
+ * 4. HUD / 輸入 / 主迴圈
+ * ========================================================= */
+const el = {
+    score: document.getElementById('scoreDisplay'), speed: document.getElementById('speedDisplay'),
+    dist: document.getElementById('distDisplay'), lives: document.getElementById('livesDisplay'),
+    nitroFill: document.getElementById('nitroFill'), nitroWrap: document.getElementById('nitroWrap'),
+    nitroLabel: document.getElementById('nitroLabel')
+};
+function updateHUD(force) {
+    el.score.innerText = Math.floor(score);
+    el.speed.innerText = Math.floor(currentSpeed * 18);
+    el.dist.innerText = Math.floor(distance);
+    el.nitroFill.style.width = nitro + '%';
+    el.nitroWrap.classList.toggle('boosting', boosting);
+    el.nitroWrap.classList.toggle('locked', boostLock);
+    el.nitroLabel.innerText = boosting ? '🔥 氮氣噴射中！' : boostLock ? '氮氣冷卻中…' : (nitro >= 99 ? '氮氣已滿！按住空白鍵' : '氮氣 NITRO');
+    if (force !== undefined || frameCount % 10 === 0) {
+        const slots = Math.max(3, lives);
+        el.lives.innerText = '❤'.repeat(Math.max(0, lives)) + '♡'.repeat(slots - Math.max(0, lives));
+    }
+}
+
+function moveUp() {
+    if ((gameState === 'PLAYING' || gameState === 'COUNTDOWN') && player.laneIndex > 0 && player.spinT <= 0) {
+        player.laneIndex--; player.targetY = lanes[player.laneIndex]; sound.lane();
+    }
+}
+function moveDown() {
+    if ((gameState === 'PLAYING' || gameState === 'COUNTDOWN') && player.laneIndex < 2 && player.spinT <= 0) {
+        player.laneIndex++; player.targetY = lanes[player.laneIndex]; sound.lane();
+    }
+}
+
+window.addEventListener('keydown', e => {
+    const k = e.key;
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(k)) e.preventDefault();
+    if (k === 'Enter') { e.preventDefault(); startGame(); return; }
+    if (k === 'p' || k === 'P' || k === 'Escape') { togglePause(); return; }
+    if (k === 'm' || k === 'M') { sound.toggleMute(); return; }
+    if (e.repeat) return;
+    if (k === 'ArrowUp' || k === 'w' || k === 'W') moveUp();
+    else if (k === 'ArrowDown' || k === 's' || k === 'S') moveDown();
+    else if (k === ' ') boostHeld = true;
+});
+window.addEventListener('keyup', e => { if (e.key === ' ') boostHeld = false; });
+window.addEventListener('blur', () => { boostHeld = false; if (gameState === 'PLAYING') togglePause(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden && gameState === 'PLAYING') togglePause(); });
+
+document.getElementById('startBtn').addEventListener('click', startGame);
+document.getElementById('restartBtn').addEventListener('click', startGame);
+document.getElementById('mute-btn').addEventListener('click', e => { sound.toggleMute(); e.target.blur(); });
+document.getElementById('pause-btn').addEventListener('click', e => { togglePause(); e.target.blur(); });
+
+function bindPress(elm, down, up) {
+    elm.addEventListener('pointerdown', e => { e.preventDefault(); down(); });
+    if (up) ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => elm.addEventListener(ev, () => up()));
+}
+bindPress(document.getElementById('btn-up'), moveUp);
+bindPress(document.getElementById('btn-down'), moveDown);
+bindPress(document.getElementById('btn-boost'), () => { boostHeld = true; }, () => { boostHeld = false; });
+
+// 畫面滑動換道
+let touchY = null;
+const gc = document.getElementById('game-container');
+gc.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
+gc.addEventListener('touchmove', e => {
+    if (touchY === null) return;
+    const dy = e.touches[0].clientY - touchY;
+    if (dy > 28) { moveDown(); touchY = e.touches[0].clientY; }
+    else if (dy < -28) { moveUp(); touchY = e.touches[0].clientY; }
+}, { passive: true });
+gc.addEventListener('touchend', () => { touchY = null; });
+
+document.getElementById('bestText').innerText = best > 0 ? `🏆 歷史最高分：${best}` : '';
+
+// 固定 60Hz 邏輯步進（高更新率螢幕速度一致）
+let last = 0, acc = 0;
+const STEP = 1000 / 60;
+function loop(now) {
+    if (!last) last = now;
+    acc += Math.min(100, now - last); last = now;
+    while (acc >= STEP) { update(); acc -= STEP; }
+    draw();
+    requestAnimationFrame(loop);
+}
+resetGame();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
