@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>糖果俄羅斯方塊 - Candy Tetris</title>
+    <title>糖果俄羅斯方塊 - Candy Tetris Pro</title>
     <!-- 引入 Google Fonts 圓體字型，增加可愛糖果感 -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
     <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* 自訂糖果主題樣式與動畫 */
         body {
             font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
             background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #a1c4fd 100%);
             background-size: 200% 200%;
             animation: gradientBG 15s ease infinite;
-            touch-action: manipulation; /* 防止雙擊縮放 */
+            touch-action: manipulation;
             user-select: none;
             -webkit-user-select: none;
         }
@@ -28,12 +27,12 @@
 
         /* 遊戲主機外殼：奶油糖霜質感 */
         .candy-machine {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(12px);
-            border: 6px solid #ffffff;
+            border: 5px solid #ffffff;
             box-shadow: 
-                0 20px 40px rgba(255, 105, 135, 0.25),
-                inset 0 0 20px rgba(255, 255, 255, 0.8);
+                0 20px 40px rgba(255, 105, 135, 0.28),
+                inset 0 0 20px rgba(255, 255, 255, 0.85);
         }
 
         /* 遊戲畫布外框 */
@@ -45,21 +44,32 @@
 
         /* 3D 糖果按鈕效果 */
         .candy-btn {
-            transition: all 0.1s ease;
-            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2), 0 8px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.08s ease;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.22), 0 6px 12px rgba(0, 0, 0, 0.15);
             position: relative;
             top: 0;
         }
 
         .candy-btn:active {
-            top: 4px;
-            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 2px 5px rgba(0, 0, 0, 0.15);
+            top: 3px;
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.22), 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 難度選擇卡片效果 */
+        .diff-btn {
+            transition: all 0.15s ease;
+            border: 2px solid transparent;
+        }
+        .diff-btn.active {
+            border-color: #fde047;
+            transform: scale(1.03);
+            box-shadow: 0 0 15px rgba(253, 224, 71, 0.6);
         }
 
         /* 資訊面板卡片 */
         .info-card {
             background: linear-gradient(145deg, #fff5f7, #ffe3e8);
-            border: 3px solid #ffb3c1;
+            border: 2.5px solid #ffb3c1;
             box-shadow: 0 4px 10px rgba(255, 117, 140, 0.15);
         }
 
@@ -76,9 +86,19 @@
             0%, 100% { transform: translateY(0) rotate(0deg); }
             50% { transform: translateY(-20px) rotate(15deg); }
         }
+
+        /* 畫面震動特效 (瞬間落下時觸發) */
+        @keyframes shake {
+            0%, 100% { transform: translateY(0); }
+            30% { transform: translateY(4px); }
+            60% { transform: translateY(-2px); }
+        }
+        .shake-effect {
+            animation: shake 0.18s ease-in-out;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 overflow-hidden relative">
+<body class="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 overflow-x-hidden relative">
 
     <!-- 背景裝飾糖果 Emoji -->
     <div class="bg-candy text-5xl top-10 left-10" style="animation-delay: 0s;">🍬</div>
@@ -87,105 +107,156 @@
     <div class="bg-candy text-6xl bottom-10 right-16" style="animation-delay: 1s;">🧁</div>
 
     <!-- 主遊戲容器 -->
-    <div class="candy-machine rounded-3xl p-4 sm:p-6 max-w-2xl w-full z-10 flex flex-col items-center">
+    <div class="candy-machine rounded-3xl p-3 sm:p-6 max-w-2xl w-full z-10 flex flex-col items-center">
         
-        <!-- 標題列 -->
-        <div class="w-full flex items-center justify-between mb-3 sm:mb-4 px-2">
-            <div class="flex items-center gap-2">
+        <!-- 標題與音效控制列 -->
+        <div class="w-full flex items-center justify-between mb-2 sm:mb-4 px-1">
+            <div class="flex items-center gap-1.5 sm:gap-2">
                 <span class="text-2xl sm:text-3xl">🍭</span>
-                <h1 class="text-xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 tracking-wider">
+                <h1 class="text-lg sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 tracking-wide">
                     糖果俄羅斯方塊
                 </h1>
             </div>
-            <!-- 音效與暫停控制 -->
-            <div class="flex gap-2">
-                <button id="soundToggleBtn" class="candy-btn bg-amber-400 hover:bg-amber-300 text-white font-bold p-2 sm:px-3 sm:py-2 rounded-xl text-sm sm:text-base" title="切換音效">
-                    🔊
+            <!-- 音樂、音效與暫停控制 -->
+            <div class="flex gap-1.5 sm:gap-2">
+                <button id="bgmToggleBtn" class="candy-btn bg-purple-400 hover:bg-purple-300 text-white font-bold px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm" title="背景音樂開關">
+                    🎵 音樂
                 </button>
-                <button id="pauseBtn" class="candy-btn bg-sky-400 hover:bg-sky-300 text-white font-bold px-3 py-2 rounded-xl text-sm sm:text-base">
+                <button id="soundToggleBtn" class="candy-btn bg-amber-400 hover:bg-amber-300 text-white font-bold px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm" title="遊戲音效開關">
+                    🔊 音效
+                </button>
+                <button id="pauseBtn" class="candy-btn bg-sky-400 hover:bg-sky-300 text-white font-bold px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm">
                     暫停
                 </button>
             </div>
         </div>
 
         <!-- 遊戲核心區域：左側畫布 + 右側資訊欄 -->
-        <div class="flex flex-row items-start justify-center gap-3 sm:gap-6 w-full">
+        <div class="flex flex-row items-start justify-center gap-2.5 sm:gap-6 w-full">
             
             <!-- 主遊戲畫布容器 -->
-            <div class="relative canvas-wrapper rounded-2xl overflow-hidden flex-shrink-0">
-                <canvas id="gameCanvas" width="260" height="520" class="block w-[210px] h-[420px] sm:w-[260px] sm:h-[520px]"></canvas>
+            <div id="canvasWrapper" class="relative canvas-wrapper rounded-2xl overflow-hidden flex-shrink-0">
+                <canvas id="gameCanvas" width="260" height="520" class="block w-[205px] h-[410px] sm:w-[260px] sm:h-[520px]"></canvas>
                 
-                <!-- 遊戲覆蓋層 (開始 / 暫停 / 結束畫面) -->
-                <div id="overlay" class="absolute inset-0 bg-purple-950/85 backdrop-blur-sm flex flex-col items-center justify-center p-4 text-center transition-opacity duration-300">
-                    <div id="overlayIcon" class="text-5xl mb-2 animate-bounce">🍬</div>
-                    <h2 id="overlayTitle" class="text-2xl sm:text-3xl font-black text-pink-300 mb-2 drop-shadow">準備好了嗎？</h2>
-                    <p id="overlaySubtitle" class="text-white/90 text-xs sm:text-sm mb-6 leading-relaxed">
-                        堆疊美味糖果並消除整排！<br>消除越多分數越高喔！
+                <!-- 遊戲覆蓋層 (開始 / 難度選擇 / 暫停 / 結束畫面) -->
+                <div id="overlay" class="absolute inset-0 bg-purple-950/90 backdrop-blur-md flex flex-col items-center justify-center p-3 sm:p-4 text-center transition-opacity duration-300">
+                    <div id="overlayIcon" class="text-4xl sm:text-5xl mb-1 animate-bounce">🍬</div>
+                    <h2 id="overlayTitle" class="text-xl sm:text-2xl font-black text-pink-300 mb-1 drop-shadow">選擇關卡難度</h2>
+                    <p id="overlaySubtitle" class="text-white/90 text-[11px] sm:text-xs mb-3 leading-relaxed">
+                        堆疊美味糖果並消除整排！<br>連消越多，分數加成越高！
                     </p>
-                    <button id="startBtn" class="candy-btn bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-400 hover:to-rose-400 text-white font-black text-lg px-8 py-3 rounded-full tracking-wider">
+
+                    <!-- 關卡難度選擇區 -->
+                    <div id="difficultySelector" class="w-full grid grid-cols-2 gap-1.5 sm:gap-2 mb-3.5 px-1">
+                        <button type="button" data-level="1" data-name="悠閒品嚐" class="diff-btn active bg-emerald-500/80 hover:bg-emerald-500 text-white rounded-xl py-1.5 px-2 text-left">
+                            <div class="text-xs sm:text-sm font-black">🍬 悠閒品嚐</div>
+                            <div class="text-[10px] text-emerald-100">Lv.1 慢速入門</div>
+                        </button>
+                        <button type="button" data-level="3" data-name="甜蜜挑戰" class="diff-btn bg-sky-500/80 hover:bg-sky-500 text-white rounded-xl py-1.5 px-2 text-left">
+                            <div class="text-xs sm:text-sm font-black">🍭 甜蜜挑戰</div>
+                            <div class="text-[10px] text-sky-100">Lv.3 標準節奏</div>
+                        </button>
+                        <button type="button" data-level="6" data-name="糖果狂熱" class="diff-btn bg-amber-500/80 hover:bg-amber-500 text-white rounded-xl py-1.5 px-2 text-left">
+                            <div class="text-xs sm:text-sm font-black">🔥 糖果狂熱</div>
+                            <div class="text-[10px] text-amber-100">Lv.6 高速考驗</div>
+                        </button>
+                        <button type="button" data-level="9" data-name="極限大師" class="diff-btn bg-rose-600/80 hover:bg-rose-600 text-white rounded-xl py-1.5 px-2 text-left">
+                            <div class="text-xs sm:text-sm font-black">⚡ 極限大師</div>
+                            <div class="text-[10px] text-rose-100">Lv.9 極速挑戰</div>
+                        </button>
+                    </div>
+
+                    <button id="startBtn" class="candy-btn bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-400 hover:to-rose-400 text-white font-black text-base sm:text-lg px-7 py-2.5 rounded-full tracking-wider shadow-lg">
                         開始遊戲
                     </button>
                 </div>
             </div>
 
             <!-- 右側資訊與預覽欄 -->
-            <div class="flex flex-col gap-3 sm:gap-4 w-28 sm:w-36">
+            <div class="flex flex-col gap-2 sm:gap-3.5 w-28 sm:w-36">
                 
                 <!-- 下一個糖果預覽 -->
-                <div class="info-card rounded-2xl p-2 sm:p-3 flex flex-col items-center">
+                <div class="info-card rounded-2xl p-2 sm:p-2.5 flex flex-col items-center">
                     <span class="text-xs sm:text-sm font-bold text-pink-600 mb-1">下一個糖果</span>
                     <div class="bg-purple-950/90 rounded-xl p-1 border-2 border-pink-300">
-                        <canvas id="nextCanvas" width="80" height="80" class="w-16 h-16 sm:w-20 sm:h-20 block"></canvas>
+                        <canvas id="nextCanvas" width="80" height="80" class="w-14 h-14 sm:w-20 sm:h-20 block"></canvas>
                     </div>
                 </div>
 
                 <!-- 分數板 -->
-                <div class="info-card rounded-2xl p-2 sm:p-3 text-center">
-                    <span class="text-xs sm:text-sm font-bold text-pink-600 block">甜蜜分數</span>
-                    <span id="scoreDisplay" class="text-xl sm:text-2xl font-black text-purple-700">0</span>
+                <div class="info-card rounded-2xl p-1.5 sm:p-2.5 text-center">
+                    <span class="text-[11px] sm:text-xs font-bold text-pink-600 block">甜蜜分數</span>
+                    <span id="scoreDisplay" class="text-lg sm:text-2xl font-black text-purple-700">0</span>
                 </div>
 
                 <!-- 消除行數 -->
-                <div class="info-card rounded-2xl p-2 sm:p-3 text-center">
-                    <span class="text-xs sm:text-sm font-bold text-pink-600 block">消除排數</span>
-                    <span id="linesDisplay" class="text-lg sm:text-xl font-black text-rose-500">0</span>
+                <div class="info-card rounded-2xl p-1.5 sm:p-2.5 text-center">
+                    <span class="text-[11px] sm:text-xs font-bold text-pink-600 block">消除排數</span>
+                    <span id="linesDisplay" class="text-base sm:text-xl font-black text-rose-500">0</span>
                 </div>
 
-                <!-- 等級 -->
-                <div class="info-card rounded-2xl p-2 sm:p-3 text-center">
-                    <span class="text-xs sm:text-sm font-bold text-pink-600 block">糖果等級</span>
-                    <span id="levelDisplay" class="text-lg sm:text-xl font-black text-amber-500">1</span>
+                <!-- 難度與等級 -->
+                <div class="info-card rounded-2xl p-1.5 sm:p-2.5 text-center">
+                    <span id="diffBadge" class="inline-block bg-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-0.5">悠閒品嚐</span>
+                    <span class="text-[11px] sm:text-xs font-bold text-pink-600 block">目前等級</span>
+                    <span id="levelDisplay" class="text-base sm:text-xl font-black text-amber-500">1</span>
                 </div>
 
                 <!-- 電腦操作提示 (僅在較大螢幕顯示) -->
-                <div class="hidden sm:block bg-white/70 rounded-2xl p-3 text-xs text-gray-600 border border-pink-200">
-                    <p class="font-bold text-pink-600 mb-1">⌨️ 鍵盤操作：</p>
-                    <ul class="space-y-1">
+                <div class="hidden sm:block bg-white/80 rounded-2xl p-2.5 text-xs text-gray-600 border border-pink-200">
+                    <p class="font-bold text-pink-600 mb-1">⌨️ 鍵盤玩法：</p>
+                    <ul class="space-y-1 text-[11px]">
                         <li>⬅️ ➡️ 左右移動</li>
-                        <li>⬆️ 旋轉糖果</li>
-                        <li>⬇️ 加速下落</li>
+                        <li>⬆️ 旋轉糖果方向</li>
+                        <li>⬇️ 加速往下掉</li>
                         <li>空白鍵 瞬間落下</li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <!-- 手機與觸控操作按鈕區 (所有裝置皆可使用，方便觸控點擊) -->
-        <div class="mt-4 w-full max-w-md grid grid-cols-4 gap-2 sm:hidden px-2">
-            <button id="btnLeft" class="candy-btn bg-pink-400 text-white font-black py-3 rounded-2xl text-xl flex items-center justify-center">⬅️</button>
-            <button id="btnDown" class="candy-btn bg-pink-400 text-white font-black py-3 rounded-2xl text-xl flex items-center justify-center">⬇️</button>
-            <button id="btnRight" class="candy-btn bg-pink-400 text-white font-black py-3 rounded-2xl text-xl flex items-center justify-center">➡️</button>
-            <button id="btnRotate" class="candy-btn bg-purple-500 text-white font-black py-3 rounded-2xl text-xl flex items-center justify-center">🔄</button>
-            <button id="btnDrop" class="col-span-4 candy-btn bg-gradient-to-r from-amber-400 to-orange-400 text-white font-black py-2.5 rounded-2xl text-base mt-1">
-                ⚡ 瞬間落下 (Drop)
-            </button>
+        <!-- 手機與觸控操作說明與按鈕區 (手機版清晰標示各鍵功能) -->
+        <div class="mt-3 w-full max-w-md sm:hidden px-1">
+            <!-- 手機觸控玩法說明提示條 -->
+            <div class="bg-white/85 border border-pink-200 rounded-xl px-2.5 py-1.5 mb-2 text-[11px] text-gray-700 flex flex-wrap items-center justify-between gap-1 shadow-sm">
+                <span class="font-black text-pink-600">📱 玩法說明：</span>
+                <span>點畫布＝旋轉</span>
+                <span>•</span>
+                <span>左右滑＝移動</span>
+                <span>•</span>
+                <span>下滑＝直落</span>
+            </div>
+
+            <!-- 明確標示文字的觸控按鍵群 -->
+            <div class="grid grid-cols-4 gap-2">
+                <button id="btnLeft" class="candy-btn bg-pink-400 active:bg-pink-500 text-white py-2 rounded-2xl flex flex-col items-center justify-center">
+                    <span class="text-lg leading-none">⬅️</span>
+                    <span class="text-xs font-black mt-1 tracking-wider">左移</span>
+                </button>
+                <button id="btnDown" class="candy-btn bg-pink-400 active:bg-pink-500 text-white py-2 rounded-2xl flex flex-col items-center justify-center">
+                    <span class="text-lg leading-none">⬇️</span>
+                    <span class="text-xs font-black mt-1 tracking-wider">加速下落</span>
+                </button>
+                <button id="btnRight" class="candy-btn bg-pink-400 active:bg-pink-500 text-white py-2 rounded-2xl flex flex-col items-center justify-center">
+                    <span class="text-lg leading-none">➡️</span>
+                    <span class="text-xs font-black mt-1 tracking-wider">右移</span>
+                </button>
+                <button id="btnRotate" class="candy-btn bg-purple-500 active:bg-purple-600 text-white py-2 rounded-2xl flex flex-col items-center justify-center">
+                    <span class="text-lg leading-none">🔄</span>
+                    <span class="text-xs font-black mt-1 tracking-wider">旋轉方向</span>
+                </button>
+                <button id="btnDrop" class="col-span-4 candy-btn bg-gradient-to-r from-amber-400 to-orange-500 text-white font-black py-2.5 rounded-2xl text-sm tracking-wider flex items-center justify-center gap-1.5 mt-0.5">
+                    <span>⚡</span>
+                    <span>一鍵瞬間落下 (直接到底部)</span>
+                </button>
+            </div>
         </div>
 
     </div>
 
     <script>
         /**
-         * 糖果俄羅斯方塊 - 核心遊戲邏輯與糖果渲染引擎
+         * 糖果俄羅斯方塊 Pro - 街機動態音效引擎 + 難度選擇 + 手機觸控導引
          */
 
         // 1. 畫布與環境設定
@@ -193,70 +264,26 @@
         const ctx = canvas.getContext('2d');
         const nextCanvas = document.getElementById('nextCanvas');
         const nextCtx = nextCanvas.getContext('2d');
+        const canvasWrapper = document.getElementById('canvasWrapper');
 
-        // 網格規格：10 欄 x 20 列
         const COLS = 10;
         const ROWS = 20;
         const BLOCK_SIZE = canvas.width / COLS; // 26px
         const NEXT_BLOCK_SIZE = 20;
 
-        // 2. 糖果造型與顏色定義 (對應 7 種經典俄羅斯方塊)
-        // 每種方塊都有專屬的糖果主題、漸層色彩與內部花紋類型
+        // 2. 糖果造型與顏色定義
         const CANDY_TYPES = {
-            1: { // I 型：薄荷拐杖糖 / 藍莓長條軟糖
-                name: '藍莓薄荷糖',
-                base: '#00d2ff',
-                light: '#9be7ff',
-                dark: '#0077b6',
-                pattern: 'stripe' // 斜條紋拐杖糖
-            },
-            2: { // J 型：葡萄果凍方塊
-                name: '巨峰葡萄軟糖',
-                base: '#9d4edd',
-                light: '#e0aaff',
-                dark: '#5a189a',
-                pattern: 'jelly' // 晶瑩果凍中心
-            },
-            3: { // L 型：香橙維他命軟糖
-                name: '甜橙柑橘糖',
-                base: '#ff9e00',
-                light: '#ffd166',
-                dark: '#cc5803',
-                pattern: 'citrus' // 糖粒結晶
-            },
-            4: { // O 型：檸檬奶油太妃糖
-                name: '蜂蜜檸檬糖',
-                base: '#ffea00',
-                light: '#ffffb3',
-                dark: '#d4a300',
-                pattern: 'swirl' // 漩渦棒棒糖紋路
-            },
-            5: { // S 型：青蘋果酸甜軟糖
-                name: '青蘋果QQ糖',
-                base: '#38b000',
-                light: '#9ef01a',
-                dark: '#007200',
-                pattern: 'jelly'
-            },
-            6: { // T 型：草莓牛奶糖
-                name: '草莓夾心糖',
-                base: '#ff4d6d',
-                light: '#ffb3c1',
-                dark: '#a4133c',
-                pattern: 'heart' // 愛心糖果印記
-            },
-            7: { // Z 型：水蜜桃泡泡糖
-                name: '水蜜桃硬糖',
-                base: '#ff70a6',
-                light: '#ffc2d1',
-                dark: '#c9184a',
-                pattern: 'swirl'
-            }
+            1: { name: '藍莓薄荷糖', base: '#00d2ff', light: '#9be7ff', dark: '#0077b6', pattern: 'stripe' },
+            2: { name: '巨峰葡萄軟糖', base: '#9d4edd', light: '#e0aaff', dark: '#5a189a', pattern: 'jelly' },
+            3: { name: '甜橙柑橘糖', base: '#ff9e00', light: '#ffd166', dark: '#cc5803', pattern: 'citrus' },
+            4: { name: '蜂蜜檸檬糖', base: '#ffea00', light: '#ffffb3', dark: '#d4a300', pattern: 'swirl' },
+            5: { name: '青蘋果QQ糖', base: '#38b000', light: '#9ef01a', dark: '#007200', pattern: 'jelly' },
+            6: { name: '草莓夾心糖', base: '#ff4d6d', light: '#ffb3c1', dark: '#a4133c', pattern: 'heart' },
+            7: { name: '水蜜桃硬糖', base: '#ff70a6', light: '#ffc2d1', dark: '#c9184a', pattern: 'swirl' }
         };
 
-        // 7 種方塊形狀矩陣
         const SHAPES = [
-            [], // 索引 0 留空
+            [],
             [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]], // I
             [[2, 0, 0], [2, 2, 2], [0, 0, 0]],                         // J
             [[0, 0, 3], [3, 3, 3], [0, 0, 0]],                         // L
@@ -266,11 +293,15 @@
             [[7, 7, 0], [0, 7, 7], [0, 0, 0]]                          // Z
         ];
 
-        // 3. 遊戲狀態變數
+        // 3. 遊戲狀態與難度變數
         let board = [];
         let score = 0;
         let lines = 0;
         let level = 1;
+        let selectedStartLevel = 1;
+        let selectedDiffName = '悠閒品嚐';
+        let comboCount = 0;
+
         let gameOver = false;
         let isPaused = false;
         let isPlaying = false;
@@ -279,89 +310,194 @@
         let lastTime = 0;
         let animationFrameId = null;
 
-        // 當前與下一個方塊
         let player = {
             pos: { x: 0, y: 0 },
             matrix: null,
             type: 1
         };
         let nextPieceType = 1;
-
-        // 消除特效粒子陣列
         let particles = [];
+        let floatingTexts = []; // 得分與連消飄字特效
 
-        // 4. Web Audio API 音效合成器 (無需外部音檔)
+        // ==========================================
+        // 4. 升級版 Web Audio API 街機音效與背景音樂引擎
+        // ==========================================
         let soundEnabled = true;
+        let bgmEnabled = true;
+        let bgmTimer = null;
+        let bgmStep = 0;
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-        function playSound(type) {
+        // 輕快糖果屋風格旋律 (頻率 Hz, 拍數)
+        const BGM_MELODY = [
+            [659.25, 1], [493.88, 0.5], [523.25, 0.5], [587.33, 1], [523.25, 0.5], [493.88, 0.5],
+            [440.00, 1], [440.00, 0.5], [523.25, 0.5], [659.25, 1], [587.33, 0.5], [523.25, 0.5],
+            [493.88, 1.5], [523.25, 0.5], [587.33, 1], [659.25, 1],
+            [523.25, 1], [440.00, 1], [440.00, 1.5], [0, 0.5]
+        ];
+
+        function startBGM() {
+            stopBGM();
+            if (!bgmEnabled || !isPlaying || isPaused || gameOver) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const playNextNote = () => {
+                if (!bgmEnabled || !isPlaying || isPaused || gameOver) return;
+                const [freq, beats] = BGM_MELODY[bgmStep % BGM_MELODY.length];
+                // 隨等級微微加快音樂節奏，增加緊張刺激感
+                const tempoScale = Math.max(0.65, 1 - (level - 1) * 0.03);
+                const duration = beats * 260 * tempoScale;
+
+                if (freq > 0) {
+                    const now = audioCtx.currentTime;
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle'; // 溫暖圓潤的木琴/糖果音色
+                    osc.frequency.setValueAtTime(freq, now);
+
+                    gain.gain.setValueAtTime(0.045, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + (duration / 1000) * 0.9);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + (duration / 1000) * 0.92);
+                }
+
+                bgmStep++;
+                bgmTimer = setTimeout(playNextNote, duration);
+            };
+
+            playNextNote();
+        }
+
+        function stopBGM() {
+            if (bgmTimer) {
+                clearTimeout(bgmTimer);
+                bgmTimer = null;
+            }
+        }
+
+        function playSound(type, extra = 1) {
             if (!soundEnabled) return;
             if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
 
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-
             const now = audioCtx.currentTime;
 
             if (type === 'move') {
-                // 輕快的泡泡移動音
+                // Q彈氣泡「啵」一聲
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(320, now);
-                osc.frequency.exponentialRampToValueAtTime(450, now + 0.05);
-                gainNode.gain.setValueAtTime(0.1, now);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                osc.frequency.setValueAtTime(360, now);
+                osc.frequency.exponentialRampToValueAtTime(580, now + 0.045);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.005, now + 0.045);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
                 osc.start(now);
-                osc.stop(now + 0.05);
+                osc.stop(now + 0.045);
+
             } else if (type === 'rotate') {
-                // 清脆糖果旋轉音
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(400, now);
-                osc.frequency.exponentialRampToValueAtTime(680, now + 0.08);
-                gainNode.gain.setValueAtTime(0.15, now);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-                osc.start(now);
-                osc.stop(now + 0.08);
+                // 雙音階清脆鈴鐺旋轉音
+                [523.25, 783.99].forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + i * 0.03);
+                    gain.gain.setValueAtTime(0.14, now + i * 0.03);
+                    gain.gain.exponentialRampToValueAtTime(0.005, now + i * 0.03 + 0.07);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + i * 0.03);
+                    osc.stop(now + i * 0.03 + 0.07);
+                });
+
             } else if (type === 'drop') {
-                // 軟糖落地 Q 彈音
+                // 軟糖果凍落地「咚」彈跳音
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(220, now);
-                osc.frequency.exponentialRampToValueAtTime(110, now + 0.12);
-                gainNode.gain.setValueAtTime(0.2, now);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                osc.frequency.setValueAtTime(240, now);
+                osc.frequency.exponentialRampToValueAtTime(85, now + 0.11);
+                gain.gain.setValueAtTime(0.22, now);
+                gain.gain.exponentialRampToValueAtTime(0.005, now + 0.11);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
                 osc.start(now);
-                osc.stop(now + 0.12);
+                osc.stop(now + 0.11);
+
+            } else if (type === 'harddrop') {
+                // 瞬間落下雷射重擊音
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(480, now);
+                osc.frequency.exponentialRampToValueAtTime(65, now + 0.16);
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.exponentialRampToValueAtTime(0.005, now + 0.16);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.16);
+
             } else if (type === 'clear') {
-                // 甜蜜消除和弦音效
-                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-                notes.forEach((freq, idx) => {
+                // 依消除排數與連消次數動態升調的華麗和弦！
+                const pitchBoost = 1 + (extra - 1) * 0.12;
+                const notes = extra >= 4
+                    ? [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98] // 4排大滿貫勝利琶音
+                    : [523.25, 659.25, 783.99, 1046.50];
+
+                notes.forEach((baseFreq, idx) => {
                     const o = audioCtx.createOscillator();
                     const g = audioCtx.createGain();
-                    o.type = 'sine';
+                    o.type = extra >= 4 ? 'square' : 'triangle';
                     o.connect(g);
                     g.connect(audioCtx.destination);
-                    o.frequency.setValueAtTime(freq, now + idx * 0.06);
-                    g.gain.setValueAtTime(0.15, now + idx * 0.06);
-                    g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.06 + 0.25);
-                    o.start(now + idx * 0.06);
-                    o.stop(now + idx * 0.06 + 0.25);
+                    o.frequency.setValueAtTime(baseFreq * pitchBoost, now + idx * 0.055);
+                    g.gain.setValueAtTime(extra >= 4 ? 0.11 : 0.18, now + idx * 0.055);
+                    g.gain.exponentialRampToValueAtTime(0.005, now + idx * 0.055 + 0.28);
+                    o.start(now + idx * 0.055);
+                    o.stop(now + idx * 0.055 + 0.28);
                 });
+
+            } else if (type === 'levelup') {
+                // 升級歡呼號角音
+                const fanfare = [587.33, 739.99, 880.00, 1174.66];
+                fanfare.forEach((freq, idx) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.type = 'triangle';
+                    o.connect(g);
+                    g.connect(audioCtx.destination);
+                    o.frequency.setValueAtTime(freq, now + idx * 0.08);
+                    g.gain.setValueAtTime(0.2, now + idx * 0.08);
+                    g.gain.exponentialRampToValueAtTime(0.005, now + idx * 0.08 + 0.3);
+                    o.start(now + idx * 0.08);
+                    o.stop(now + idx * 0.08 + 0.3);
+                });
+
             } else if (type === 'gameover') {
-                // 遊戲結束下行音
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(300, now);
-                osc.frequency.linearRampToValueAtTime(100, now + 0.6);
-                gainNode.gain.setValueAtTime(0.15, now);
-                gainNode.gain.linearRampToValueAtTime(0.01, now + 0.6);
-                osc.start(now);
-                osc.stop(now + 0.6);
+                // 經典街機遊戲結束下行音階
+                const sadNotes = [392.00, 369.99, 349.23, 329.63, 261.63];
+                sadNotes.forEach((freq, idx) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.type = 'sawtooth';
+                    o.connect(g);
+                    g.connect(audioCtx.destination);
+                    o.frequency.setValueAtTime(freq, now + idx * 0.14);
+                    g.gain.setValueAtTime(0.12, now + idx * 0.14);
+                    g.gain.exponentialRampToValueAtTime(0.005, now + idx * 0.14 + 0.22);
+                    o.start(now + idx * 0.14);
+                    o.stop(now + idx * 0.14 + 0.22);
+                });
             }
         }
 
-        // 5. 糖果繪製核心函式 (讓每個方塊看起來都像美味糖果！)
+        // 5. 糖果繪製核心函式
         function drawCandyBlock(context, x, y, size, typeId, isGhost = false) {
             const candy = CANDY_TYPES[typeId];
             if (!candy) return;
@@ -370,21 +506,17 @@
             const py = y * size;
             const padding = 1.5;
             const drawSize = size - padding * 2;
-            const radius = size * 0.28; // 圓潤糖果邊角
+            const radius = size * 0.28;
 
             context.save();
-
-            // 如果是落點預測幽靈方塊，設定半透明虛線糖果框
             if (isGhost) {
                 context.globalAlpha = 0.28;
             }
 
-            // 繪製圓角矩形路徑
             context.beginPath();
             context.roundRect(px + padding, py + padding, drawSize, drawSize, radius);
             context.closePath();
 
-            // 糖果立體徑向漸層
             const grad = context.createRadialGradient(
                 px + size * 0.35, py + size * 0.35, size * 0.05,
                 px + size * 0.5, py + size * 0.5, size * 0.65
@@ -396,17 +528,13 @@
             context.fillStyle = grad;
             context.fill();
 
-            // 糖果外框糖霜描邊
             context.lineWidth = 1.2;
             context.strokeStyle = 'rgba(255, 255, 255, 0.65)';
             context.stroke();
 
             if (!isGhost) {
-                // 根據不同糖果類型繪製專屬可愛花紋
-                context.clip(); // 限制花紋在糖果圓角內
-
+                context.clip();
                 if (candy.pattern === 'stripe') {
-                    // 拐杖糖白色斜條紋
                     context.strokeStyle = 'rgba(255, 255, 255, 0.45)';
                     context.lineWidth = 3;
                     context.beginPath();
@@ -416,33 +544,29 @@
                     context.lineTo(px + size + 5, py + size * 0.3);
                     context.stroke();
                 } else if (candy.pattern === 'jelly') {
-                    // 果凍軟糖內部晶瑩小方塊
                     context.fillStyle = 'rgba(255, 255, 255, 0.28)';
                     context.beginPath();
                     context.roundRect(px + size * 0.25, py + size * 0.25, size * 0.5, size * 0.5, radius * 0.6);
                     context.fill();
                 } else if (candy.pattern === 'swirl') {
-                    // 棒棒糖漩渦圓圈
                     context.strokeStyle = 'rgba(255, 255, 255, 0.4)';
                     context.lineWidth = 2;
                     context.beginPath();
                     context.arc(px + size * 0.5, py + size * 0.5, size * 0.24, 0, Math.PI * 1.5);
                     context.stroke();
                 } else if (candy.pattern === 'heart') {
-                    // 草莓糖果小圓點裝飾
                     context.fillStyle = 'rgba(255, 255, 255, 0.5)';
                     context.beginPath();
                     context.arc(px + size * 0.5, py + size * 0.55, size * 0.16, 0, Math.PI * 2);
                     context.fill();
                 } else if (candy.pattern === 'citrus') {
-                    // 砂糖結晶顆粒感
                     context.fillStyle = 'rgba(255, 255, 255, 0.55)';
                     context.fillRect(px + size * 0.3, py + size * 0.35, 2, 2);
                     context.fillRect(px + size * 0.65, py + size * 0.45, 2, 2);
                     context.fillRect(px + size * 0.45, py + size * 0.68, 2, 2);
                 }
 
-                // 繪製糖果左上角「高光反光點」(營造光滑硬糖/果凍質感)
+                // 高光反光點
                 context.fillStyle = 'rgba(255, 255, 255, 0.75)';
                 context.beginPath();
                 context.ellipse(
@@ -460,7 +584,7 @@
             context.restore();
         }
 
-        // 6. 消除糖果時的碎屑粒子特效
+        // 6. 消除特效與飄字回饋
         function spawnCandyParticles(rowY, rowData) {
             for (let x = 0; x < COLS; x++) {
                 const typeId = rowData[x] || 1;
@@ -469,8 +593,8 @@
                     particles.push({
                         x: (x + 0.5) * BLOCK_SIZE,
                         y: (rowY + 0.5) * BLOCK_SIZE,
-                        vx: (Math.random() - 0.5) * 7,
-                        vy: (Math.random() - 0.8) * 7,
+                        vx: (Math.random() - 0.5) * 7.5,
+                        vy: (Math.random() - 0.85) * 7.5,
                         size: Math.random() * 5 + 3,
                         color: Math.random() > 0.5 ? candy.light : candy.base,
                         alpha: 1
@@ -479,12 +603,24 @@
             }
         }
 
-        function updateAndDrawParticles() {
+        function spawnFloatingText(text, yRow, color = '#fde047') {
+            floatingTexts.push({
+                text,
+                x: canvas.width / 2,
+                y: Math.max(40, yRow * BLOCK_SIZE),
+                vy: -1.3,
+                alpha: 1,
+                color
+            });
+        }
+
+        function updateAndDrawEffects() {
+            // 繪製碎屑粒子
             for (let i = particles.length - 1; i >= 0; i--) {
                 const p = particles[i];
                 p.x += p.vx;
                 p.y += p.vy;
-                p.vy += 0.25; // 重力
+                p.vy += 0.25;
                 p.alpha -= 0.03;
 
                 if (p.alpha <= 0) {
@@ -498,6 +634,27 @@
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.restore();
+            }
+
+            // 繪製得分/連消飄字
+            for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                const ft = floatingTexts[i];
+                ft.y += ft.vy;
+                ft.alpha -= 0.022;
+                if (ft.alpha <= 0) {
+                    floatingTexts.splice(i, 1);
+                    continue;
+                }
+                ctx.save();
+                ctx.globalAlpha = ft.alpha;
+                ctx.font = '900 18px "Fredoka", "Noto Sans TC", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.strokeStyle = '#3b0764';
+                ctx.lineWidth = 4;
+                ctx.strokeText(ft.text, ft.x, ft.y);
+                ctx.fillStyle = ft.color;
+                ctx.fillText(ft.text, ft.x, ft.y);
                 ctx.restore();
             }
         }
@@ -564,13 +721,21 @@
 
         function playerHardDrop() {
             if (!isPlaying || isPaused || gameOver) return;
+            let dropDistance = 0;
             while (!collide(board, player)) {
                 player.pos.y++;
-                score += 1; // 瞬間落下額外小獎勵
+                dropDistance++;
             }
             player.pos.y--;
+            if (dropDistance > 1) {
+                score += dropDistance;
+                // 觸發輕微畫面震動回饋
+                canvasWrapper.classList.remove('shake-effect');
+                void canvasWrapper.offsetWidth;
+                canvasWrapper.classList.add('shake-effect');
+            }
             merge(board, player);
-            playSound('drop');
+            playSound('harddrop');
             sweepLines();
             playerReset();
             updateScoreUI();
@@ -592,7 +757,6 @@
             const pos = player.pos.x;
             let offset = 1;
             rotateMatrix(player.matrix, dir);
-            // 踢牆機制 (Wall Kick)：靠牆旋轉時自動微調位置
             while (collide(board, player)) {
                 player.pos.x += offset;
                 offset = -(offset + (offset > 0 ? 1 : -1));
@@ -605,7 +769,6 @@
             playSound('rotate');
         }
 
-        // 產生新糖果方塊
         function randomCandyType() {
             return Math.floor(Math.random() * 7) + 1;
         }
@@ -619,27 +782,37 @@
             player.pos.y = 0;
             player.pos.x = Math.floor(COLS / 2) - Math.floor(player.matrix[0].length / 2);
 
-            // 若剛生成就碰撞，代表糖果堆滿到頂端 -> 遊戲結束
             if (collide(board, player)) {
                 gameOver = true;
                 isPlaying = false;
+                stopBGM();
                 playSound('gameover');
-                showOverlay('🍭', '糖果罐裝滿啦！', `最終甜蜜分數：${score} 分`, '再玩一次');
+                showOverlay(
+                    '🍭',
+                    '糖果罐裝滿啦！',
+                    `難度：${selectedDiffName} ｜ 最終分數：<span class="text-yellow-300 font-black text-base">${score}</span> 分`,
+                    '再玩一次',
+                    true
+                );
             }
         }
 
-        // 檢查並消除滿排糖果
+        function calculateDropInterval(lvl) {
+            // 依據等級計算下落間隔 (毫秒)，等級越高速度越快
+            return Math.max(110, 1000 - (lvl - 1) * 95);
+        }
+
         function sweepLines() {
             let rowCount = 0;
+            let lastClearedY = 10;
             outer: for (let y = board.length - 1; y >= 0; --y) {
                 for (let x = 0; x < board[y].length; ++x) {
                     if (board[y][x] === 0) {
                         continue outer;
                     }
                 }
-                // 觸發該排糖果碎屑特效
+                lastClearedY = y;
                 spawnCandyParticles(y, board[y]);
-
                 const row = board.splice(y, 1)[0].fill(0);
                 board.unshift(row);
                 ++y;
@@ -647,15 +820,29 @@
             }
 
             if (rowCount > 0) {
-                playSound('clear');
-                // 經典俄羅斯方塊計分倍率
+                comboCount++;
+                playSound('clear', Math.max(rowCount, comboCount));
+
                 const lineScores = [0, 100, 300, 500, 800];
-                score += lineScores[rowCount] * level;
+                const earned = (lineScores[rowCount] * level) + (comboCount > 1 ? (comboCount - 1) * 50 * level : 0);
+                score += earned;
                 lines += rowCount;
-                level = Math.floor(lines / 10) + 1;
-                // 隨等級提升加快下落速度
-                dropInterval = Math.max(120, 1000 - (level - 1) * 90);
+
+                // 顯示消除讚美飄字
+                const praise = rowCount === 4 ? 'SWEET TETRIS! ' : (comboCount > 1 ? `${comboCount}連消! ` : '');
+                spawnFloatingText(`${praise}+${earned}`, lastClearedY, rowCount >= 3 ? '#f472b6' : '#fde047');
+
+                // 計算等級提升 (從玩家選擇的起始等級往上累加)
+                const newLevel = selectedStartLevel + Math.floor(lines / 10);
+                if (newLevel > level) {
+                    level = newLevel;
+                    dropInterval = calculateDropInterval(level);
+                    setTimeout(() => playSound('levelup'), 220);
+                    spawnFloatingText(`LEVEL UP! Lv.${level}`, Math.max(3, lastClearedY - 2), '#67e8f9');
+                }
                 updateScoreUI();
+            } else {
+                comboCount = 0;
             }
         }
 
@@ -664,7 +851,6 @@
             ctx.fillStyle = '#1e132b';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // 繪製柔和的格子輔助線
             ctx.strokeStyle = 'rgba(255, 182, 193, 0.08)';
             ctx.lineWidth = 1;
             for (let x = 1; x < COLS; x++) {
@@ -691,7 +877,6 @@
             });
         }
 
-        // 計算並繪製落點幽靈預覽 (Ghost Piece)
         function drawGhostPiece() {
             const ghost = {
                 pos: { x: player.pos.x, y: player.pos.y },
@@ -704,11 +889,9 @@
             drawMatrix(ghost.matrix, ghost.pos, ctx, BLOCK_SIZE, true);
         }
 
-        // 繪製右側「下一個糖果」預覽窗
         function drawNextPiece() {
             nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
             const matrix = SHAPES[nextPieceType];
-            // 置中計算
             const offsetX = (4 - matrix[0].length) / 2;
             const offsetY = (4 - matrix.length) / 2;
             drawMatrix(matrix, { x: offsetX, y: offsetY }, nextCtx, NEXT_BLOCK_SIZE, false);
@@ -721,7 +904,7 @@
                 drawGhostPiece();
                 drawMatrix(player.matrix, player.pos);
             }
-            updateAndDrawParticles();
+            updateAndDrawEffects();
         }
 
         function update(time = 0) {
@@ -739,26 +922,45 @@
             animationFrameId = requestAnimationFrame(update);
         }
 
-        // 10. UI 更新與控制事件綁定
+        // 10. UI 更新與難度選擇事件綁定
         function updateScoreUI() {
             document.getElementById('scoreDisplay').innerText = score;
             document.getElementById('linesDisplay').innerText = lines;
             document.getElementById('levelDisplay').innerText = level;
+            document.getElementById('diffBadge').innerText = selectedDiffName;
         }
 
         const overlay = document.getElementById('overlay');
         const overlayIcon = document.getElementById('overlayIcon');
         const overlayTitle = document.getElementById('overlayTitle');
         const overlaySubtitle = document.getElementById('overlaySubtitle');
+        const difficultySelector = document.getElementById('difficultySelector');
         const startBtn = document.getElementById('startBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         const soundToggleBtn = document.getElementById('soundToggleBtn');
+        const bgmToggleBtn = document.getElementById('bgmToggleBtn');
 
-        function showOverlay(icon, title, subtitle, btnText) {
+        // 難度按鈕點擊切換
+        document.querySelectorAll('.diff-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedStartLevel = parseInt(btn.dataset.level, 10);
+                selectedDiffName = btn.dataset.name;
+                playSound('move');
+            });
+        });
+
+        function showOverlay(icon, title, subtitle, btnText, showDifficulty = true) {
             overlayIcon.innerText = icon;
             overlayTitle.innerText = title;
             overlaySubtitle.innerHTML = subtitle;
             startBtn.innerText = btnText;
+            if (showDifficulty) {
+                difficultySelector.classList.remove('hidden');
+            } else {
+                difficultySelector.classList.add('hidden');
+            }
             overlay.classList.remove('hidden');
         }
 
@@ -771,18 +973,22 @@
             board = createMatrix(COLS, ROWS);
             score = 0;
             lines = 0;
-            level = 1;
-            dropInterval = 1000;
+            comboCount = 0;
+            level = selectedStartLevel;
+            dropInterval = calculateDropInterval(level);
             gameOver = false;
             isPaused = false;
             isPlaying = true;
             particles = [];
+            floatingTexts = [];
             pauseBtn.innerText = '暫停';
 
             nextPieceType = randomCandyType();
             playerReset();
             updateScoreUI();
             hideOverlay();
+            playSound('rotate');
+            startBGM();
 
             lastTime = performance.now();
             update(lastTime);
@@ -793,16 +999,17 @@
             isPaused = !isPaused;
             if (isPaused) {
                 pauseBtn.innerText = '繼續';
-                showOverlay('⏸️', '遊戲暫停中', '休息一下，吃顆糖果吧！', '繼續遊戲');
+                stopBGM();
+                showOverlay('⏸️', '遊戲暫停中', '休息一下，吃顆糖果吧！', '繼續遊戲', false);
             } else {
                 pauseBtn.innerText = '暫停';
                 hideOverlay();
+                startBGM();
                 lastTime = performance.now();
                 update(lastTime);
             }
         }
 
-        // 按鈕事件監聽
         startBtn.addEventListener('click', () => {
             if (isPaused) {
                 togglePause();
@@ -815,7 +1022,19 @@
 
         soundToggleBtn.addEventListener('click', () => {
             soundEnabled = !soundEnabled;
-            soundToggleBtn.innerText = soundEnabled ? '🔊' : '🔇';
+            soundToggleBtn.innerText = soundEnabled ? '🔊 音效' : '🔇 靜音';
+            soundToggleBtn.classList.toggle('opacity-70', !soundEnabled);
+        });
+
+        bgmToggleBtn.addEventListener('click', () => {
+            bgmEnabled = !bgmEnabled;
+            bgmToggleBtn.innerText = bgmEnabled ? '🎵 音樂' : '🎵 關閉';
+            bgmToggleBtn.classList.toggle('opacity-70', !bgmEnabled);
+            if (bgmEnabled && isPlaying && !isPaused && !gameOver) {
+                startBGM();
+            } else {
+                stopBGM();
+            }
         });
 
         // 鍵盤控制監聽
@@ -875,7 +1094,7 @@
         bindTouchBtn('btnRotate', () => playerRotate(1));
         bindTouchBtn('btnDrop', () => playerHardDrop());
 
-        // 畫布滑動手勢支援 (左右滑動移動、點擊旋轉、下滑加速)
+        // 畫布滑動手勢支援
         let touchStartX = 0;
         let touchStartY = 0;
 
@@ -892,19 +1111,15 @@
             const dy = touchEndY - touchStartY;
 
             if (Math.abs(dx) < 15 && Math.abs(dy) < 15) {
-                // 輕點畫布：旋轉糖果
                 playerRotate(1);
             } else if (Math.abs(dx) > Math.abs(dy)) {
-                // 水平滑動：左右移動
                 playerMove(dx > 0 ? 1 : -1);
             } else if (dy > 30) {
-                // 向下快速滑動：瞬間落下
                 playerHardDrop();
             }
             draw();
         }, { passive: true });
 
-        // 頁面載入完成後初始化背景畫面
         window.onload = function () {
             board = createMatrix(COLS, ROWS);
             drawGridBackground();
