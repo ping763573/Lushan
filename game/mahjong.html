@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>台灣十六張麻將 - 手機橫式提醒版 🀄📢</title>
+  <title>台灣十六張麻將 - 手機全螢幕版 🀄📢</title>
   <style>
     :root {
       --bg-felt-top: #1a4d2e;
@@ -1057,6 +1057,10 @@
       #btn-mobile-info.is-on { background: #f5c542 !important; color: #111 !important; }
     }
 
+
+    /* ===== ⛶ 全螢幕切換開關：開啟時高亮 ===== */
+    #btn-fullscreen.is-on { background: #f5c542 !important; color: #111 !important; }
+
     .hidden { display: none !important; }
   </style>
 </head>
@@ -1099,6 +1103,7 @@
       <button class="btn-top is-off" id="btn-voice" title="開關中文語音喊牌">🗣️ 語音關</button>
       <button class="btn-top is-off" id="btn-bgm" title="開關背景音樂">🎵 音樂關</button>
       <button class="btn-top" id="btn-vivid" title="開關動效與粒子">✨ 動效開</button>
+      <button class="btn-top" id="btn-fullscreen" title="切換全螢幕">⛶ 全螢幕</button>
       <button class="btn-top mobile-only" id="btn-mobile-info" title="顯示 / 隱藏牌山、莊家、聽牌等資訊">ℹ️ 資訊</button>
       <button class="btn-top" id="btn-restart" title="重新開始新的一局">🔄 重開一局</button>
       <button class="btn-top" id="btn-rules" title="查看台灣十六張麻將規則與台數表">📖 規則說明</button>
@@ -2816,6 +2821,31 @@
       updateHint();
       window.addEventListener('resize', updateHint);
       window.addEventListener('orientationchange', () => setTimeout(updateHint, 300));
+    })();
+    // ⛶ 全螢幕切換開關：其他內容不變
+    (function(){
+      const btn = document.getElementById('btn-fullscreen');
+      const updateBtn = () => {
+        const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+        btn.textContent = isFs ? '⛶ 退出全螢幕' : '⛶ 全螢幕';
+        btn.classList.toggle('is-on', isFs);
+      };
+      btn.addEventListener('click', async () => {
+        try {
+          if (!(document.fullscreenElement || document.webkitFullscreenElement)) {
+            const el = document.documentElement;
+            if (el.requestFullscreen) await el.requestFullscreen();
+            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+            else if (document.body.webkitRequestFullscreen) document.body.webkitRequestFullscreen();
+          } else {
+            if (document.exitFullscreen) await document.exitFullscreen();
+            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+          }
+        } catch (e) {}
+        sfx.playClick();
+      });
+      document.addEventListener('fullscreenchange', updateBtn);
+      document.addEventListener('webkitfullscreenchange', updateBtn);
     })();
     document.getElementById('btn-collapse-top').addEventListener('click', (e) => {
       const collapsed = document.body.classList.toggle('top-collapsed');
