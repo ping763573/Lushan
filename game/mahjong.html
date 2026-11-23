@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>台灣十六張麻將 - 只放大玩家・播報版 🀄📢</title>
+  <title>台灣十六張麻將 - 手機版修正・只放大玩家 🀄📢</title>
   <style>
     :root {
       --bg-felt-top: #1a4d2e;
@@ -916,6 +916,62 @@
     .player-status-bar { flex-shrink: 0; }
     #narrator-log { max-height: 84px; }
 
+
+    /* ===== 📱 手機版專用修正：只在手機生效，電腦版完全不動 ===== */
+    .mobile-only { display: none; }
+    @media (max-width: 768px) {
+      /* 關鍵修正 1：手機不要鎖死 100dvh + overflow:hidden，否則底部手牌被推出畫面又滑不到 */
+      body { height: auto; min-height: 100svh; overflow-y: auto; overflow-x: hidden; }
+      /* 關鍵修正 2：頂部列改成可橫滑，不再換行把牌桌擠掉 */
+      header.top-bar { padding: 6px 8px; gap: 6px; }
+      header.top-bar .status-group { width: 100%; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; }
+      header.top-bar .controls-group { width: 100%; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; -webkit-overflow-scrolling: touch; }
+      header.top-bar .btn-top { flex-shrink: 0; font-size: .72rem; padding: 5px 8px; }
+      #volume-wrap { display: none; }
+      .badge { font-size: .72rem; padding: 3px 8px; }
+      #tenpai-pill { width: 100%; font-size: .78rem; padding: 4px 8px; }
+      /* 播報條變緊湊 */
+      #narrator-bar { padding: 5px 8px; gap: 6px; }
+      .narrator-label { font-size: .72rem; padding: 3px 7px; }
+      #narrator-main { font-size: .82rem; line-height: 1.35; }
+      #narrator-log { max-height: 72px; }
+      .narrator-actions .btn-top { font-size: .7rem; padding: 4px 7px; }
+      /* 關鍵修正 3：牌桌不再鎖死高度，中央區可縮，整頁可滑 */
+      main.table-arena { flex: none; overflow: visible; padding: 6px 6px 4px; gap: 4px; grid-template-rows: auto minmax(150px, auto) auto; }
+      .center-board { min-height: 150px; }
+      .compass-box { width: 96px; height: 96px; padding: 4px; }
+      .compass-pos { font-size: .7rem; }
+      .river { min-width: 0; max-width: none; min-height: auto; padding: 3px; gap: 1.5px; }
+      .river-left, .river-right { max-width: 92px; min-width: 60px; }
+      .river-top, .river-bottom { max-width: 230px; }
+      .seat-top { gap: 2px; }
+      .seat-left, .seat-right { gap: 4px; padding: 0 2px; }
+      .player-tag { font-size: .72rem; padding: 3px 6px; gap: 4px; }
+      /* 關鍵修正 4：你的手牌區黏在底部，永遠看得到、點得到 */
+      .seat-bottom { position: sticky; bottom: 0; z-index: 25; width: 100%; background: rgba(8,22,13,.97); border-top: 1px solid rgba(245,197,66,.4); box-shadow: 0 -6px 16px rgba(0,0,0,.5); padding: 6px 4px calc(6px + env(safe-area-inset-bottom)); }
+      .player-status-bar { padding: 0 4px; gap: 6px; }
+      .action-hint { font-size: .78rem; padding: 3px 8px; }
+      .mobile-only { display: inline-flex; font-size: .78rem; padding: 5px 10px; background: linear-gradient(135deg,#f5c542,#ff8f00); color: #111; font-weight: 900; border: none; border-radius: 999px; }
+      /* 關鍵修正 5：手牌一排 + 可橫滑，不再被擠成兩排、點不到 */
+      :root { --tile-w: 5.6vw; --tile-h: 8.2vw; --tile-sm-w: 19px; --tile-sm-h: 27px; }
+      .player-cards-wrapper { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; max-width: 100vw; padding: 4px 4px 8px; gap: 6px; -webkit-overflow-scrolling: touch; }
+      .player-hand { flex-wrap: nowrap; gap: 2px; }
+      .player-hand .tile { flex-shrink: 0; touch-action: manipulation; }
+      .tile.drawn-gap { margin-left: 10px; }
+      /* 吃碰槓胡按鈕：改到手牌上方，不蓋手牌、可換行 */
+      .action-overlay { bottom: 132px; max-width: calc(100vw - 16px); flex-wrap: wrap; justify-content: center; padding: 8px 10px; gap: 6px; }
+      .btn-action { padding: 11px 15px; font-size: .95rem; }
+      .chow-chooser { bottom: 198px; max-width: calc(100vw - 16px); flex-wrap: wrap; justify-content: center; }
+      /* 彈窗在手機上可滑動、不爆框 */
+      .modal-card { width: calc(100vw - 24px); max-height: 82svh; overflow-y: auto; }
+      .modal-backdrop { overflow-y: auto; align-items: flex-start; padding-top: 12px; }
+      #ambient-layer { display: none; }
+    }
+    @media (max-width: 360px) {
+      :root { --tile-w: 5.4vw; --tile-h: 7.9vw; }
+      header.top-bar .btn-top { font-size: .68rem; }
+    }
+
     .hidden { display: none !important; }
   </style>
 </head>
@@ -1055,6 +1111,7 @@
           <span class="flower-chips" id="flowers-0"></span>
         </div>
         <div class="action-hint" id="action-hint">系統發牌中...</div>
+        <button class="btn-top mobile-only" id="btn-mobile-restart" title="手機版開始 / 重開一局">▶️ 開始 / 重開</button>
       </div>
 
       <div class="player-cards-wrapper">
@@ -2643,6 +2700,7 @@
       e.currentTarget.classList.toggle('is-off', !NARRATOR.voice);
       if (NARRATOR.voice) sfx.speak('播報語音開');
     });
+    document.getElementById('btn-mobile-restart').addEventListener('click', () => { sfx.playClick(); startNewRound(); });
     // 第一次點擊解鎖音訊 + 手牌懸浮音 + FX 初始化
     document.addEventListener('pointerdown', ()=>{ sfx.init(); FX.init(); }, {once:false});
     document.addEventListener('mouseover', (e)=>{ if(e.target && e.target.closest && e.target.closest('.player-hand .tile')) sfx.playHover(); });
