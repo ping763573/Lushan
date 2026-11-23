@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>台灣十六張麻將 - 手機全螢幕版 🀄📢</title>
+  <title>台灣十六張麻將 - 手機全螢幕修正版 🀄📢</title>
   <style>
     :root {
       --bg-felt-top: #1a4d2e;
@@ -1060,6 +1060,20 @@
 
     /* ===== ⛶ 全螢幕切換開關：開啟時高亮 ===== */
     #btn-fullscreen.is-on { background: #f5c542 !important; color: #111 !important; }
+
+
+    /* ===== ⛶ 手機版全螢幕鍵修正：頂部那顆強制顯示 + 浮動鍵固定顯示 ===== */
+    #btn-fullscreen-float { display: none; }
+    @media (max-width: 768px) {
+      /* 頂部那顆：手機上一定要看得到，排第一個、金底 */
+      header.top-bar .controls-group { flex-wrap: wrap !important; }
+      #btn-fullscreen { display: inline-flex !important; order: -1 !important; background: #f5c542 !important; color: #111 !important; font-weight: 900 !important; border-color: #f5c542 !important; }
+      /* 浮動鍵：固定在右下角，手牌上方，收起上方後還在 */
+      #btn-fullscreen-float { display: flex !important; align-items: center; justify-content: center; position: fixed !important; right: 10px !important; bottom: calc(118px + env(safe-area-inset-bottom)) !important; z-index: 9999 !important; background: #f5c542; color: #111; border: 2px solid #111; border-radius: 999px; font-size: 13px; font-weight: 900; padding: 10px 12px; box-shadow: 0 4px 12px rgba(0,0,0,.45); cursor: pointer; }
+      #btn-fullscreen-float.is-on { background: #111 !important; color: #f5c542 !important; border-color: #f5c542 !important; }
+      /* iPhone Safari 不支援原生全螢幕時，用偽全螢幕填滿畫面 */
+      body.pseudo-fullscreen #landscape-hint { display: none !important; }
+    }
 
     .hidden { display: none !important; }
   </style>
@@ -2822,28 +2836,37 @@
       window.addEventListener('resize', updateHint);
       window.addEventListener('orientationchange', () => setTimeout(updateHint, 300));
     })();
-    // ⛶ 全螢幕切換開關：其他內容不變
+    // ⛶ 全螢幕切換開關：頂部 + 浮動兩顆共用邏輯，手機版一定看得到
     (function(){
       const btn = document.getElementById('btn-fullscreen');
+      const btnFloat = document.getElementById('btn-fullscreen-float');
       const updateBtn = () => {
-        const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-        btn.textContent = isFs ? '⛶ 退出全螢幕' : '⛶ 全螢幕';
-        btn.classList.toggle('is-on', isFs);
+        const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement) || document.body.classList.contains('pseudo-fullscreen');
+        if (btn) { btn.textContent = isFs ? '⛶ 退出全螢幕' : '⛶ 全螢幕'; btn.classList.toggle('is-on', isFs); }
+        if (btnFloat) { btnFloat.textContent = isFs ? '⛶ 退出' : '⛶ 全螢幕'; btnFloat.classList.toggle('is-on', isFs); }
       };
-      btn.addEventListener('click', async () => {
+      const toggleFs = async () => {
         try {
-          if (!(document.fullscreenElement || document.webkitFullscreenElement)) {
+          const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+          if (!isFs && !document.body.classList.contains('pseudo-fullscreen')) {
             const el = document.documentElement;
             if (el.requestFullscreen) await el.requestFullscreen();
             else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
             else if (document.body.webkitRequestFullscreen) document.body.webkitRequestFullscreen();
+            else document.body.classList.add('pseudo-fullscreen');
+            // iPhone Safari 沒有全螢幕 API 時，過 300ms 還沒進全螢幕就改用偽全螢幕，鍵才不會沒反應
+            setTimeout(() => { if (!(document.fullscreenElement || document.webkitFullscreenElement)) document.body.classList.add('pseudo-fullscreen'); updateBtn(); }, 300);
           } else {
-            if (document.exitFullscreen) await document.exitFullscreen();
-            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+            if (document.exitFullscreen && document.fullscreenElement) await document.exitFullscreen();
+            else if (document.webkitExitFullscreen && document.webkitFullscreenElement) document.webkitExitFullscreen();
+            document.body.classList.remove('pseudo-fullscreen');
           }
-        } catch (e) {}
+        } catch (e) { document.body.classList.toggle('pseudo-fullscreen'); }
+        updateBtn();
         sfx.playClick();
-      });
+      };
+      if (btn) btn.addEventListener('click', toggleFs);
+      if (btnFloat) btnFloat.addEventListener('click', toggleFs);
       document.addEventListener('fullscreenchange', updateBtn);
       document.addEventListener('webkitfullscreenchange', updateBtn);
     })();
@@ -2881,5 +2904,8 @@
       startNewRound();
     });
   </script>
+  <!-- ⛶ 手機版浮動全螢幕鍵：固定顯示，不會被頂部列擠掉 -->
+  <button id="btn-fullscreen-float" class="mobile-only" title="切換全螢幕">⛶ 全螢幕</button>
+
 </body>
 </html>
