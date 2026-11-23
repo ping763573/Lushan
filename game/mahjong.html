@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>台灣十六張麻將 - 手機版修正・只放大玩家 🀄📢</title>
+  <title>台灣十六張麻將 - 手機橫式提醒版 🀄📢</title>
   <style>
     :root {
       --bg-felt-top: #1a4d2e;
@@ -972,6 +972,91 @@
       header.top-bar .btn-top { font-size: .68rem; }
     }
 
+
+    /* ===== 📱 手機版超緊湊修正：上方不再佔半個畫面、下方不再重疊（電腦版不動） ===== */
+    @media (max-width: 768px) {
+      /* --- 上方：頂部列壓到最小 --- */
+      header.top-bar { padding: 4px 6px !important; gap: 3px !important; }
+      header.top-bar .status-group { gap: 4px !important; padding-bottom: 0 !important; }
+      header.top-bar .badge { font-size: 11px !important; padding: 2px 6px !important; }
+      #tenpai-pill { font-size: 11px !important; padding: 2px 6px !important; }
+      /* 手機上先藏起比較不常用的按鈕，畫面才不會被按鈕塞滿；要用的時候點「收起上方」展開後還在 */
+      #volume-wrap, #btn-voice, #btn-bgm, #btn-vivid { display: none !important; }
+      header.top-bar .controls-group { gap: 4px !important; }
+      header.top-bar .controls-group .btn-top { font-size: 11px !important; padding: 4px 7px !important; }
+      /* --- 播報條：最多只佔 2 行，字變小 --- */
+      #narrator-bar { padding: 4px 6px !important; gap: 5px !important; align-items: center !important; }
+      .narrator-label { font-size: 11px !important; padding: 2px 6px !important; }
+      #narrator-main { font-size: 12px !important; line-height: 1.35 !important; display: -webkit-box !important; -webkit-line-clamp: 2 !important; -webkit-box-orient: vertical !important; overflow: hidden !important; }
+      #narrator-main .narrator-detail { font-size: 11px !important; }
+      .narrator-actions { gap: 4px !important; }
+      .narrator-actions .btn-top { font-size: 10px !important; padding: 3px 5px !important; }
+      #btn-narrator-voice { display: none !important; }
+      /* --- 牌桌：左右兩家固定窄欄，不再把中央擠到重疊 --- */
+      main.table-arena { grid-template-columns: 46px 1fr 46px !important; grid-template-rows: auto minmax(140px, auto) auto !important; padding: 4px !important; gap: 2px !important; }
+      main.table-arena > section { min-width: 0 !important; overflow: hidden !important; }
+      .seat-top { gap: 2px !important; }
+      .seat-left, .seat-right { flex-direction: column !important; align-items: center !important; gap: 2px !important; padding: 0 !important; width: 46px !important; }
+      .seat-left > div, .seat-right > div { display: flex !important; flex-direction: column !important; align-items: center !important; gap: 2px !important; }
+      .seat-left .player-tag, .seat-right .player-tag { flex-direction: column !important; padding: 2px 3px !important; font-size: 11px !important; gap: 1px !important; max-width: 46px !important; text-align: center !important; white-space: nowrap !important; overflow: hidden !important; }
+      .seat-top .player-tag { font-size: 11px !important; padding: 2px 6px !important; gap: 3px !important; max-width: calc(100vw - 16px) !important; white-space: nowrap !important; overflow: hidden !important; }
+      /* 手機上先藏 AI 的分數跟花牌，才不會三家名牌疊在一起；你的分數保留 */
+      #score-1, #score-2, #score-3 { display: none !important; }
+      .seat-top .flower-chips, .seat-left .flower-chips, .seat-right .flower-chips { display: none !important; }
+      #name-1, #name-2, #name-3 { font-size: 11px !important; }
+      /* AI 手牌改成小小一排指示就好，不佔寬度 */
+      .ai-hand-top { gap: 1px !important; }
+      .tile-back-top { width: 10px !important; height: 15px !important; border-radius: 2px !important; }
+      .ai-hand-side { flex-direction: column !important; gap: 1px !important; }
+      .tile-back-side { width: 15px !important; height: 8px !important; border-radius: 2px !important; }
+      /* 中央區瘦身 */
+      .center-board { min-height: 140px !important; gap: 2px !important; }
+      .compass-box { width: 88px !important; height: 88px !important; padding: 3px !important; }
+      .compass-pos { font-size: 11px !important; }
+      .river { min-width: 0 !important; max-width: none !important; padding: 2px !important; gap: 1px !important; }
+      .river-left, .river-right { max-width: 68px !important; min-width: 44px !important; }
+      .river-top, .river-bottom { max-width: 200px !important; }
+      /* 你的底部區：字也變小，確保手牌看得到 */
+      .seat-bottom { padding: 5px 4px calc(5px + env(safe-area-inset-bottom)) !important; }
+      .player-status-bar { gap: 4px !important; }
+      #tag-0 { font-size: 11px !important; padding: 3px 6px !important; }
+      #score-0 { font-size: 11px !important; }
+      .action-hint { font-size: 11px !important; padding: 3px 6px !important; }
+      /* --- 收起上方模式：點「收起上方」後，頂部 + 播報全部藏起來，只剩牌桌 + 手牌 --- */
+      body.top-collapsed header.top-bar { display: none !important; }
+      body.top-collapsed #narrator-bar { padding: 3px 6px !important; }
+      body.top-collapsed #narrator-bar .narrator-label,
+      body.top-collapsed #narrator-bar #narrator-main,
+      body.top-collapsed #narrator-bar #btn-narrator-toggle { display: none !important; }
+      body.top-collapsed #narrator-log { display: none !important; }
+    }
+
+
+    /* ===== 📱 手機版：橫式提醒 + 不必要的字先藏起來，需要再打開 ===== */
+    #landscape-hint { display: none; }
+    @media (max-width: 768px) {
+      /* 橫式提醒：直式才顯示，橫式自動隱藏 */
+      #landscape-hint { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 8px; background: linear-gradient(135deg,#f5c542,#ff8f00); color: #111; font-size: 12px; font-weight: 800; line-height: 1.35; position: relative; z-index: 30; }
+      #landscape-hint.hidden { display: none !important; }
+      #btn-landscape-close { flex-shrink: 0; background: #111; color: #fff; border: none; border-radius: 999px; font-size: 11px; font-weight: 800; padding: 4px 10px; cursor: pointer; }
+      /* 預設精簡模式：牌山、莊家、聽牌、播報細節、花牌先藏起來，畫面保持完整 */
+      body.mobile-compact:not(.show-info) #wall-info,
+      body.mobile-compact:not(.show-info) #dealer-info,
+      body.mobile-compact:not(.show-info) #tenpai-pill,
+      body.mobile-compact:not(.show-info) #flowers-0,
+      body.mobile-compact:not(.show-info) .narrator-detail,
+      body.mobile-compact:not(.show-info) #narrator-log { display: none !important; }
+      /* 按「資訊」後才展開 */
+      body.mobile-compact.show-info #wall-info,
+      body.mobile-compact.show-info #dealer-info { display: inline-flex !important; }
+      body.mobile-compact.show-info #tenpai-pill { display: flex !important; }
+      body.mobile-compact.show-info #flowers-0 { display: inline-flex !important; }
+      body.mobile-compact.show-info .narrator-detail { display: inline !important; }
+      body.mobile-compact.show-info #narrator-log { display: flex !important; }
+      /* 資訊按鈕打開時的狀態 */
+      #btn-mobile-info.is-on { background: #f5c542 !important; color: #111 !important; }
+    }
+
     .hidden { display: none !important; }
   </style>
 </head>
@@ -985,6 +1070,12 @@
     <span class="ambient-tile" style="left:48%;top:6%;animation-delay:2.4s">🀐</span>
   </div>
   <div id="score-pop-layer"></div>
+
+  <!-- 📱 手機版：建議橫式提醒，看完可關閉 -->
+  <div id="landscape-hint" class="mobile-only hidden">
+    <span>📱 建議橫式遊玩：把手機轉橫，牌桌更完整、手牌更好點。</span>
+    <button id="btn-landscape-close" title="關閉提醒">知道了，關閉 ✕</button>
+  </div>
 
   <!-- 頂部狀態與功能列 -->
   <header class="top-bar">
@@ -1008,6 +1099,7 @@
       <button class="btn-top is-off" id="btn-voice" title="開關中文語音喊牌">🗣️ 語音關</button>
       <button class="btn-top is-off" id="btn-bgm" title="開關背景音樂">🎵 音樂關</button>
       <button class="btn-top" id="btn-vivid" title="開關動效與粒子">✨ 動效開</button>
+      <button class="btn-top mobile-only" id="btn-mobile-info" title="顯示 / 隱藏牌山、莊家、聽牌等資訊">ℹ️ 資訊</button>
       <button class="btn-top" id="btn-restart" title="重新開始新的一局">🔄 重開一局</button>
       <button class="btn-top" id="btn-rules" title="查看台灣十六張麻將規則與台數表">📖 規則說明</button>
     </div>
@@ -1020,6 +1112,7 @@
     <div class="narrator-actions">
       <button class="btn-top is-off" id="btn-narrator-voice" title="開關播報語音">🔇 播報語音關</button>
       <button class="btn-top" id="btn-narrator-toggle" title="收起或展開播報紀錄">展開紀錄</button>
+      <button class="btn-top mobile-only" id="btn-collapse-top" title="收起上方，留更多空間給牌桌">▲ 收起上方</button>
     </div>
   </div>
   <div id="narrator-log" class="collapsed" aria-live="polite"></div>
@@ -2701,6 +2794,34 @@
       if (NARRATOR.voice) sfx.speak('播報語音開');
     });
     document.getElementById('btn-mobile-restart').addEventListener('click', () => { sfx.playClick(); startNewRound(); });
+    // 📱 手機版：直式顯示橫式提醒，關閉後不再顯示；橫式自動隱藏；資訊按鈕控制不必要的字
+    (function(){
+      const isMobile = () => window.innerWidth <= 768;
+      let hintClosed = false;
+      const hintEl = document.getElementById('landscape-hint');
+      const updateHint = () => {
+        if (!isMobile()) { hintEl.classList.add('hidden'); return; }
+        document.body.classList.add('mobile-compact');
+        const isPortrait = window.innerHeight > window.innerWidth;
+        if (isPortrait && !hintClosed) hintEl.classList.remove('hidden');
+        else hintEl.classList.add('hidden');
+      };
+      document.getElementById('btn-landscape-close').addEventListener('click', () => { hintClosed = true; hintEl.classList.add('hidden'); sfx.playClick(); });
+      document.getElementById('btn-mobile-info').addEventListener('click', (e) => {
+        const on = document.body.classList.toggle('show-info');
+        e.currentTarget.classList.toggle('is-on', on);
+        e.currentTarget.textContent = on ? 'ℹ️ 隱藏資訊' : 'ℹ️ 資訊';
+        sfx.playClick();
+      });
+      updateHint();
+      window.addEventListener('resize', updateHint);
+      window.addEventListener('orientationchange', () => setTimeout(updateHint, 300));
+    })();
+    document.getElementById('btn-collapse-top').addEventListener('click', (e) => {
+      const collapsed = document.body.classList.toggle('top-collapsed');
+      e.currentTarget.textContent = collapsed ? '▼ 展開上方' : '▲ 收起上方';
+      sfx.playClick();
+    });
     // 第一次點擊解鎖音訊 + 手牌懸浮音 + FX 初始化
     document.addEventListener('pointerdown', ()=>{ sfx.init(); FX.init(); }, {once:false});
     document.addEventListener('mouseover', (e)=>{ if(e.target && e.target.closest && e.target.closest('.player-hand .tile')) sfx.playHover(); });
